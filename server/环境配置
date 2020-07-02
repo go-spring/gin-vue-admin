@@ -1,3 +1,0 @@
-1. 启动 mysql
-docker run -it -e MYSQL_ROOT_PASSWORD=Aa@6447985 -p 3306:3306 --name ginvue mysql
-docker start -i ginvue # 第二次启动

@@ -1,0 +1,14 @@
+1. 准备开发环境，使用 Docker 启动 mysql，将 sql 语句导入数据库：
+docker run -it -e MYSQL_ROOT_PASSWORD=Aa@6447985 -p 3306:3306 --name ginvue mysql
+docker start -i ginvue # 第二次启动
+2. 迁移步骤：
+    2.1 引入 go-spring web 组件，关闭 swagger 及默认 filter；(已完成)
+    2.2 启动一个新的 web 容器，使用 application.properties；（已完成）
+    2.3 增加一个重定向中间件，对于可迁移的接口使用重定向机制进行迁移；（已完成）
+    2.4 给 go-spring 也配置跨域组件；（已完成）
+    2.5 迁移接口到 go-spring，老接口先保留。(进行中)
+    2.6 每迁移一个接口测试一下，推荐每次只保留一个迁移接口测试；
+    2.7 所有接口迁移完之后，打开所有迁移接口测试一次；
+    2.8 去掉原有的 web 服务，将 go-spring 的端口改成 8888；
+    2.9 大功告成！
+!!! 注意，每改完 5 个接口后请提交一次 PR，我来验证一下，如果中间有问题，随时沟通。

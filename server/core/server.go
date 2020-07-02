@@ -1,9 +1,14 @@
 package core
 
 import (
+	"fmt"
+	"net/http"
+	"time"
+
 	"gin-vue-admin/global"
 	"gin-vue-admin/initialize"
 
+	"github.com/gin-gonic/gin"
 	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring-web/spring-web"
 	"github.com/go-spring/go-spring/spring-boot"
@@ -26,31 +31,39 @@ func RunWindowsServer() {
 	//}
 	// end 插件描述
 
-	//address := fmt.Sprintf(":%d", global.GVA_CONFIG.System.Addr)
-	//s := &http.Server{
-	//	Addr:           address,
-	//	Handler:        Router,
-	//	ReadTimeout:    10 * time.Second,
-	//	WriteTimeout:   10 * time.Second,
-	//	MaxHeaderBytes: 1 << 20,
-	//}
+	address := fmt.Sprintf(":%d", global.GVA_CONFIG.System.Addr)
+	s := &http.Server{
+		Addr:           address,
+		Handler:        Router,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
 
 	// 保证文本顺序输出
 	// In order to ensure that the text order output can be deleted
-	//time.Sleep(10 * time.Microsecond)
-	//global.GVA_LOG.Debug("server run success on ", address)
+	time.Sleep(10 * time.Microsecond)
+	global.GVA_LOG.Debug("server run success on ", address)
 
-	//fmt.Printf(`欢迎使用 Gin-Vue-Admin
-	//默认自动化文档地址:http://127.0.0.1%s/swagger/index.html
-	//默认前端文件运行地址:http://127.0.0.1:8080`, s.Addr)
+	fmt.Printf(`欢迎使用 Gin-Vue-Admin
+	默认自动化文档地址:http://127.0.0.1%s/swagger/index.html
+	默认前端文件运行地址:http://127.0.0.1:8080
+	`, s.Addr)
 
-	// global.GVA_LOG.Error(s.ListenAndServe())
+	// 1. 引入 go-spring web 组件，关闭 swagger 及默认 filter
+	SpringBoot.Config(func(c SpringWeb.WebContainer, port int) {
 
-	SpringBoot.Config(func(c SpringWeb.WebContainer) {
-		gc := c.(*SpringGin.Container)
-		gc.SetEnableSwagger(false)
-		gc.SetGinEngine(Router)
-	})
+		c.SetLoggerFilter(SpringGin.Filter(func(ctx *gin.Context) {
+			fmt.Printf("[SPRING] %s :%d %s\n", ctx.Request.Method, port, ctx.FullPath())
+		}))
 
-	SpringBoot.RunApplication("./")
+		c.SetEnableSwagger(false)
+		c.SetRecoveryFilter(nil)
+	}, "1:${web.server.port}")
+
+	go func() { // 2. 启动一个新的 web 容器
+		SpringBoot.RunApplication("./")
+	}()
+
+	global.GVA_LOG.Error(s.ListenAndServe())
 }
