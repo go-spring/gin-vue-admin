@@ -3,14 +3,18 @@ package router
 import (
 	"gin-vue-admin/api/v1"
 	"gin-vue-admin/middleware"
+
 	"github.com/gin-gonic/gin"
-	SpringGin "github.com/go-spring/go-spring-web/spring-gin"
-	SpringBoot "github.com/go-spring/go-spring/spring-boot"
+	"github.com/go-spring/go-spring-web/spring-gin"
+	"github.com/go-spring/go-spring/spring-boot"
 )
 
 func InitMenuRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
 
-	m := SpringBoot.Route("/menu", SpringGin.Filter(middleware.JWTAuth()), SpringGin.Filter(middleware.CasbinHandler()))
+	m := SpringBoot.Route("/menu",
+		SpringGin.Filter(middleware.JWTAuth()),
+		SpringGin.Filter(middleware.CasbinHandler()))
+
 	m.POST("/getMenu", SpringGin.Gin(v1.GetMenu))
 	m.POST("/getMenuList", SpringGin.Gin(v1.GetMenuList))
 	m.POST("/addBaseMenu", SpringGin.Gin(v1.AddBaseMenu))

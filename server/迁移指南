@@ -1,5 +1,5 @@
 1. 准备开发环境，使用 Docker 启动 mysql，将 sql 语句导入数据库：
-docker run -it -e MYSQL_ROOT_PASSWORD=Aa@6447985 -p 3306:3306 --name ginvue mysql
+docker run -it -e MYSQL_ROOT_PASSWORD=Aa@6447985 -p 3306:3306 --name ginvue mysql:5.7
 docker start -i ginvue # 第二次启动
 2. 迁移步骤：
     2.1 引入 go-spring web 组件，关闭 swagger 及默认 filter；(已完成)
