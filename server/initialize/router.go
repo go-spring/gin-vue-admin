@@ -25,6 +25,16 @@ func Routers() *gin.Engine {
 	redirect := map[string]string{ // 已经迁移的地址
 		//"/base/login": "http://127.0.0.1:8887/base/login",
 		"/base/captcha": "http://127.0.0.1:8887/base/captcha",
+
+		"/menu/getMenu": "http://127.0.0.1:8887/menu/getMenu",
+		"/menu/getMenuList": "http://127.0.0.1:8887/menu/getMenuList",
+		"/menu/addBaseMenu": "http://127.0.0.1:8887/menu/addBaseMenu",
+		"/menu/getBaseMenuTree": "http://127.0.0.1:8887/menu/getBaseMenuTree",
+		"/menu/addMenuAuthority": "http://127.0.0.1:8887/menu/addMenuAuthority",
+		"/menu/getMenuAuthority": "http://127.0.0.1:8887/menu/getMenuAuthority",
+		"/menu/deleteBaseMenu": "http://127.0.0.1:8887/menu/deleteBaseMenu",
+		"/menu/updateBaseMenu": "http://127.0.0.1:8887/menu/updateBaseMenu",
+		"/menu/getBaseMenuById": "http://127.0.0.1:8887/menu/getBaseMenuById",
 	}
 
 	// 3. 增加一个重定向中间件，对于可迁移的接口使用重定向机制进行迁移
