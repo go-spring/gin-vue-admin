@@ -26,6 +26,12 @@ func Routers() *gin.Engine {
 		"/base/login":   "http://127.0.0.1:8887/base/login",
 		"/base/captcha": "http://127.0.0.1:8887/base/captcha",
 
+		"/user/changePassword":   "http://127.0.0.1:8887/user/changePassword",
+		"/user/uploadHeaderImg":  "http://127.0.0.1:8887/user/uploadHeaderImg",
+		"/user/getUserList":	  "http://127.0.0.1:8887/user/getUserList",
+		"/user/setUserAuthority": "http://127.0.0.1:8887/user/setUserAuthority",
+		"/user/deleteUser":		  "http://127.0.0.1:8887/user/deleteUser",
+
 		"/menu/getMenu":          "http://127.0.0.1:8887/menu/getMenu",
 		"/menu/getMenuList":      "http://127.0.0.1:8887/menu/getMenuList",
 		"/menu/addBaseMenu":      "http://127.0.0.1:8887/menu/addBaseMenu",
