@@ -14,6 +14,7 @@ func InitBaseRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
 	r := SpringBoot.Route("/base")
 	r.HandlePost("/login", SpringGin.Gin(v1.Login))
 	r.HandlePost("/captcha", SpringGin.Gin(v1.Captcha))
+	r.HandlePost("/register", SpringGin.Gin(v1.Register))
 
 	BaseRouter := Router.Group("base")
 	{
