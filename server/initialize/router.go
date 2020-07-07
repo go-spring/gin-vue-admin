@@ -1,12 +1,11 @@
 package initialize
 
 import (
-	"net/http"
-
 	_ "gin-vue-admin/docs"
 	"gin-vue-admin/global"
 	"gin-vue-admin/middleware"
 	"gin-vue-admin/router"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-spring/go-spring-web/spring-gin"
@@ -16,6 +15,8 @@ import (
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
+const Host = "http://127.0.0.1:8887"
+
 // 初始化总路由
 func Routers() *gin.Engine {
 	var Router = gin.Default()
@@ -23,24 +24,70 @@ func Routers() *gin.Engine {
 	global.GVA_LOG.Debug("use middleware logger")
 
 	redirect := map[string]string{ // 已经迁移的地址
-		"/base/login":   "http://127.0.0.1:8887/base/login",
-		"/base/captcha": "http://127.0.0.1:8887/base/captcha",
+		"/base/login":   				"",
+		"/base/captcha": 				"",
+		"/base/register":				"",
+		"/base/captcha/:captchaId": 	"",
 
-		"/menu/getMenu":          "http://127.0.0.1:8887/menu/getMenu",
-		"/menu/getMenuList":      "http://127.0.0.1:8887/menu/getMenuList",
-		"/menu/addBaseMenu":      "http://127.0.0.1:8887/menu/addBaseMenu",
-		"/menu/getBaseMenuTree":  "http://127.0.0.1:8887/menu/getBaseMenuTree",
-		"/menu/addMenuAuthority": "http://127.0.0.1:8887/menu/addMenuAuthority",
-		"/menu/getMenuAuthority": "http://127.0.0.1:8887/menu/getMenuAuthority",
-		"/menu/deleteBaseMenu":   "http://127.0.0.1:8887/menu/deleteBaseMenu",
-		"/menu/updateBaseMenu":   "http://127.0.0.1:8887/menu/updateBaseMenu",
-		"/menu/getBaseMenuById":  "http://127.0.0.1:8887/menu/getBaseMenuById",
+		"/user/changePassword":   		"",
+		"/user/uploadHeaderImg":  		"",
+		"/user/getUserList":	  		"",
+		"/user/setUserAuthority": 		"",
+		"/user/deleteUser":		  		"",
+
+		"/menu/getMenu":          		"",
+		"/menu/getMenuList":      		"",
+		"/menu/addBaseMenu":      		"",
+		"/menu/getBaseMenuTree":  		"",
+		"/menu/addMenuAuthority": 		"",
+		"/menu/getMenuAuthority": 		"",
+		"/menu/deleteBaseMenu":   		"",
+		"/menu/updateBaseMenu":   		"",
+		"/menu/getBaseMenuById":  		"",
+
+		"/authority/createAuthority":   "",
+		"/authority/deleteAuthority":   "",
+		"/authority/updateAuthority":   "",
+		"/authority/copyAuthority":     "",
+		"/authority/getAuthorityList":  "",
+		"/authority/setDataAuthority":  "",
+
+		"/customer/customer":     		"",	// POST, PUT, DELETE, GET 路由同名，因此只在map中注册一个
+		"/customer/customerList": 		"",
+
+		"/api/createApi":  				"",
+		"/api/deleteApi":  				"",
+		"/api/getApiList": 				"",
+		"/api/getApiById": 				"",
+		"/api/updateApi":  				"",
+		"/api/getAllApis": 				"",
+
+		"/fileUploadAndDownload/upload": 					"",
+		"/fileUploadAndDownload/getFileList": 				"",
+		"/fileUploadAndDownload/deleteFile": 				"",
+		"/fileUploadAndDownload/breakpointContinue": 		"",
+		"/fileUploadAndDownload/findFile": 					"",
+		"/fileUploadAndDownload/breakpointContinueFinish":  "",
+		"/fileUploadAndDownload/removeChunk": 				"",
+
+		"/autoCode/createTemp":					"",
+
+		"/casbin/updateCasbin":					"",
+		"/casbin/getPolicyPathByAuthorityId":	"",
+		"/casbin/casbinTest/:pathParam":		"",
+
+		"/jwt/jsonInBlacklist":					"",
+
+		"/system/getSystemConfig":				"",
+		"/system/setSystemConfig":				"",
+
+		"/workflow/createWorkFlow":				"",
 	}
 
 	// 3. 增加一个重定向中间件，对于可迁移的接口使用重定向机制进行迁移
 	Router.Use(func(ctx *gin.Context) {
-		if redirectPath, ok := redirect[ctx.FullPath()]; ok {
-			ctx.Redirect(http.StatusTemporaryRedirect, redirectPath)
+		if _, ok := redirect[ctx.FullPath()]; ok {
+			ctx.Redirect(http.StatusTemporaryRedirect, Host + ctx.Request.RequestURI)
 			ctx.Abort()
 		}
 	})
