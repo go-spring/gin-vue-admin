@@ -1,8 +1,10 @@
 package core
 
 import (
+	_ "gin-vue-admin/docs"
 	"gin-vue-admin/global"
 	"gin-vue-admin/initialize"
+	"gin-vue-admin/middleware"
 	_ "gin-vue-admin/router"
 
 	"github.com/gin-gonic/gin"
@@ -10,6 +12,8 @@ import (
 	"github.com/go-spring/go-spring-web/spring-web"
 	"github.com/go-spring/go-spring/spring-boot"
 	_ "github.com/go-spring/go-spring/starter-gin"
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 func RunWindowsServer() {
@@ -18,10 +22,14 @@ func RunWindowsServer() {
 		initialize.Redis()
 	}
 
+	// 添加 swagger 接口
+	SpringBoot.GET("/swagger/*any", SpringGin.Gin(ginSwagger.WrapHandler(swaggerFiles.Handler)))
+
 	// 1. 引入 go-spring web 组件，关闭 swagger 及默认 filter
 	SpringBoot.Config(func(c SpringWeb.WebContainer, port int) {
 		c.SetRecoveryFilter(SpringGin.Filter(gin.Recovery()))
 		c.SetLoggerFilter(SpringGin.Filter(gin.Logger()))
+		c.AddFilter(SpringGin.Filter(middleware.Cors()))
 		c.SetEnableSwagger(false)
 	}, "1:${web.server.port}")
 
