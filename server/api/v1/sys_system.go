@@ -9,13 +9,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type SystemController struct {
+}
+
 // @Tags system
 // @Summary 获取配置文件内容
 // @Security ApiKeyAuth
 // @Produce  application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /system/getSystemConfig [post]
-func GetSystemConfig(c *gin.Context) {
+func (controller *SystemController) GetSystemConfig(c *gin.Context) {
 	err, config := service.GetSystemConfig()
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取失败，%v", err), c)
@@ -31,7 +34,7 @@ func GetSystemConfig(c *gin.Context) {
 // @Param data body model.System true "设置配置文件内容"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /system/setSystemConfig [post]
-func SetSystemConfig(c *gin.Context) {
+func (controller *SystemController) SetSystemConfig(c *gin.Context) {
 	var sys model.System
 	_ = c.ShouldBindJSON(&sys)
 	err := service.SetSystemConfig(sys)

@@ -10,9 +10,12 @@ import (
 
 func init() {
 
-	w := SpringBoot.Route("/workflow",
-		SpringGin.Filter(middleware.JWTAuth()),
-		SpringGin.Filter(middleware.CasbinHandler()))
+	SpringBoot.RegisterBean(new(v1.WorkFlowController)).Init(func(controller *v1.WorkFlowController) {
+		w := SpringBoot.Route("/workflow",
+			SpringGin.Filter(middleware.JWTAuth()),
+			SpringGin.Filter(middleware.CasbinHandler()))
 
-	w.POST("/createWorkFlow", SpringGin.Gin(v1.CreateWorkFlow))
+		w.POST("/createWorkFlow", SpringGin.Gin(controller.CreateWorkFlow))
+	})
+
 }

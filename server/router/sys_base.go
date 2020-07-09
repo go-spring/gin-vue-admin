@@ -8,11 +8,14 @@ import (
 )
 
 func init() {
-	SpringBoot.RegisterBean(new(v1.Base)).Init(func(base *v1.Base) {
+
+	SpringBoot.RegisterBean(new(v1.BaseController)).Init(func(controller *v1.BaseController) {
 		r := SpringBoot.Route("/base")
-		r.HandlePost("/login", SpringGin.Gin(v1.Login))
-		r.HandlePost("/captcha", SpringGin.Gin(v1.Captcha))
-		r.HandlePost("/register", SpringGin.Gin(base.Register))
-		r.HandleGet("/captcha/:captchaId", SpringGin.Gin(v1.CaptchaImg))
+
+		r.HandlePost("/login", SpringGin.Gin(controller.Login))
+		r.HandlePost("/captcha", SpringGin.Gin(controller.Captcha))
+		r.HandlePost("/register", SpringGin.Gin(controller.Register))
+		r.HandleGet("/captcha/:captchaId", SpringGin.Gin(controller.CaptchaImg))
 	})
+
 }

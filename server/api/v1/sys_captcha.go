@@ -16,7 +16,7 @@ import (
 // @Produce application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /base/captcha [post]
-func Captcha(c *gin.Context) {
+func (controller *BaseController) Captcha(c *gin.Context) {
 	captchaId := captcha.NewLen(global.GVA_CONFIG.Captcha.KeyLong)
 	response.OkDetailed(resp.SysCaptchaResponse{
 		CaptchaId: captchaId,
@@ -31,6 +31,6 @@ func Captcha(c *gin.Context) {
 // @Produce application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /base/captcha/:captchaId [get]
-func CaptchaImg(c *gin.Context) {
+func (controller *BaseController) CaptchaImg(c *gin.Context) {
 	utils.GinCaptchaServeHTTP(c.Writer, c.Request)
 }
