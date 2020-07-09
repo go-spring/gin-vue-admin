@@ -17,3 +17,7 @@ docker start -i ginvue # 第二次启动
 3. 第二阶段改造步骤：
     3.1 将所有的模块接口改造成 struct 的成员函数，示例见 api/v1/sys_user.go。（已完成）
     3.2 大功告成！（已完成）
+
+4. 第三阶段改造步骤：
+    4.1 将所有模块接口改造成 SpringWeb.HandlerFunc 的形式，示例参见 api/v1/sys_user.go。
+    4.2 大功告成！

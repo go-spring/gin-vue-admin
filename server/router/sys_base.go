@@ -12,7 +12,7 @@ func init() {
 
 		r := SpringBoot.Route("/base")
 
-		r.HandlePost("/login", SpringGin.Gin(c.Login))
+		r.PostMapping("/login", c.Login)
 		r.HandlePost("/captcha", SpringGin.Gin(c.Captcha))
 		r.HandlePost("/register", SpringGin.Gin(c.Register))
 		r.HandleGet("/captcha/:captchaId", SpringGin.Gin(c.CaptchaImg))

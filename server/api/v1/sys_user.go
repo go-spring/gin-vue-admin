@@ -18,6 +18,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
+	"github.com/go-spring/go-spring-web/spring-web"
 )
 
 type BaseController struct {
@@ -58,20 +59,25 @@ func (controller *BaseController) Register(c *gin.Context) {
 // @Param data body request.RegisterAndLoginStruct true "用户登录接口"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
 // @Router /base/login [post]
-func (controller *BaseController) Login(c *gin.Context) {
+func (controller *BaseController) Login(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var L request.RegisterAndLoginStruct
 	_ = c.ShouldBindJSON(&L)
+
 	UserVerify := utils.Rules{
 		"CaptchaId": {utils.NotEmpty()},
 		"Captcha":   {utils.NotEmpty()},
 		"Username":  {utils.NotEmpty()},
 		"Password":  {utils.NotEmpty()},
 	}
+
 	UserVerifyErr := utils.Verify(L, UserVerify)
 	if UserVerifyErr != nil {
 		response.FailWithMessage(UserVerifyErr.Error(), c)
 		return
 	}
+
 	if captcha.VerifyString(L.CaptchaId, L.Captcha) {
 		U := &model.SysUser{Username: L.Username, Password: L.Password}
 		if err, user := service.Login(U); err != nil {
@@ -82,7 +88,6 @@ func (controller *BaseController) Login(c *gin.Context) {
 	} else {
 		response.FailWithMessage("验证码错误", c)
 	}
-
 }
 
 // 登录以后签发jwt
