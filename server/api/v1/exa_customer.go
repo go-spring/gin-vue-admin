@@ -11,6 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type CustomerController struct {
+}
+
 // @Tags SysApi
 // @Summary 创建客户
 // @Security ApiKeyAuth
@@ -19,7 +22,7 @@ import (
 // @Param data body model.ExaCustomer true "创建客户"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /customer/customer [post]
-func CreateExaCustomer(c *gin.Context) {
+func (controller *CustomerController) CreateExaCustomer(c *gin.Context) {
 	var cu model.ExaCustomer
 	_ = c.ShouldBindJSON(&cu)
 	CustomerVerify := utils.Rules{
@@ -51,7 +54,7 @@ func CreateExaCustomer(c *gin.Context) {
 // @Param data body model.ExaCustomer true "删除客户"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /customer/customer [delete]
-func DeleteExaCustomer(c *gin.Context) {
+func (controller *CustomerController) DeleteExaCustomer(c *gin.Context) {
 	var cu model.ExaCustomer
 	_ = c.ShouldBindJSON(&cu)
 	CustomerVerify := utils.Rules{
@@ -78,7 +81,7 @@ func DeleteExaCustomer(c *gin.Context) {
 // @Param data body model.ExaCustomer true "创建客户"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /customer/customer [put]
-func UpdateExaCustomer(c *gin.Context) {
+func (controller *CustomerController) UpdateExaCustomer(c *gin.Context) {
 	var cu model.ExaCustomer
 	_ = c.ShouldBindJSON(&cu)
 	IdCustomerVerify := utils.Rules{
@@ -114,7 +117,7 @@ func UpdateExaCustomer(c *gin.Context) {
 // @Param data body model.ExaCustomer true "获取单一客户信息"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /customer/customer [get]
-func GetExaCustomer(c *gin.Context) {
+func (controller *CustomerController) GetExaCustomer(c *gin.Context) {
 	var cu model.ExaCustomer
 	_ = c.ShouldBindQuery(&cu)
 	IdCustomerVerify := utils.Rules{
@@ -141,7 +144,7 @@ func GetExaCustomer(c *gin.Context) {
 // @Param data body request.PageInfo true "获取权限客户列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /customer/customerList [get]
-func GetExaCustomerList(c *gin.Context) {
+func (controller *CustomerController) GetExaCustomerList(c *gin.Context) {
 	claims, _ := c.Get("claims")
 	waitUse := claims.(*request.CustomClaims)
 	var pageInfo request.PageInfo

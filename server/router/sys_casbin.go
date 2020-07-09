@@ -10,11 +10,14 @@ import (
 
 func init() {
 
-	c := SpringBoot.Route("/casbin",
-		SpringGin.Filter(middleware.JWTAuth()),
-		SpringGin.Filter(middleware.CasbinHandler()))
+	SpringBoot.RegisterBean(new(v1.CasbinController)).Init(func(controller *v1.CasbinController) {
+		c := SpringBoot.Route("/casbin",
+			SpringGin.Filter(middleware.JWTAuth()),
+			SpringGin.Filter(middleware.CasbinHandler()))
 
-	c.POST("/updateCasbin", SpringGin.Gin(v1.UpdateCasbin))
-	c.POST("/getPolicyPathByAuthorityId", SpringGin.Gin(v1.GetPolicyPathByAuthorityId))
-	c.GET("/casbinTest/:pathParam", SpringGin.Gin(v1.CasbinTest))
+		c.POST("/updateCasbin", SpringGin.Gin(controller.UpdateCasbin))
+		c.POST("/getPolicyPathByAuthorityId", SpringGin.Gin(controller.GetPolicyPathByAuthorityId))
+		c.GET("/casbinTest/:pathParam", SpringGin.Gin(controller.CasbinTest))
+	})
+
 }

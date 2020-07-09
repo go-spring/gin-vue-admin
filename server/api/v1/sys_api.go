@@ -11,6 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type ApiController struct {
+}
+
 // @Tags SysApi
 // @Summary 创建基础api
 // @Security ApiKeyAuth
@@ -19,7 +22,7 @@ import (
 // @Param data body model.SysApi true "创建api"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/createApi [post]
-func CreateApi(c *gin.Context) {
+func (controller *ApiController) CreateApi(c *gin.Context) {
 	var api model.SysApi
 	_ = c.ShouldBindJSON(&api)
 	ApiVerify := utils.Rules{
@@ -49,7 +52,7 @@ func CreateApi(c *gin.Context) {
 // @Param data body model.SysApi true "删除api"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/deleteApi [post]
-func DeleteApi(c *gin.Context) {
+func (controller *ApiController) DeleteApi(c *gin.Context) {
 	var a model.SysApi
 	_ = c.ShouldBindJSON(&a)
 	ApiVerify := utils.Rules{
@@ -78,7 +81,7 @@ func DeleteApi(c *gin.Context) {
 // @Param data body request.SearchApiParams true "分页获取API列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/getApiList [post]
-func GetApiList(c *gin.Context) {
+func (controller *ApiController) GetApiList(c *gin.Context) {
 	// 此结构体仅本方法使用
 	var sp request.SearchApiParams
 	_ = c.ShouldBindJSON(&sp)
@@ -108,7 +111,7 @@ func GetApiList(c *gin.Context) {
 // @Param data body request.GetById true "根据id获取api"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/getApiById [post]
-func GetApiById(c *gin.Context) {
+func (controller *ApiController) GetApiById(c *gin.Context) {
 	var idInfo request.GetById
 	_ = c.ShouldBindJSON(&idInfo)
 	IdVerifyErr := utils.Verify(idInfo, utils.CustomizeMap["IdVerify"])
@@ -132,7 +135,7 @@ func GetApiById(c *gin.Context) {
 // @Param data body model.SysApi true "创建api"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/updateApi [post]
-func UpdateApi(c *gin.Context) {
+func (controller *ApiController) UpdateApi(c *gin.Context) {
 	var api model.SysApi
 	_ = c.ShouldBindJSON(&api)
 	ApiVerify := utils.Rules{
@@ -161,7 +164,7 @@ func UpdateApi(c *gin.Context) {
 // @Produce application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/getAllApis [post]
-func GetAllApis(c *gin.Context) {
+func (controller *ApiController) GetAllApis(c *gin.Context) {
 	err, apis := service.GetAllApis()
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), c)

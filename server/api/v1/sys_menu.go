@@ -11,6 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type MenuController struct {
+}
+
 // @Tags authorityAndMenu
 // @Summary 获取用户动态路由
 // @Security ApiKeyAuth
@@ -18,7 +21,7 @@ import (
 // @Param data body request.RegisterAndLoginStruct true "可以什么都不填"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /menu/getMenu [post]
-func GetMenu(c *gin.Context) {
+func (controller *MenuController) GetMenu(c *gin.Context) {
 	claims, _ := c.Get("claims")
 	waitUse := claims.(*request.CustomClaims)
 	err, menus := service.GetMenuTree(waitUse.AuthorityId)
@@ -37,7 +40,7 @@ func GetMenu(c *gin.Context) {
 // @Param data body request.PageInfo true "分页获取基础menu列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/getMenuList [post]
-func GetMenuList(c *gin.Context) {
+func (controller *MenuController) GetMenuList(c *gin.Context) {
 	var pageInfo request.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)
 	PageVerifyErr := utils.Verify(pageInfo, utils.CustomizeMap["PageVerify"])
@@ -66,7 +69,7 @@ func GetMenuList(c *gin.Context) {
 // @Param data body model.SysBaseMenu true "新增菜单"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/addBaseMenu [post]
-func AddBaseMenu(c *gin.Context) {
+func (controller *MenuController) AddBaseMenu(c *gin.Context) {
 	var menu model.SysBaseMenu
 	_ = c.ShouldBindJSON(&menu)
 	MenuVerify := utils.Rules{
@@ -104,7 +107,7 @@ func AddBaseMenu(c *gin.Context) {
 // @Param data body request.RegisterAndLoginStruct true "可以什么都不填"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /menu/getBaseMenuTree [post]
-func GetBaseMenuTree(c *gin.Context) {
+func (controller *MenuController) GetBaseMenuTree(c *gin.Context) {
 	err, menus := service.GetBaseMenuTree()
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取失败，%v", err), c)
@@ -121,7 +124,7 @@ func GetBaseMenuTree(c *gin.Context) {
 // @Param data body request.AddMenuAuthorityInfo true "增加menu和角色关联关系"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/addMenuAuthority [post]
-func AddMenuAuthority(c *gin.Context) {
+func (controller *MenuController) AddMenuAuthority(c *gin.Context) {
 	var addMenuAuthorityInfo request.AddMenuAuthorityInfo
 	_ = c.ShouldBindJSON(&addMenuAuthorityInfo)
 	MenuVerify := utils.Rules{
@@ -148,7 +151,7 @@ func AddMenuAuthority(c *gin.Context) {
 // @Param data body request.AuthorityIdInfo true "增加menu和角色关联关系"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/GetMenuAuthority [post]
-func GetMenuAuthority(c *gin.Context) {
+func (controller *MenuController) GetMenuAuthority(c *gin.Context) {
 	var authorityIdInfo request.AuthorityIdInfo
 	_ = c.ShouldBindJSON(&authorityIdInfo)
 	MenuVerify := utils.Rules{
@@ -175,7 +178,7 @@ func GetMenuAuthority(c *gin.Context) {
 // @Param data body request.GetById true "删除菜单"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/deleteBaseMenu [post]
-func DeleteBaseMenu(c *gin.Context) {
+func (controller *MenuController) DeleteBaseMenu(c *gin.Context) {
 	var idInfo request.GetById
 	_ = c.ShouldBindJSON(&idInfo)
 	IdVerifyErr := utils.Verify(idInfo, utils.CustomizeMap["IdVerify"])
@@ -200,7 +203,7 @@ func DeleteBaseMenu(c *gin.Context) {
 // @Param data body model.SysBaseMenu true "更新菜单"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/updateBaseMenu [post]
-func UpdateBaseMenu(c *gin.Context) {
+func (controller *MenuController) UpdateBaseMenu(c *gin.Context) {
 	var menu model.SysBaseMenu
 	_ = c.ShouldBindJSON(&menu)
 	MenuVerify := utils.Rules{
@@ -239,7 +242,7 @@ func UpdateBaseMenu(c *gin.Context) {
 // @Param data body request.GetById true "根据id获取菜单"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/getBaseMenuById [post]
-func GetBaseMenuById(c *gin.Context) {
+func (controller *MenuController) GetBaseMenuById(c *gin.Context) {
 	var idInfo request.GetById
 	_ = c.ShouldBindJSON(&idInfo)
 	MenuVerify := utils.Rules{

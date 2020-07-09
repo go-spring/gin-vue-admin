@@ -10,17 +10,20 @@ import (
 
 func init() {
 
-	m := SpringBoot.Route("/menu",
-		SpringGin.Filter(middleware.JWTAuth()),
-		SpringGin.Filter(middleware.CasbinHandler()))
+	SpringBoot.RegisterBean(new(v1.MenuController)).Init(func(controller *v1.MenuController) {
+		m := SpringBoot.Route("/menu",
+			SpringGin.Filter(middleware.JWTAuth()),
+			SpringGin.Filter(middleware.CasbinHandler()))
 
-	m.POST("/getMenu", SpringGin.Gin(v1.GetMenu))
-	m.POST("/getMenuList", SpringGin.Gin(v1.GetMenuList))
-	m.POST("/addBaseMenu", SpringGin.Gin(v1.AddBaseMenu))
-	m.POST("/getBaseMenuTree", SpringGin.Gin(v1.GetBaseMenuTree))
-	m.POST("/addMenuAuthority", SpringGin.Gin(v1.AddMenuAuthority))
-	m.POST("/getMenuAuthority", SpringGin.Gin(v1.GetMenuAuthority))
-	m.POST("/deleteBaseMenu", SpringGin.Gin(v1.DeleteBaseMenu))
-	m.POST("/updateBaseMenu", SpringGin.Gin(v1.UpdateBaseMenu))
-	m.POST("/getBaseMenuById", SpringGin.Gin(v1.GetBaseMenuById))
+		m.POST("/getMenu", SpringGin.Gin(controller.GetMenu))
+		m.POST("/getMenuList", SpringGin.Gin(controller.GetMenuList))
+		m.POST("/addBaseMenu", SpringGin.Gin(controller.AddBaseMenu))
+		m.POST("/getBaseMenuTree", SpringGin.Gin(controller.GetBaseMenuTree))
+		m.POST("/addMenuAuthority", SpringGin.Gin(controller.AddMenuAuthority))
+		m.POST("/getMenuAuthority", SpringGin.Gin(controller.GetMenuAuthority))
+		m.POST("/deleteBaseMenu", SpringGin.Gin(controller.DeleteBaseMenu))
+		m.POST("/updateBaseMenu", SpringGin.Gin(controller.UpdateBaseMenu))
+		m.POST("/getBaseMenuById", SpringGin.Gin(controller.GetBaseMenuById))
+	})
+
 }

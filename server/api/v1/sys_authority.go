@@ -11,6 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type AuthorityController struct {
+}
+
 // @Tags authority
 // @Summary 创建角色
 // @Security ApiKeyAuth
@@ -19,7 +22,7 @@ import (
 // @Param data body model.SysAuthority true "创建角色"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /authority/createAuthority [post]
-func CreateAuthority(c *gin.Context) {
+func (controller *AuthorityController) CreateAuthority(c *gin.Context) {
 	var auth model.SysAuthority
 	_ = c.ShouldBindJSON(&auth)
 	AuthorityVerify := utils.Rules{
@@ -48,7 +51,7 @@ func CreateAuthority(c *gin.Context) {
 // @Param data body response.SysAuthorityCopyResponse true "拷贝角色"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"拷贝成功"}"
 // @Router /authority/copyAuthority [post]
-func CopyAuthority(c *gin.Context) {
+func (controller *AuthorityController) CopyAuthority(c *gin.Context) {
 	var copyInfo resp.SysAuthorityCopyResponse
 	_ = c.ShouldBindJSON(&copyInfo)
 	OldAuthorityVerify := utils.Rules{
@@ -85,7 +88,7 @@ func CopyAuthority(c *gin.Context) {
 // @Param data body model.SysAuthority true "删除角色"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /authority/deleteAuthority [post]
-func DeleteAuthority(c *gin.Context) {
+func (controller *AuthorityController) DeleteAuthority(c *gin.Context) {
 	var a model.SysAuthority
 	_ = c.ShouldBindJSON(&a)
 	AuthorityIdVerifyErr := utils.Verify(a, utils.CustomizeMap["AuthorityIdVerify"])
@@ -110,7 +113,7 @@ func DeleteAuthority(c *gin.Context) {
 // @Param data body model.SysAuthority true "设置角色资源权限"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"设置成功"}"
 // @Router /authority/updateAuthority [post]
-func UpdateAuthority(c *gin.Context) {
+func (controller *AuthorityController) UpdateAuthority(c *gin.Context) {
 	var auth model.SysAuthority
 	_ = c.ShouldBindJSON(&auth)
 	AuthorityVerify := utils.Rules{
@@ -139,7 +142,7 @@ func UpdateAuthority(c *gin.Context) {
 // @Param data body request.PageInfo true "分页获取用户列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /authority/getAuthorityList [post]
-func GetAuthorityList(c *gin.Context) {
+func (controller *AuthorityController) GetAuthorityList(c *gin.Context) {
 	var pageInfo request.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)
 	PageVerifyErr := utils.Verify(pageInfo, utils.CustomizeMap["PageVerify"])
@@ -168,7 +171,7 @@ func GetAuthorityList(c *gin.Context) {
 // @Param data body model.SysAuthority true "设置角色资源权限"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"设置成功"}"
 // @Router /authority/setDataAuthority [post]
-func SetDataAuthority(c *gin.Context) {
+func (controller *AuthorityController) SetDataAuthority(c *gin.Context) {
 	var auth model.SysAuthority
 	_ = c.ShouldBindJSON(&auth)
 	AuthorityIdVerifyErr := utils.Verify(auth, utils.CustomizeMap["AuthorityIdVerify"])

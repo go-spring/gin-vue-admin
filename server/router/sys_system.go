@@ -10,10 +10,13 @@ import (
 
 func init() {
 
-	u := SpringBoot.Route("/system",
-		SpringGin.Filter(middleware.JWTAuth()),
-		SpringGin.Filter(middleware.CasbinHandler()))
+	SpringBoot.RegisterBean(new(v1.SystemController)).Init(func(controller *v1.SystemController) {
+		u := SpringBoot.Route("/system",
+			SpringGin.Filter(middleware.JWTAuth()),
+			SpringGin.Filter(middleware.CasbinHandler()))
 
-	u.POST("/getSystemConfig", SpringGin.Gin(v1.GetSystemConfig))
-	u.POST("/setSystemConfig", SpringGin.Gin(v1.SetSystemConfig))
+		u.POST("/getSystemConfig", SpringGin.Gin(controller.GetSystemConfig))
+		u.POST("/setSystemConfig", SpringGin.Gin(controller.SetSystemConfig))
+	})
+
 }

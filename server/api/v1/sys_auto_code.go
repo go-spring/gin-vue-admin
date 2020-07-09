@@ -11,6 +11,9 @@ import (
 	"os"
 )
 
+type AutoCodeController struct {
+}
+
 // @Tags SysApi
 // @Summary 自动代码模板
 // @Security ApiKeyAuth
@@ -19,7 +22,7 @@ import (
 // @Param data body model.AutoCodeStruct true "创建自动代码"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
 // @Router /autoCode/createTemp [post]
-func CreateTemp(c *gin.Context) {
+func (controller *AutoCodeController) CreateTemp(c *gin.Context) {
 	var a model.AutoCodeStruct
 	_ = c.ShouldBindJSON(&a)
 	AutoCodeVerify := utils.Rules{
