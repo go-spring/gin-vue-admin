@@ -2,6 +2,9 @@ package v1
 
 import (
 	"fmt"
+	"mime/multipart"
+	"time"
+
 	"gin-vue-admin/global"
 	"gin-vue-admin/global/response"
 	"gin-vue-admin/middleware"
@@ -10,13 +13,15 @@ import (
 	resp "gin-vue-admin/model/response"
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
+
 	"github.com/dchest/captcha"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
-	"mime/multipart"
-	"time"
 )
+
+type Base struct {
+}
 
 // @Tags Base
 // @Summary 用户注册账号
@@ -24,7 +29,7 @@ import (
 // @Param data body model.SysUser true "用户注册接口"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"注册成功"}"
 // @Router /base/register [post]
-func Register(c *gin.Context) {
+func (base *Base) Register(c *gin.Context) {
 	var R request.RegisterStruct
 	_ = c.ShouldBindJSON(&R)
 	UserVerify := utils.Rules{
