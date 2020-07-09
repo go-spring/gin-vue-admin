@@ -2,13 +2,15 @@ package v1
 
 import (
 	"fmt"
+	"net/url"
+	"os"
+
 	"gin-vue-admin/global/response"
 	"gin-vue-admin/model"
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
+
 	"github.com/gin-gonic/gin"
-	"net/url"
-	"os"
 )
 
 type AutoCodeController struct {

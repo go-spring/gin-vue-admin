@@ -2,13 +2,15 @@ package v1
 
 import (
 	"fmt"
+	"io/ioutil"
+	"strconv"
+
 	"gin-vue-admin/global/response"
 	resp "gin-vue-admin/model/response"
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
+
 	"github.com/gin-gonic/gin"
-	"io/ioutil"
-	"strconv"
 )
 
 // @Tags ExaFileUploadAndDownload

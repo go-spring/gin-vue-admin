@@ -9,17 +9,16 @@ import (
 )
 
 func init() {
+	SpringBoot.RegisterBean(new(v1.CustomerController)).Init(func(c *v1.CustomerController) {
 
-	SpringBoot.RegisterBean(new(v1.CustomerController)).Init(func(controller *v1.CustomerController) {
-		c := SpringBoot.Route("/customer",
+		r := SpringBoot.Route("/customer",
 			SpringGin.Filter(middleware.JWTAuth()),
 			SpringGin.Filter(middleware.CasbinHandler()))
 
-		c.POST("/customer", SpringGin.Gin(controller.CreateExaCustomer))
-		c.PUT("/customer", SpringGin.Gin(controller.UpdateExaCustomer))
-		c.DELETE("/customer", SpringGin.Gin(controller.DeleteExaCustomer))
-		c.GET("/customer", SpringGin.Gin(controller.GetExaCustomer))
-		c.GET("/customerList", SpringGin.Gin(controller.GetExaCustomerList))
+		r.POST("/customer", SpringGin.Gin(c.CreateExaCustomer))
+		r.PUT("/customer", SpringGin.Gin(c.UpdateExaCustomer))
+		r.DELETE("/customer", SpringGin.Gin(c.DeleteExaCustomer))
+		r.GET("/customer", SpringGin.Gin(c.GetExaCustomer))
+		r.GET("/customerList", SpringGin.Gin(c.GetExaCustomerList))
 	})
-
 }

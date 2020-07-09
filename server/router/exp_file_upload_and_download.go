@@ -8,17 +8,16 @@ import (
 )
 
 func init() {
+	SpringBoot.RegisterBean(new(v1.FileUploadController)).Init(func(c *v1.FileUploadController) {
 
-	SpringBoot.RegisterBean(new(v1.FileUploadController)).Init(func(controller *v1.FileUploadController) {
-		f := SpringBoot.Route("/fileUploadAndDownload")
+		r := SpringBoot.Route("/fileUploadAndDownload")
 
-		f.POST("/upload", SpringGin.Gin(controller.UploadFile))
-		f.POST("/getFileList", SpringGin.Gin(controller.GetFileList))
-		f.POST("/deleteFile", SpringGin.Gin(controller.DeleteFile))
-		f.POST("/breakpointContinue", SpringGin.Gin(controller.BreakpointContinue))
-		f.GET("/findFile", SpringGin.Gin(controller.FindFile))
-		f.POST("/breakpointContinueFinish", SpringGin.Gin(controller.BreakpointContinueFinish))
-		f.POST("/removeChunk", SpringGin.Gin(controller.RemoveChunk))
+		r.POST("/upload", SpringGin.Gin(c.UploadFile))
+		r.POST("/getFileList", SpringGin.Gin(c.GetFileList))
+		r.POST("/deleteFile", SpringGin.Gin(c.DeleteFile))
+		r.POST("/breakpointContinue", SpringGin.Gin(c.BreakpointContinue))
+		r.GET("/findFile", SpringGin.Gin(c.FindFile))
+		r.POST("/breakpointContinueFinish", SpringGin.Gin(c.BreakpointContinueFinish))
+		r.POST("/removeChunk", SpringGin.Gin(c.RemoveChunk))
 	})
-
 }
