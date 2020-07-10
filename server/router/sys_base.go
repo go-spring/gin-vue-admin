@@ -3,7 +3,6 @@ package router
 import (
 	"gin-vue-admin/api/v1"
 
-	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring/spring-boot"
 )
 
@@ -13,8 +12,8 @@ func init() {
 		r := SpringBoot.Route("/base")
 
 		r.PostMapping("/login", c.Login)
-		r.HandlePost("/captcha", SpringGin.Gin(c.Captcha))
-		r.HandlePost("/register", SpringGin.Gin(c.Register))
-		r.HandleGet("/captcha/:captchaId", SpringGin.Gin(c.CaptchaImg))
+		r.PostMapping("/captcha", c.Captcha)
+		r.PostMapping("/register", c.Register)
+		r.GetMapping("/captcha/:captchaId", c.CaptchaImg)
 	})
 }
