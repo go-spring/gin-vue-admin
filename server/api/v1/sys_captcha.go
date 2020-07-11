@@ -6,7 +6,6 @@ import (
 	resp "gin-vue-admin/model/response"
 	"gin-vue-admin/utils"
 
-
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
 	"github.com/go-spring/go-spring-web/spring-web"

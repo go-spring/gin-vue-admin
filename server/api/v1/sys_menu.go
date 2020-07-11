@@ -135,7 +135,9 @@ func (controller *MenuController) GetBaseMenuTree(webCtx SpringWeb.WebContext) {
 // @Param data body request.AddMenuAuthorityInfo true "增加menu和角色关联关系"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/addMenuAuthority [post]
-func (controller *MenuController) AddMenuAuthority(c *gin.Context) {
+func (controller *MenuController) AddMenuAuthority(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var addMenuAuthorityInfo request.AddMenuAuthorityInfo
 	_ = c.ShouldBindJSON(&addMenuAuthorityInfo)
 	MenuVerify := utils.Rules{
@@ -162,7 +164,9 @@ func (controller *MenuController) AddMenuAuthority(c *gin.Context) {
 // @Param data body request.AuthorityIdInfo true "增加menu和角色关联关系"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/GetMenuAuthority [post]
-func (controller *MenuController) GetMenuAuthority(c *gin.Context) {
+func (controller *MenuController) GetMenuAuthority(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var authorityIdInfo request.AuthorityIdInfo
 	_ = c.ShouldBindJSON(&authorityIdInfo)
 	MenuVerify := utils.Rules{
@@ -189,7 +193,9 @@ func (controller *MenuController) GetMenuAuthority(c *gin.Context) {
 // @Param data body request.GetById true "删除菜单"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/deleteBaseMenu [post]
-func (controller *MenuController) DeleteBaseMenu(c *gin.Context) {
+func (controller *MenuController) DeleteBaseMenu(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var idInfo request.GetById
 	_ = c.ShouldBindJSON(&idInfo)
 	IdVerifyErr := utils.Verify(idInfo, utils.CustomizeMap["IdVerify"])
@@ -214,7 +220,9 @@ func (controller *MenuController) DeleteBaseMenu(c *gin.Context) {
 // @Param data body model.SysBaseMenu true "更新菜单"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/updateBaseMenu [post]
-func (controller *MenuController) UpdateBaseMenu(c *gin.Context) {
+func (controller *MenuController) UpdateBaseMenu(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var menu model.SysBaseMenu
 	_ = c.ShouldBindJSON(&menu)
 	MenuVerify := utils.Rules{
@@ -253,7 +261,9 @@ func (controller *MenuController) UpdateBaseMenu(c *gin.Context) {
 // @Param data body request.GetById true "根据id获取菜单"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/getBaseMenuById [post]
-func (controller *MenuController) GetBaseMenuById(c *gin.Context) {
+func (controller *MenuController) GetBaseMenuById(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var idInfo request.GetById
 	_ = c.ShouldBindJSON(&idInfo)
 	MenuVerify := utils.Rules{
