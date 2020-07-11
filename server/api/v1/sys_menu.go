@@ -11,6 +11,7 @@ import (
 	"gin-vue-admin/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-spring/go-spring-web/spring-web"
 )
 
 type MenuController struct {
@@ -23,7 +24,9 @@ type MenuController struct {
 // @Param data body request.RegisterAndLoginStruct true "可以什么都不填"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /menu/getMenu [post]
-func (controller *MenuController) GetMenu(c *gin.Context) {
+func (controller *MenuController) GetMenu(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	claims, _ := c.Get("claims")
 	waitUse := claims.(*request.CustomClaims)
 	err, menus := service.GetMenuTree(waitUse.AuthorityId)
@@ -42,7 +45,9 @@ func (controller *MenuController) GetMenu(c *gin.Context) {
 // @Param data body request.PageInfo true "分页获取基础menu列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/getMenuList [post]
-func (controller *MenuController) GetMenuList(c *gin.Context) {
+func (controller *MenuController) GetMenuList(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var pageInfo request.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)
 	PageVerifyErr := utils.Verify(pageInfo, utils.CustomizeMap["PageVerify"])
@@ -71,7 +76,9 @@ func (controller *MenuController) GetMenuList(c *gin.Context) {
 // @Param data body model.SysBaseMenu true "新增菜单"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/addBaseMenu [post]
-func (controller *MenuController) AddBaseMenu(c *gin.Context) {
+func (controller *MenuController) AddBaseMenu(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var menu model.SysBaseMenu
 	_ = c.ShouldBindJSON(&menu)
 	MenuVerify := utils.Rules{
@@ -109,7 +116,9 @@ func (controller *MenuController) AddBaseMenu(c *gin.Context) {
 // @Param data body request.RegisterAndLoginStruct true "可以什么都不填"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /menu/getBaseMenuTree [post]
-func (controller *MenuController) GetBaseMenuTree(c *gin.Context) {
+func (controller *MenuController) GetBaseMenuTree(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	err, menus := service.GetBaseMenuTree()
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取失败，%v", err), c)

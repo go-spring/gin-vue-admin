@@ -15,11 +15,11 @@ func init() {
 			SpringGin.Filter(middleware.JWTAuth()),
 			SpringGin.Filter(middleware.CasbinHandler()))
 
-		r.POST("/createApi", SpringGin.Gin(c.CreateApi))
-		r.POST("/deleteApi", SpringGin.Gin(c.DeleteApi))
-		r.POST("/getApiList", SpringGin.Gin(c.GetApiList))
-		r.POST("/getApiById", SpringGin.Gin(c.GetApiById))
-		r.POST("/updateApi", SpringGin.Gin(c.UpdateApi))
-		r.POST("/getAllApis", SpringGin.Gin(c.GetAllApis))
+		r.PostMapping("/createApi", c.CreateApi)
+		r.PostMapping("/deleteApi", c.DeleteApi)
+		r.PostMapping("/getApiList", c.GetApiList)
+		r.PostMapping("/getApiById", c.GetApiById)
+		r.PostMapping("/updateApi", c.UpdateApi)
+		r.PostMapping("/getAllApis", c.GetAllApis)
 	})
 }

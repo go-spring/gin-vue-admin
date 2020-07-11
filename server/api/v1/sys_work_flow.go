@@ -9,6 +9,7 @@ import (
 	"gin-vue-admin/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-spring/go-spring-web/spring-web"
 )
 
 type WorkFlowController struct {
@@ -20,7 +21,9 @@ type WorkFlowController struct {
 // @Param data body model.SysWorkflow true "注册工作流接口"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"注册成功"}"
 // @Router /workflow/createWorkFlow [post]
-func (controller *WorkFlowController) CreateWorkFlow(c *gin.Context) {
+func (controller *WorkFlowController) CreateWorkFlow(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var wk model.SysWorkflow
 	_ = c.ShouldBindJSON(&wk)
 	WKVerify := utils.Rules{

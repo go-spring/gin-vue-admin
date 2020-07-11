@@ -15,6 +15,6 @@ func init() {
 			SpringGin.Filter(middleware.JWTAuth()),
 			SpringGin.Filter(middleware.CasbinHandler()))
 
-		r.POST("/createWorkFlow", SpringGin.Gin(c.CreateWorkFlow))
+		r.PostMapping("/createWorkFlow", c.CreateWorkFlow)
 	})
 }

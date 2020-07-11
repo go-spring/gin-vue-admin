@@ -9,6 +9,7 @@ import (
 	"gin-vue-admin/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-spring/go-spring-web/spring-web"
 )
 
 type SystemController struct {
@@ -20,7 +21,9 @@ type SystemController struct {
 // @Produce  application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /system/getSystemConfig [post]
-func (controller *SystemController) GetSystemConfig(c *gin.Context) {
+func (controller *SystemController) GetSystemConfig(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	err, config := service.GetSystemConfig()
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取失败，%v", err), c)
@@ -36,7 +39,9 @@ func (controller *SystemController) GetSystemConfig(c *gin.Context) {
 // @Param data body model.System true "设置配置文件内容"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /system/setSystemConfig [post]
-func (controller *SystemController) SetSystemConfig(c *gin.Context) {
+func (controller *SystemController) SetSystemConfig(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var sys model.System
 	_ = c.ShouldBindJSON(&sys)
 	err := service.SetSystemConfig(sys)

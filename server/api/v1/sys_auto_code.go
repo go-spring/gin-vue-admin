@@ -11,6 +11,7 @@ import (
 	"gin-vue-admin/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-spring/go-spring-web/spring-web"
 )
 
 type AutoCodeController struct {
@@ -24,7 +25,9 @@ type AutoCodeController struct {
 // @Param data body model.AutoCodeStruct true "创建自动代码"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
 // @Router /autoCode/createTemp [post]
-func (controller *AutoCodeController) CreateTemp(c *gin.Context) {
+func (controller *AutoCodeController) CreateTemp(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var a model.AutoCodeStruct
 	_ = c.ShouldBindJSON(&a)
 	AutoCodeVerify := utils.Rules{

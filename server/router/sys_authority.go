@@ -15,11 +15,11 @@ func init() {
 			SpringGin.Filter(middleware.JWTAuth()),
 			SpringGin.Filter(middleware.CasbinHandler()))
 
-		r.POST("/createAuthority", SpringGin.Gin(c.CreateAuthority))
-		r.POST("/deleteAuthority", SpringGin.Gin(c.DeleteAuthority))
-		r.PUT("/updateAuthority", SpringGin.Gin(c.UpdateAuthority))
-		r.POST("/copyAuthority", SpringGin.Gin(c.CopyAuthority))
-		r.POST("/getAuthorityList", SpringGin.Gin(c.GetAuthorityList))
-		r.POST("/setDataAuthority", SpringGin.Gin(c.SetDataAuthority))
+		r.PostMapping("/createAuthority", c.CreateAuthority)
+		r.PostMapping("/deleteAuthority", c.DeleteAuthority)
+		r.PUT("/updateAuthority", c.UpdateAuthority)
+		r.PostMapping("/copyAuthority", c.CopyAuthority)
+		r.PostMapping("/getAuthorityList", c.GetAuthorityList)
+		r.PostMapping("/setDataAuthority", c.SetDataAuthority)
 	})
 }
