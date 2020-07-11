@@ -11,6 +11,7 @@ import (
 	"gin-vue-admin/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-spring/go-spring-web/spring-web"
 )
 
 // @Tags ExaFileUploadAndDownload
@@ -21,7 +22,9 @@ import (
 // @Param file formData file true "an example for breakpoint resume, 断点续传示例"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"上传成功"}"
 // @Router /fileUploadAndDownload/breakpointContinue [post]
-func (controller *FileUploadController) BreakpointContinue(c *gin.Context) {
+func (controller *FileUploadController) BreakpointContinue(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	fileMd5 := c.Request.FormValue("fileMd5")
 	fileName := c.Request.FormValue("fileName")
 	chunkMd5 := c.Request.FormValue("chunkMd5")
@@ -68,7 +71,9 @@ func (controller *FileUploadController) BreakpointContinue(c *gin.Context) {
 // @Param file formData file true "Find the file, 查找文件"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查找成功"}"
 // @Router /fileUploadAndDownload/findFile [post]
-func (controller *FileUploadController) FindFile(c *gin.Context) {
+func (controller *FileUploadController) FindFile(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	fileMd5 := c.Query("fileMd5")
 	fileName := c.Query("fileName")
 	chunkTotal, _ := strconv.Atoi(c.Query("chunkTotal"))
@@ -88,7 +93,9 @@ func (controller *FileUploadController) FindFile(c *gin.Context) {
 // @Param file formData file true "上传文件完成"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"file uploaded, 文件创建成功"}"
 // @Router /fileUploadAndDownload/findFile [post]
-func (controller *FileUploadController) BreakpointContinueFinish(c *gin.Context) {
+func (controller *FileUploadController) BreakpointContinueFinish(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	fileMd5 := c.Query("fileMd5")
 	fileName := c.Query("fileName")
 	err, filePath := utils.MakeFile(fileName, fileMd5)
@@ -107,7 +114,9 @@ func (controller *FileUploadController) BreakpointContinueFinish(c *gin.Context)
 // @Param file formData file true "删除缓存切片"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查找成功"}"
 // @Router /fileUploadAndDownload/removeChunk [post]
-func (controller *FileUploadController) RemoveChunk(c *gin.Context) {
+func (controller *FileUploadController) RemoveChunk(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	fileMd5 := c.Query("fileMd5")
 	fileName := c.Query("fileName")
 	filePath := c.Query("filePath")

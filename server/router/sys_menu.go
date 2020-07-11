@@ -15,10 +15,10 @@ func init() {
 			SpringGin.Filter(middleware.JWTAuth()),
 			SpringGin.Filter(middleware.CasbinHandler()))
 
-		r.POST("/getMenu", SpringGin.Gin(c.GetMenu))
-		r.POST("/getMenuList", SpringGin.Gin(c.GetMenuList))
-		r.POST("/addBaseMenu", SpringGin.Gin(c.AddBaseMenu))
-		r.POST("/getBaseMenuTree", SpringGin.Gin(c.GetBaseMenuTree))
+		r.PostMapping("/getMenu", c.GetMenu)
+		r.PostMapping("/getMenuList", c.GetMenuList)
+		r.PostMapping("/addBaseMenu", c.AddBaseMenu)
+		r.PostMapping("/getBaseMenuTree", c.GetBaseMenuTree)
 		r.POST("/addMenuAuthority", SpringGin.Gin(c.AddMenuAuthority))
 		r.POST("/getMenuAuthority", SpringGin.Gin(c.GetMenuAuthority))
 		r.POST("/deleteBaseMenu", SpringGin.Gin(c.DeleteBaseMenu))

@@ -11,6 +11,7 @@ import (
 	"gin-vue-admin/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-spring/go-spring-web/spring-web"
 )
 
 type ApiController struct {
@@ -24,7 +25,9 @@ type ApiController struct {
 // @Param data body model.SysApi true "创建api"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/createApi [post]
-func (controller *ApiController) CreateApi(c *gin.Context) {
+func (controller *ApiController) CreateApi(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var api model.SysApi
 	_ = c.ShouldBindJSON(&api)
 	ApiVerify := utils.Rules{
@@ -54,7 +57,9 @@ func (controller *ApiController) CreateApi(c *gin.Context) {
 // @Param data body model.SysApi true "删除api"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/deleteApi [post]
-func (controller *ApiController) DeleteApi(c *gin.Context) {
+func (controller *ApiController) DeleteApi(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var a model.SysApi
 	_ = c.ShouldBindJSON(&a)
 	ApiVerify := utils.Rules{
@@ -83,7 +88,9 @@ func (controller *ApiController) DeleteApi(c *gin.Context) {
 // @Param data body request.SearchApiParams true "分页获取API列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/getApiList [post]
-func (controller *ApiController) GetApiList(c *gin.Context) {
+func (controller *ApiController) GetApiList(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	// 此结构体仅本方法使用
 	var sp request.SearchApiParams
 	_ = c.ShouldBindJSON(&sp)
@@ -113,7 +120,9 @@ func (controller *ApiController) GetApiList(c *gin.Context) {
 // @Param data body request.GetById true "根据id获取api"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/getApiById [post]
-func (controller *ApiController) GetApiById(c *gin.Context) {
+func (controller *ApiController) GetApiById(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var idInfo request.GetById
 	_ = c.ShouldBindJSON(&idInfo)
 	IdVerifyErr := utils.Verify(idInfo, utils.CustomizeMap["IdVerify"])
@@ -137,7 +146,9 @@ func (controller *ApiController) GetApiById(c *gin.Context) {
 // @Param data body model.SysApi true "创建api"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/updateApi [post]
-func (controller *ApiController) UpdateApi(c *gin.Context) {
+func (controller *ApiController) UpdateApi(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var api model.SysApi
 	_ = c.ShouldBindJSON(&api)
 	ApiVerify := utils.Rules{
@@ -166,7 +177,9 @@ func (controller *ApiController) UpdateApi(c *gin.Context) {
 // @Produce application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/getAllApis [post]
-func (controller *ApiController) GetAllApis(c *gin.Context) {
+func (controller *ApiController) GetAllApis(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	err, apis := service.GetAllApis()
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), c)

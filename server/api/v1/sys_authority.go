@@ -11,6 +11,7 @@ import (
 	"gin-vue-admin/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-spring/go-spring-web/spring-web"
 )
 
 type AuthorityController struct {
@@ -24,7 +25,9 @@ type AuthorityController struct {
 // @Param data body model.SysAuthority true "创建角色"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /authority/createAuthority [post]
-func (controller *AuthorityController) CreateAuthority(c *gin.Context) {
+func (controller *AuthorityController) CreateAuthority(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var auth model.SysAuthority
 	_ = c.ShouldBindJSON(&auth)
 	AuthorityVerify := utils.Rules{
@@ -53,7 +56,9 @@ func (controller *AuthorityController) CreateAuthority(c *gin.Context) {
 // @Param data body response.SysAuthorityCopyResponse true "拷贝角色"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"拷贝成功"}"
 // @Router /authority/copyAuthority [post]
-func (controller *AuthorityController) CopyAuthority(c *gin.Context) {
+func (controller *AuthorityController) CopyAuthority(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var copyInfo resp.SysAuthorityCopyResponse
 	_ = c.ShouldBindJSON(&copyInfo)
 	OldAuthorityVerify := utils.Rules{
@@ -90,7 +95,9 @@ func (controller *AuthorityController) CopyAuthority(c *gin.Context) {
 // @Param data body model.SysAuthority true "删除角色"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /authority/deleteAuthority [post]
-func (controller *AuthorityController) DeleteAuthority(c *gin.Context) {
+func (controller *AuthorityController) DeleteAuthority(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var a model.SysAuthority
 	_ = c.ShouldBindJSON(&a)
 	AuthorityIdVerifyErr := utils.Verify(a, utils.CustomizeMap["AuthorityIdVerify"])
@@ -115,7 +122,9 @@ func (controller *AuthorityController) DeleteAuthority(c *gin.Context) {
 // @Param data body model.SysAuthority true "设置角色资源权限"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"设置成功"}"
 // @Router /authority/updateAuthority [post]
-func (controller *AuthorityController) UpdateAuthority(c *gin.Context) {
+func (controller *AuthorityController) UpdateAuthority(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var auth model.SysAuthority
 	_ = c.ShouldBindJSON(&auth)
 	AuthorityVerify := utils.Rules{
@@ -144,7 +153,9 @@ func (controller *AuthorityController) UpdateAuthority(c *gin.Context) {
 // @Param data body request.PageInfo true "分页获取用户列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /authority/getAuthorityList [post]
-func (controller *AuthorityController) GetAuthorityList(c *gin.Context) {
+func (controller *AuthorityController) GetAuthorityList(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var pageInfo request.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)
 	PageVerifyErr := utils.Verify(pageInfo, utils.CustomizeMap["PageVerify"])
@@ -173,7 +184,9 @@ func (controller *AuthorityController) GetAuthorityList(c *gin.Context) {
 // @Param data body model.SysAuthority true "设置角色资源权限"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"设置成功"}"
 // @Router /authority/setDataAuthority [post]
-func (controller *AuthorityController) SetDataAuthority(c *gin.Context) {
+func (controller *AuthorityController) SetDataAuthority(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var auth model.SysAuthority
 	_ = c.ShouldBindJSON(&auth)
 	AuthorityIdVerifyErr := utils.Verify(auth, utils.CustomizeMap["AuthorityIdVerify"])

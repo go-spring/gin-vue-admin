@@ -3,7 +3,6 @@ package router
 import (
 	"gin-vue-admin/api/v1"
 
-	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring/spring-boot"
 )
 
@@ -12,12 +11,12 @@ func init() {
 
 		r := SpringBoot.Route("/fileUploadAndDownload")
 
-		r.POST("/upload", SpringGin.Gin(c.UploadFile))
-		r.POST("/getFileList", SpringGin.Gin(c.GetFileList))
-		r.POST("/deleteFile", SpringGin.Gin(c.DeleteFile))
-		r.POST("/breakpointContinue", SpringGin.Gin(c.BreakpointContinue))
-		r.GET("/findFile", SpringGin.Gin(c.FindFile))
-		r.POST("/breakpointContinueFinish", SpringGin.Gin(c.BreakpointContinueFinish))
-		r.POST("/removeChunk", SpringGin.Gin(c.RemoveChunk))
+		r.PostMapping("/upload", c.UploadFile)
+		r.PostMapping("/getFileList", c.GetFileList)
+		r.PostMapping("/deleteFile", c.DeleteFile)
+		r.PostMapping("/breakpointContinue", c.BreakpointContinue)
+		r.GetMapping("/findFile", c.FindFile)
+		r.PostMapping("/breakpointContinueFinish", c.BreakpointContinueFinish)
+		r.PostMapping("/removeChunk", c.RemoveChunk)
 	})
 }

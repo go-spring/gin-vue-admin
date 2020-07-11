@@ -15,8 +15,8 @@ func init() {
 			SpringGin.Filter(middleware.JWTAuth()),
 			SpringGin.Filter(middleware.CasbinHandler()))
 
-		r.POST("/updateCasbin", SpringGin.Gin(c.UpdateCasbin))
-		r.POST("/getPolicyPathByAuthorityId", SpringGin.Gin(c.GetPolicyPathByAuthorityId))
-		r.GET("/casbinTest/:pathParam", SpringGin.Gin(c.CasbinTest))
+		r.PostMapping("/updateCasbin", c.UpdateCasbin)
+		r.PostMapping("/getPolicyPathByAuthorityId", c.GetPolicyPathByAuthorityId)
+		r.GetMapping("/casbinTest/:pathParam", c.CasbinTest)
 	})
 }

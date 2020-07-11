@@ -8,6 +8,7 @@ import (
 	"gin-vue-admin/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-spring/go-spring-web/spring-web"
 )
 
 type JwTController struct {
@@ -20,7 +21,9 @@ type JwTController struct {
 // @Produce application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"拉黑成功"}"
 // @Router /jwt/jsonInBlacklist [post]
-func (controller *JwTController) JsonInBlacklist(c *gin.Context) {
+func (controller *JwTController) JsonInBlacklist(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	token := c.Request.Header.Get("x-token")
 	modelJwt := model.JwtBlacklist{
 		Jwt: token,

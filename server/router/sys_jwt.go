@@ -15,6 +15,6 @@ func init() {
 			SpringGin.Filter(middleware.JWTAuth()),
 			SpringGin.Filter(middleware.CasbinHandler()))
 
-		r.POST("/jsonInBlacklist", SpringGin.Gin(c.JsonInBlacklist))
+		r.PostMapping("/jsonInBlacklist", c.JsonInBlacklist)
 	})
 }

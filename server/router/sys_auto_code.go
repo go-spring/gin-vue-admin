@@ -15,6 +15,6 @@ func init() {
 			SpringGin.Filter(middleware.JWTAuth()),
 			SpringGin.Filter(middleware.CasbinHandler()))
 
-		r.POST("/createTemp", SpringGin.Gin(c.CreateTemp))
+		r.PostMapping("/createTemp", c.CreateTemp)
 	})
 }

@@ -12,6 +12,7 @@ import (
 	"gin-vue-admin/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-spring/go-spring-web/spring-web"
 )
 
 type FileUploadController struct {
@@ -25,7 +26,9 @@ type FileUploadController struct {
 // @Param file formData file true "上传文件示例"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"上传成功"}"
 // @Router /fileUploadAndDownload/upload [post]
-func (controller *FileUploadController) UploadFile(c *gin.Context) {
+func (controller *FileUploadController) UploadFile(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	noSave := c.DefaultQuery("noSave", "0")
 	_, header, err := c.Request.FormFile("file")
 	if err != nil {
@@ -62,7 +65,9 @@ func (controller *FileUploadController) UploadFile(c *gin.Context) {
 // @Param data body model.ExaFileUploadAndDownload true "传入文件里面id即可"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /fileUploadAndDownload/deleteFile [post]
-func (controller *FileUploadController) DeleteFile(c *gin.Context) {
+func (controller *FileUploadController) DeleteFile(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var file model.ExaFileUploadAndDownload
 	_ = c.ShouldBindJSON(&file)
 	err, f := service.FindFile(file.ID)
@@ -92,7 +97,9 @@ func (controller *FileUploadController) DeleteFile(c *gin.Context) {
 // @Param data body request.PageInfo true "分页获取文件户列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /fileUploadAndDownload/getFileList [post]
-func (controller *FileUploadController) GetFileList(c *gin.Context) {
+func (controller *FileUploadController) GetFileList(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var pageInfo request.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)
 	err, list, total := service.GetFileRecordInfoList(pageInfo)

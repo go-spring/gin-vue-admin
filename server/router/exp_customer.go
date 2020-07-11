@@ -15,10 +15,10 @@ func init() {
 			SpringGin.Filter(middleware.JWTAuth()),
 			SpringGin.Filter(middleware.CasbinHandler()))
 
-		r.POST("/customer", SpringGin.Gin(c.CreateExaCustomer))
-		r.PUT("/customer", SpringGin.Gin(c.UpdateExaCustomer))
-		r.DELETE("/customer", SpringGin.Gin(c.DeleteExaCustomer))
-		r.GET("/customer", SpringGin.Gin(c.GetExaCustomer))
-		r.GET("/customerList", SpringGin.Gin(c.GetExaCustomerList))
+		r.PostMapping("/customer", c.CreateExaCustomer)
+		r.PUT("/customer", c.UpdateExaCustomer)
+		r.DELETE("/customer", c.DeleteExaCustomer)
+		r.GetMapping("/customer", c.GetExaCustomer)
+		r.GetMapping("/customerList", c.GetExaCustomerList)
 	})
 }

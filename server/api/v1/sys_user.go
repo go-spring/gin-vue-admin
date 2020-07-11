@@ -30,7 +30,9 @@ type BaseController struct {
 // @Param data body model.SysUser true "用户注册接口"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"注册成功"}"
 // @Router /base/register [post]
-func (controller *BaseController) Register(c *gin.Context) {
+func (controller *BaseController) Register(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var R request.RegisterStruct
 	_ = c.ShouldBindJSON(&R)
 	UserVerify := utils.Rules{
@@ -163,7 +165,9 @@ type UserController struct {
 // @Param data body request.ChangePasswordStruct true "用户修改密码"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
 // @Router /user/changePassword [put]
-func (controller *UserController) ChangePassword(c *gin.Context) {
+func (controller *UserController) ChangePassword(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var params request.ChangePasswordStruct
 	_ = c.ShouldBindJSON(&params)
 	UserVerify := utils.Rules{
@@ -197,7 +201,9 @@ type UserHeaderImg struct {
 // @Param username formData string true "用户上传头像"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"上传成功"}"
 // @Router /user/uploadHeaderImg [post]
-func (controller *UserController) UploadHeaderImg(c *gin.Context) {
+func (controller *UserController) UploadHeaderImg(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	claims, _ := c.Get("claims")
 	// 获取头像文件
 	// 这里我们通过断言获取 claims内的所有内容
@@ -232,7 +238,9 @@ func (controller *UserController) UploadHeaderImg(c *gin.Context) {
 // @Param data body request.PageInfo true "分页获取用户列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /user/getUserList [post]
-func (controller *UserController) GetUserList(c *gin.Context) {
+func (controller *UserController) GetUserList(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var pageInfo request.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)
 	PageVerifyErr := utils.Verify(pageInfo, utils.CustomizeMap["PageVerify"])
@@ -261,7 +269,9 @@ func (controller *UserController) GetUserList(c *gin.Context) {
 // @Param data body request.SetUserAuth true "设置用户权限"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
 // @Router /user/setUserAuthority [post]
-func (controller *UserController) SetUserAuthority(c *gin.Context) {
+func (controller *UserController) SetUserAuthority(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var sua request.SetUserAuth
 	_ = c.ShouldBindJSON(&sua)
 	UserVerify := utils.Rules{
@@ -289,7 +299,9 @@ func (controller *UserController) SetUserAuthority(c *gin.Context) {
 // @Param data body request.GetById true "删除用户"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
 // @Router /user/deleteUser [delete]
-func (controller *UserController) DeleteUser(c *gin.Context) {
+func (controller *UserController) DeleteUser(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var reqId request.GetById
 	_ = c.ShouldBindJSON(&reqId)
 	IdVerifyErr := utils.Verify(reqId, utils.CustomizeMap["IdVerify"])

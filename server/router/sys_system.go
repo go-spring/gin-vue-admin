@@ -15,7 +15,7 @@ func init() {
 			SpringGin.Filter(middleware.JWTAuth()),
 			SpringGin.Filter(middleware.CasbinHandler()))
 
-		r.POST("/getSystemConfig", SpringGin.Gin(c.GetSystemConfig))
-		r.POST("/setSystemConfig", SpringGin.Gin(c.SetSystemConfig))
+		r.PostMapping("/getSystemConfig", c.GetSystemConfig)
+		r.PostMapping("/setSystemConfig", c.SetSystemConfig)
 	})
 }

@@ -10,6 +10,7 @@ import (
 	"gin-vue-admin/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-spring/go-spring-web/spring-web"
 )
 
 type CasbinController struct {
@@ -23,7 +24,9 @@ type CasbinController struct {
 // @Param data body request.CasbinInReceive true "更改角色api权限"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /casbin/UpdateCasbin [post]
-func (controller *CasbinController) UpdateCasbin(c *gin.Context) {
+func (controller *CasbinController) UpdateCasbin(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var cmr request.CasbinInReceive
 	_ = c.ShouldBindJSON(&cmr)
 	AuthorityIdVerifyErr := utils.Verify(cmr, utils.CustomizeMap["AuthorityIdVerify"])
@@ -47,7 +50,9 @@ func (controller *CasbinController) UpdateCasbin(c *gin.Context) {
 // @Param data body request.CasbinInReceive true "获取权限列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /casbin/getPolicyPathByAuthorityId [post]
-func (controller *CasbinController) GetPolicyPathByAuthorityId(c *gin.Context) {
+func (controller *CasbinController) GetPolicyPathByAuthorityId(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	var cmr request.CasbinInReceive
 	_ = c.ShouldBindJSON(&cmr)
 	AuthorityIdVerifyErr := utils.Verify(cmr, utils.CustomizeMap["AuthorityIdVerify"])
@@ -67,7 +72,9 @@ func (controller *CasbinController) GetPolicyPathByAuthorityId(c *gin.Context) {
 // @Param data body request.CasbinInReceive true "获取权限列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /casbin/CasbinTest [get]
-func (controller *CasbinController) CasbinTest(c *gin.Context) {
+func (controller *CasbinController) CasbinTest(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	// 测试restful以及占位符代码  随意书写
 	pathParam := c.Param("pathParam")
 	query := c.Query("query")

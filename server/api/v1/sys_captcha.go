@@ -6,8 +6,10 @@ import (
 	resp "gin-vue-admin/model/response"
 	"gin-vue-admin/utils"
 
+
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
+	"github.com/go-spring/go-spring-web/spring-web"
 )
 
 // @Tags base
@@ -17,7 +19,9 @@ import (
 // @Produce application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /base/captcha [post]
-func (controller *BaseController) Captcha(c *gin.Context) {
+func (controller *BaseController) Captcha(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	captchaId := captcha.NewLen(global.GVA_CONFIG.Captcha.KeyLong)
 	response.OkDetailed(resp.SysCaptchaResponse{
 		CaptchaId: captchaId,
@@ -32,6 +36,8 @@ func (controller *BaseController) Captcha(c *gin.Context) {
 // @Produce application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /base/captcha/:captchaId [get]
-func (controller *BaseController) CaptchaImg(c *gin.Context) {
+func (controller *BaseController) CaptchaImg(webCtx SpringWeb.WebContext) {
+	c := webCtx.NativeContext().(*gin.Context)
+
 	utils.GinCaptchaServeHTTP(c.Writer, c.Request)
 }
