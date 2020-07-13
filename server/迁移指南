@@ -12,12 +12,17 @@ docker start -i ginvue # 第二次启动
     2.7 所有接口迁移完之后，打开所有迁移接口测试一次；（已完成）
     2.8 去掉原有的 web 服务，将 go-spring 的端口改成 8888；（已完成）
     2.9 大功告成！（已完成）
-!!! 注意，每改完 5 个接口后请提交一次 PR，我来验证一下，如果中间有问题，随时沟通。
 
 3. 第二阶段改造步骤：
     3.1 将所有的模块接口改造成 struct 的成员函数，示例见 api/v1/sys_user.go。（已完成）
     3.2 大功告成！（已完成）
 
 4. 第三阶段改造步骤：
-    4.1 将所有模块接口改造成 SpringWeb.HandlerFunc 的形式，示例参见 api/v1/sys_user.go。
-    4.2 大功告成！
+    4.1 将所有模块接口改造成 SpringWeb.HandlerFunc 的形式，示例参见 api/v1/sys_user.go。（已完成）
+    4.2 大功告成！（已完成）
+
+5. 第四阶段改造步骤：
+    5.1 改造 global/response/response.go 接口的输入参数为 SpringWeb.WebContext。
+    5.2 改造 c.ShouldBindJSON 函数为 SpringWeb.WebContext.Bind 函数。
+    5.3 查漏补缺，v1 包里面清除对 gin.Context 的依赖。
+    5.4 大功告成！
