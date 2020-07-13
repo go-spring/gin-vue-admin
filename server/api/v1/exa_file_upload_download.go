@@ -26,7 +26,7 @@ type FileUploadController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"上传成功"}"
 // @Router /fileUploadAndDownload/upload [post]
 func (controller *FileUploadController) UploadFile(webCtx SpringWeb.WebContext) {
-	noSave := webCtx.QueryParam("noSave")  // c.DefaultQuery("noSave", "0")
+	noSave := webCtx.QueryParam("noSave") // TODO c.DefaultQuery("noSave", "0")
 	if len(noSave) == 0 {
 		noSave = "0"
 	}

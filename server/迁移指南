@@ -22,7 +22,7 @@ docker start -i ginvue # 第二次启动
     4.2 大功告成！（已完成）
 
 5. 第四阶段改造步骤：
-    5.1 改造 global/response/response.go 接口的输入参数为 SpringWeb.WebContext。
-    5.2 改造 c.ShouldBindJSON 函数为 SpringWeb.WebContext.Bind 函数。
-    5.3 查漏补缺，v1 包里面清除对 gin.Context 的依赖。
-    5.4 大功告成！
+    5.1 改造 global/response/response.go 接口的输入参数为 SpringWeb.WebContext。（已完成）
+    5.2 改造 c.ShouldBindJSON 函数为 SpringWeb.WebContext.Bind 函数。（已完成）
+    5.3 查漏补缺，v1 包里面清除对 gin.Context 的依赖。（已完成）
+    5.4 大功告成！（已完成）
