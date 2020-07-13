@@ -1,8 +1,9 @@
 package response
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/go-spring/go-spring-web/spring-web"
 )
 
 type Response struct {
@@ -16,39 +17,39 @@ const (
 	SUCCESS = 0
 )
 
-func Result(code int, data interface{}, msg string, c *gin.Context) {
+func Result(code int, data interface{}, msg string, webCtx SpringWeb.WebContext) {
 	// 开始时间
-	c.JSON(http.StatusOK, Response{
+	webCtx.JSON(http.StatusOK, Response{
 		code,
 		data,
 		msg,
 	})
 }
 
-func Ok(c *gin.Context) {
-	Result(SUCCESS, map[string]interface{}{}, "操作成功", c)
+func Ok(webCtx SpringWeb.WebContext) {
+	Result(SUCCESS, map[string]interface{}{}, "操作成功", webCtx)
 }
 
-func OkWithMessage(message string, c *gin.Context) {
-	Result(SUCCESS, map[string]interface{}{}, message, c)
+func OkWithMessage(message string, webCtx SpringWeb.WebContext) {
+	Result(SUCCESS, map[string]interface{}{}, message, webCtx)
 }
 
-func OkWithData(data interface{}, c *gin.Context) {
-	Result(SUCCESS, data, "操作成功", c)
+func OkWithData(data interface{}, webCtx SpringWeb.WebContext) {
+	Result(SUCCESS, data, "操作成功", webCtx)
 }
 
-func OkDetailed(data interface{}, message string, c *gin.Context) {
-	Result(SUCCESS, data, message, c)
+func OkDetailed(data interface{}, message string, webCtx SpringWeb.WebContext) {
+	Result(SUCCESS, data, message, webCtx)
 }
 
-func Fail(c *gin.Context) {
-	Result(ERROR, map[string]interface{}{}, "操作失败", c)
+func Fail(webCtx SpringWeb.WebContext) {
+	Result(ERROR, map[string]interface{}{}, "操作失败", webCtx)
 }
 
-func FailWithMessage(message string, c *gin.Context) {
-	Result(ERROR, map[string]interface{}{}, message, c)
+func FailWithMessage(message string, webCtx SpringWeb.WebContext) {
+	Result(ERROR, map[string]interface{}{}, message, webCtx)
 }
 
-func FailWithDetailed(code int, data interface{}, message string, c *gin.Context) {
-	Result(code, data, message, c)
+func FailWithDetailed(code int, data interface{}, message string, webCtx SpringWeb.WebContext) {
+	Result(code, data, message, webCtx)
 }
