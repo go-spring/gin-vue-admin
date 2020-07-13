@@ -37,14 +37,14 @@ func (controller *AuthorityController) CreateAuthority(webCtx SpringWeb.WebConte
 	}
 	AuthorityVerifyErr := utils.Verify(auth, AuthorityVerify)
 	if AuthorityVerifyErr != nil {
-		response.FailWithMessage(AuthorityVerifyErr.Error(), c)
+		response.FailWithMessage(AuthorityVerifyErr.Error(), webCtx)
 		return
 	}
 	err, authBack := service.CreateAuthority(auth)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("创建失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("创建失败，%v", err), webCtx)
 	} else {
-		response.OkWithData(resp.SysAuthorityResponse{Authority: authBack}, c)
+		response.OkWithData(resp.SysAuthorityResponse{Authority: authBack}, webCtx)
 	}
 }
 
@@ -66,7 +66,7 @@ func (controller *AuthorityController) CopyAuthority(webCtx SpringWeb.WebContext
 	}
 	OldAuthorityVerifyErr := utils.Verify(copyInfo, OldAuthorityVerify)
 	if OldAuthorityVerifyErr != nil {
-		response.FailWithMessage(OldAuthorityVerifyErr.Error(), c)
+		response.FailWithMessage(OldAuthorityVerifyErr.Error(), webCtx)
 		return
 	}
 	AuthorityVerify := utils.Rules{
@@ -76,14 +76,14 @@ func (controller *AuthorityController) CopyAuthority(webCtx SpringWeb.WebContext
 	}
 	AuthorityVerifyErr := utils.Verify(copyInfo.Authority, AuthorityVerify)
 	if AuthorityVerifyErr != nil {
-		response.FailWithMessage(AuthorityVerifyErr.Error(), c)
+		response.FailWithMessage(AuthorityVerifyErr.Error(), webCtx)
 		return
 	}
 	err, authBack := service.CopyAuthority(copyInfo)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("拷贝失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("拷贝失败，%v", err), webCtx)
 	} else {
-		response.OkWithData(resp.SysAuthorityResponse{Authority: authBack}, c)
+		response.OkWithData(resp.SysAuthorityResponse{Authority: authBack}, webCtx)
 	}
 }
 
@@ -102,15 +102,15 @@ func (controller *AuthorityController) DeleteAuthority(webCtx SpringWeb.WebConte
 	_ = c.ShouldBindJSON(&a)
 	AuthorityIdVerifyErr := utils.Verify(a, utils.CustomizeMap["AuthorityIdVerify"])
 	if AuthorityIdVerifyErr != nil {
-		response.FailWithMessage(AuthorityIdVerifyErr.Error(), c)
+		response.FailWithMessage(AuthorityIdVerifyErr.Error(), webCtx)
 		return
 	}
 	// 删除角色之前需要判断是否有用户正在使用此角色
 	err := service.DeleteAuthority(&a)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 	} else {
-		response.OkWithMessage("删除成功", c)
+		response.OkWithMessage("删除成功", webCtx)
 	}
 }
 
@@ -134,14 +134,14 @@ func (controller *AuthorityController) UpdateAuthority(webCtx SpringWeb.WebConte
 	}
 	AuthorityVerifyErr := utils.Verify(auth, AuthorityVerify)
 	if AuthorityVerifyErr != nil {
-		response.FailWithMessage(AuthorityVerifyErr.Error(), c)
+		response.FailWithMessage(AuthorityVerifyErr.Error(), webCtx)
 		return
 	}
 	err, authority := service.UpdateAuthority(auth)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("更新失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("更新失败，%v", err), webCtx)
 	} else {
-		response.OkWithData(resp.SysAuthorityResponse{Authority: authority}, c)
+		response.OkWithData(resp.SysAuthorityResponse{Authority: authority}, webCtx)
 	}
 }
 
@@ -160,19 +160,19 @@ func (controller *AuthorityController) GetAuthorityList(webCtx SpringWeb.WebCont
 	_ = c.ShouldBindJSON(&pageInfo)
 	PageVerifyErr := utils.Verify(pageInfo, utils.CustomizeMap["PageVerify"])
 	if PageVerifyErr != nil {
-		response.FailWithMessage(PageVerifyErr.Error(), c)
+		response.FailWithMessage(PageVerifyErr.Error(), webCtx)
 		return
 	}
 	err, list, total := service.GetAuthorityInfoList(pageInfo)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), webCtx)
 	} else {
 		response.OkWithData(resp.PageResult{
 			List:     list,
 			Total:    total,
 			Page:     pageInfo.Page,
 			PageSize: pageInfo.PageSize,
-		}, c)
+		}, webCtx)
 	}
 }
 
@@ -191,13 +191,13 @@ func (controller *AuthorityController) SetDataAuthority(webCtx SpringWeb.WebCont
 	_ = c.ShouldBindJSON(&auth)
 	AuthorityIdVerifyErr := utils.Verify(auth, utils.CustomizeMap["AuthorityIdVerify"])
 	if AuthorityIdVerifyErr != nil {
-		response.FailWithMessage(AuthorityIdVerifyErr.Error(), c)
+		response.FailWithMessage(AuthorityIdVerifyErr.Error(), webCtx)
 		return
 	}
 	err := service.SetDataAuthority(auth)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("设置关联失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("设置关联失败，%v", err), webCtx)
 	} else {
-		response.Ok(c)
+		response.Ok(webCtx)
 	}
 }

@@ -34,13 +34,13 @@ func (controller *WorkFlowController) CreateWorkFlow(webCtx SpringWeb.WebContext
 	}
 	WKVerifyErr := utils.Verify(wk, WKVerify)
 	if WKVerifyErr != nil {
-		response.FailWithMessage(WKVerifyErr.Error(), c)
+		response.FailWithMessage(WKVerifyErr.Error(), webCtx)
 		return
 	}
 	err := service.Create(wk)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("获取失败：%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("获取失败：%v", err), webCtx)
 	} else {
-		response.OkWithMessage("获取成功", c)
+		response.OkWithMessage("获取成功", webCtx)
 	}
 }

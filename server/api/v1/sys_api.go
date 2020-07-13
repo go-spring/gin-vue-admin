@@ -38,14 +38,14 @@ func (controller *ApiController) CreateApi(webCtx SpringWeb.WebContext) {
 	}
 	ApiVerifyErr := utils.Verify(api, ApiVerify)
 	if ApiVerifyErr != nil {
-		response.FailWithMessage(ApiVerifyErr.Error(), c)
+		response.FailWithMessage(ApiVerifyErr.Error(), webCtx)
 		return
 	}
 	err := service.CreateApi(api)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("创建失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("创建失败，%v", err), webCtx)
 	} else {
-		response.OkWithMessage("创建成功", c)
+		response.OkWithMessage("创建成功", webCtx)
 	}
 }
 
@@ -67,14 +67,14 @@ func (controller *ApiController) DeleteApi(webCtx SpringWeb.WebContext) {
 	}
 	ApiVerifyErr := utils.Verify(a.Model, ApiVerify)
 	if ApiVerifyErr != nil {
-		response.FailWithMessage(ApiVerifyErr.Error(), c)
+		response.FailWithMessage(ApiVerifyErr.Error(), webCtx)
 		return
 	}
 	err := service.DeleteApi(a)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 	} else {
-		response.OkWithMessage("删除成功", c)
+		response.OkWithMessage("删除成功", webCtx)
 	}
 }
 
@@ -96,19 +96,19 @@ func (controller *ApiController) GetApiList(webCtx SpringWeb.WebContext) {
 	_ = c.ShouldBindJSON(&sp)
 	PageVerifyErr := utils.Verify(sp.PageInfo, utils.CustomizeMap["PageVerify"])
 	if PageVerifyErr != nil {
-		response.FailWithMessage(PageVerifyErr.Error(), c)
+		response.FailWithMessage(PageVerifyErr.Error(), webCtx)
 		return
 	}
 	err, list, total := service.GetAPIInfoList(sp.SysApi, sp.PageInfo, sp.OrderKey, sp.Desc)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), webCtx)
 	} else {
 		response.OkWithData(resp.PageResult{
 			List:     list,
 			Total:    total,
 			Page:     sp.PageInfo.Page,
 			PageSize: sp.PageInfo.PageSize,
-		}, c)
+		}, webCtx)
 	}
 }
 
@@ -127,14 +127,14 @@ func (controller *ApiController) GetApiById(webCtx SpringWeb.WebContext) {
 	_ = c.ShouldBindJSON(&idInfo)
 	IdVerifyErr := utils.Verify(idInfo, utils.CustomizeMap["IdVerify"])
 	if IdVerifyErr != nil {
-		response.FailWithMessage(IdVerifyErr.Error(), c)
+		response.FailWithMessage(IdVerifyErr.Error(), webCtx)
 		return
 	}
 	err, api := service.GetApiById(idInfo.Id)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), webCtx)
 	} else {
-		response.OkWithData(resp.SysAPIResponse{Api: api}, c)
+		response.OkWithData(resp.SysAPIResponse{Api: api}, webCtx)
 	}
 }
 
@@ -159,14 +159,14 @@ func (controller *ApiController) UpdateApi(webCtx SpringWeb.WebContext) {
 	}
 	ApiVerifyErr := utils.Verify(api, ApiVerify)
 	if ApiVerifyErr != nil {
-		response.FailWithMessage(ApiVerifyErr.Error(), c)
+		response.FailWithMessage(ApiVerifyErr.Error(), webCtx)
 		return
 	}
 	err := service.UpdateApi(api)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("修改数据失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("修改数据失败，%v", err), webCtx)
 	} else {
-		response.OkWithMessage("修改数据成功", c)
+		response.OkWithMessage("修改数据成功", webCtx)
 	}
 }
 
@@ -178,12 +178,10 @@ func (controller *ApiController) UpdateApi(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/getAllApis [post]
 func (controller *ApiController) GetAllApis(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	err, apis := service.GetAllApis()
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), webCtx)
 	} else {
-		response.OkWithData(resp.SysAPIListResponse{Apis: apis}, c)
+		response.OkWithData(resp.SysAPIListResponse{Apis: apis}, webCtx)
 	}
 }

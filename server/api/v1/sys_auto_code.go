@@ -38,7 +38,7 @@ func (controller *AutoCodeController) CreateTemp(webCtx SpringWeb.WebContext) {
 	}
 	WKVerifyErr := utils.Verify(a, AutoCodeVerify)
 	if WKVerifyErr != nil {
-		response.FailWithMessage(WKVerifyErr.Error(), c)
+		response.FailWithMessage(WKVerifyErr.Error(), webCtx)
 		return
 	}
 	if a.AutoCreateApiToSql {
@@ -85,7 +85,7 @@ func (controller *AutoCodeController) CreateTemp(webCtx SpringWeb.WebContext) {
 	}
 	err := service.CreateTemp(a)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("创建失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("创建失败，%v", err), webCtx)
 		os.Remove("./ginvueadmin.zip")
 	} else {
 		c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", "ginvueadmin.zip")) // fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名

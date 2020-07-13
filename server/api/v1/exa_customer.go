@@ -36,7 +36,7 @@ func (controller *CustomerController) CreateExaCustomer(webCtx SpringWeb.WebCont
 	}
 	CustomerVerifyErr := utils.Verify(cu, CustomerVerify)
 	if CustomerVerifyErr != nil {
-		response.FailWithMessage(CustomerVerifyErr.Error(), c)
+		response.FailWithMessage(CustomerVerifyErr.Error(), webCtx)
 		return
 	}
 	claims, _ := c.Get("claims")
@@ -45,9 +45,9 @@ func (controller *CustomerController) CreateExaCustomer(webCtx SpringWeb.WebCont
 	cu.SysUserAuthorityID = waitUse.AuthorityId
 	err := service.CreateExaCustomer(cu)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("删除失败：%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("删除失败：%v", err), webCtx)
 	} else {
-		response.OkWithMessage("创建成功", c)
+		response.OkWithMessage("创建成功", webCtx)
 	}
 }
 
@@ -69,14 +69,14 @@ func (controller *CustomerController) DeleteExaCustomer(webCtx SpringWeb.WebCont
 	}
 	CustomerVerifyErr := utils.Verify(cu.Model, CustomerVerify)
 	if CustomerVerifyErr != nil {
-		response.FailWithMessage(CustomerVerifyErr.Error(), c)
+		response.FailWithMessage(CustomerVerifyErr.Error(), webCtx)
 		return
 	}
 	err := service.DeleteExaCustomer(cu)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("删除失败：%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("删除失败：%v", err), webCtx)
 	} else {
-		response.OkWithMessage("删除成功", c)
+		response.OkWithMessage("删除成功", webCtx)
 	}
 }
 
@@ -98,7 +98,7 @@ func (controller *CustomerController) UpdateExaCustomer(webCtx SpringWeb.WebCont
 	}
 	IdCustomerVerifyErr := utils.Verify(cu.Model, IdCustomerVerify)
 	if IdCustomerVerifyErr != nil {
-		response.FailWithMessage(IdCustomerVerifyErr.Error(), c)
+		response.FailWithMessage(IdCustomerVerifyErr.Error(), webCtx)
 		return
 	}
 	CustomerVerify := utils.Rules{
@@ -107,14 +107,14 @@ func (controller *CustomerController) UpdateExaCustomer(webCtx SpringWeb.WebCont
 	}
 	CustomerVerifyErr := utils.Verify(cu, CustomerVerify)
 	if CustomerVerifyErr != nil {
-		response.FailWithMessage(CustomerVerifyErr.Error(), c)
+		response.FailWithMessage(CustomerVerifyErr.Error(), webCtx)
 		return
 	}
 	err := service.UpdateExaCustomer(&cu)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("更新失败：%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("更新失败：%v", err), webCtx)
 	} else {
-		response.OkWithMessage("更新成功", c)
+		response.OkWithMessage("更新成功", webCtx)
 	}
 }
 
@@ -136,14 +136,14 @@ func (controller *CustomerController) GetExaCustomer(webCtx SpringWeb.WebContext
 	}
 	IdCustomerVerifyErr := utils.Verify(cu.Model, IdCustomerVerify)
 	if IdCustomerVerifyErr != nil {
-		response.FailWithMessage(IdCustomerVerifyErr.Error(), c)
+		response.FailWithMessage(IdCustomerVerifyErr.Error(), webCtx)
 		return
 	}
 	err, customer := service.GetExaCustomer(cu.ID)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("获取失败：%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("获取失败：%v", err), webCtx)
 	} else {
-		response.OkWithData(resp.ExaCustomerResponse{Customer: customer}, c)
+		response.OkWithData(resp.ExaCustomerResponse{Customer: customer}, webCtx)
 	}
 }
 
@@ -164,18 +164,18 @@ func (controller *CustomerController) GetExaCustomerList(webCtx SpringWeb.WebCon
 	_ = c.ShouldBindQuery(&pageInfo)
 	PageVerifyErr := utils.Verify(pageInfo, utils.CustomizeMap["PageVerify"])
 	if PageVerifyErr != nil {
-		response.FailWithMessage(PageVerifyErr.Error(), c)
+		response.FailWithMessage(PageVerifyErr.Error(), webCtx)
 		return
 	}
 	err, customerList, total := service.GetCustomerInfoList(waitUse.AuthorityId, pageInfo)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("获取失败：%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("获取失败：%v", err), webCtx)
 	} else {
 		response.OkWithData(resp.PageResult{
 			List:     customerList,
 			Total:    total,
 			Page:     pageInfo.Page,
 			PageSize: pageInfo.PageSize,
-		}, c)
+		}, webCtx)
 	}
 }

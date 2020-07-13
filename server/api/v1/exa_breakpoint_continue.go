@@ -32,12 +32,12 @@ func (controller *FileUploadController) BreakpointContinue(webCtx SpringWeb.WebC
 	chunkTotal, _ := strconv.Atoi(c.Request.FormValue("chunkTotal"))
 	_, FileHeader, err := c.Request.FormFile("file")
 	if err != nil {
-		response.FailWithMessage(err.Error(), c)
+		response.FailWithMessage(err.Error(), webCtx)
 		return
 	}
 	f, err := FileHeader.Open()
 	if err != nil {
-		response.FailWithMessage(err.Error(), c)
+		response.FailWithMessage(err.Error(), webCtx)
 		return
 	}
 	defer f.Close()
@@ -47,20 +47,20 @@ func (controller *FileUploadController) BreakpointContinue(webCtx SpringWeb.WebC
 	}
 	err, file := service.FindOrCreateFile(fileMd5, fileName, chunkTotal)
 	if err != nil {
-		response.FailWithMessage(err.Error(), c)
+		response.FailWithMessage(err.Error(), webCtx)
 		return
 	}
 	err, pathc := utils.BreakPointContinue(cen, fileName, chunkNumber, chunkTotal, fileMd5)
 	if err != nil {
-		response.FailWithMessage(err.Error(), c)
+		response.FailWithMessage(err.Error(), webCtx)
 		return
 	}
 
 	if err = service.CreateFileChunk(file.ID, pathc, chunkNumber); err != nil {
-		response.FailWithMessage(err.Error(), c)
+		response.FailWithMessage(err.Error(), webCtx)
 		return
 	}
-	response.OkWithMessage("切片创建成功", c)
+	response.OkWithMessage("切片创建成功", webCtx)
 }
 
 // @Tags ExaFileUploadAndDownload
@@ -79,9 +79,9 @@ func (controller *FileUploadController) FindFile(webCtx SpringWeb.WebContext) {
 	chunkTotal, _ := strconv.Atoi(c.Query("chunkTotal"))
 	err, file := service.FindOrCreateFile(fileMd5, fileName, chunkTotal)
 	if err != nil {
-		response.FailWithMessage("查找失败", c)
+		response.FailWithMessage("查找失败", webCtx)
 	} else {
-		response.OkWithData(resp.FileResponse{File: file}, c)
+		response.OkWithData(resp.FileResponse{File: file}, webCtx)
 	}
 }
 
@@ -100,9 +100,9 @@ func (controller *FileUploadController) BreakpointContinueFinish(webCtx SpringWe
 	fileName := c.Query("fileName")
 	err, filePath := utils.MakeFile(fileName, fileMd5)
 	if err != nil {
-		response.FailWithDetailed(response.ERROR, resp.FilePathResponse{FilePath: filePath}, fmt.Sprintf("文件创建失败：%v", err), c)
+		response.FailWithDetailed(response.ERROR, resp.FilePathResponse{FilePath: filePath}, fmt.Sprintf("文件创建失败：%v", err), webCtx)
 	} else {
-		response.OkDetailed(resp.FilePathResponse{FilePath: filePath}, "文件创建成功", c)
+		response.OkDetailed(resp.FilePathResponse{FilePath: filePath}, "文件创建成功", webCtx)
 	}
 }
 
@@ -123,8 +123,8 @@ func (controller *FileUploadController) RemoveChunk(webCtx SpringWeb.WebContext)
 	err := utils.RemoveChunk(fileMd5)
 	err = service.DeleteFileChunk(fileMd5, fileName, filePath)
 	if err != nil {
-		response.FailWithDetailed(response.ERROR, resp.FilePathResponse{FilePath: filePath}, fmt.Sprintf("缓存切片删除失败：%v", err), c)
+		response.FailWithDetailed(response.ERROR, resp.FilePathResponse{FilePath: filePath}, fmt.Sprintf("缓存切片删除失败：%v", err), webCtx)
 	} else {
-		response.OkDetailed(resp.FilePathResponse{FilePath: filePath}, "缓存切片删除成功", c)
+		response.OkDetailed(resp.FilePathResponse{FilePath: filePath}, "缓存切片删除成功", webCtx)
 	}
 }

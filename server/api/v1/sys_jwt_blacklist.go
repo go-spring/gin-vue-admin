@@ -30,8 +30,8 @@ func (controller *JwTController) JsonInBlacklist(webCtx SpringWeb.WebContext) {
 	}
 	err := service.JsonInBlacklist(modelJwt)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("jwt作废失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("jwt作废失败，%v", err), webCtx)
 	} else {
-		response.OkWithMessage("jwt作废成功", c)
+		response.OkWithMessage("jwt作废成功", webCtx)
 	}
 }
