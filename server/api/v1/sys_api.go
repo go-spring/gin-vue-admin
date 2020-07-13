@@ -10,7 +10,6 @@ import (
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-spring/go-spring-web/spring-web"
 )
 
@@ -26,10 +25,8 @@ type ApiController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/createApi [post]
 func (controller *ApiController) CreateApi(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var api model.SysApi
-	_ = c.ShouldBindJSON(&api)
+	_ = webCtx.Bind(&api)
 	ApiVerify := utils.Rules{
 		"Path":        {utils.NotEmpty()},
 		"Description": {utils.NotEmpty()},
@@ -58,10 +55,8 @@ func (controller *ApiController) CreateApi(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/deleteApi [post]
 func (controller *ApiController) DeleteApi(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var a model.SysApi
-	_ = c.ShouldBindJSON(&a)
+	_ = webCtx.Bind(&a)
 	ApiVerify := utils.Rules{
 		"ID": {utils.NotEmpty()},
 	}
@@ -89,11 +84,9 @@ func (controller *ApiController) DeleteApi(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/getApiList [post]
 func (controller *ApiController) GetApiList(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	// 此结构体仅本方法使用
 	var sp request.SearchApiParams
-	_ = c.ShouldBindJSON(&sp)
+	_ = webCtx.Bind(&sp)
 	PageVerifyErr := utils.Verify(sp.PageInfo, utils.CustomizeMap["PageVerify"])
 	if PageVerifyErr != nil {
 		response.FailWithMessage(PageVerifyErr.Error(), webCtx)
@@ -121,10 +114,8 @@ func (controller *ApiController) GetApiList(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/getApiById [post]
 func (controller *ApiController) GetApiById(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var idInfo request.GetById
-	_ = c.ShouldBindJSON(&idInfo)
+	_ = webCtx.Bind(&idInfo)
 	IdVerifyErr := utils.Verify(idInfo, utils.CustomizeMap["IdVerify"])
 	if IdVerifyErr != nil {
 		response.FailWithMessage(IdVerifyErr.Error(), webCtx)
@@ -147,10 +138,8 @@ func (controller *ApiController) GetApiById(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/updateApi [post]
 func (controller *ApiController) UpdateApi(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var api model.SysApi
-	_ = c.ShouldBindJSON(&api)
+	_ = webCtx.Bind(&api)
 	ApiVerify := utils.Rules{
 		"Path":        {utils.NotEmpty()},
 		"Description": {utils.NotEmpty()},

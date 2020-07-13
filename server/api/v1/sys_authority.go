@@ -10,7 +10,6 @@ import (
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-spring/go-spring-web/spring-web"
 )
 
@@ -26,10 +25,8 @@ type AuthorityController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /authority/createAuthority [post]
 func (controller *AuthorityController) CreateAuthority(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var auth model.SysAuthority
-	_ = c.ShouldBindJSON(&auth)
+	_ = webCtx.Bind(&auth)
 	AuthorityVerify := utils.Rules{
 		"AuthorityId":   {utils.NotEmpty()},
 		"AuthorityName": {utils.NotEmpty()},
@@ -57,10 +54,8 @@ func (controller *AuthorityController) CreateAuthority(webCtx SpringWeb.WebConte
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"拷贝成功"}"
 // @Router /authority/copyAuthority [post]
 func (controller *AuthorityController) CopyAuthority(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var copyInfo resp.SysAuthorityCopyResponse
-	_ = c.ShouldBindJSON(&copyInfo)
+	_ = webCtx.Bind(&copyInfo)
 	OldAuthorityVerify := utils.Rules{
 		"OldAuthorityId": {utils.NotEmpty()},
 	}
@@ -96,10 +91,8 @@ func (controller *AuthorityController) CopyAuthority(webCtx SpringWeb.WebContext
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /authority/deleteAuthority [post]
 func (controller *AuthorityController) DeleteAuthority(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var a model.SysAuthority
-	_ = c.ShouldBindJSON(&a)
+	_ = webCtx.Bind(&a)
 	AuthorityIdVerifyErr := utils.Verify(a, utils.CustomizeMap["AuthorityIdVerify"])
 	if AuthorityIdVerifyErr != nil {
 		response.FailWithMessage(AuthorityIdVerifyErr.Error(), webCtx)
@@ -123,10 +116,8 @@ func (controller *AuthorityController) DeleteAuthority(webCtx SpringWeb.WebConte
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"设置成功"}"
 // @Router /authority/updateAuthority [post]
 func (controller *AuthorityController) UpdateAuthority(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var auth model.SysAuthority
-	_ = c.ShouldBindJSON(&auth)
+	_ = webCtx.Bind(&auth)
 	AuthorityVerify := utils.Rules{
 		"AuthorityId":   {utils.NotEmpty()},
 		"AuthorityName": {utils.NotEmpty()},
@@ -154,10 +145,8 @@ func (controller *AuthorityController) UpdateAuthority(webCtx SpringWeb.WebConte
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /authority/getAuthorityList [post]
 func (controller *AuthorityController) GetAuthorityList(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var pageInfo request.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
+	_ = webCtx.Bind(&pageInfo)
 	PageVerifyErr := utils.Verify(pageInfo, utils.CustomizeMap["PageVerify"])
 	if PageVerifyErr != nil {
 		response.FailWithMessage(PageVerifyErr.Error(), webCtx)
@@ -185,10 +174,8 @@ func (controller *AuthorityController) GetAuthorityList(webCtx SpringWeb.WebCont
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"设置成功"}"
 // @Router /authority/setDataAuthority [post]
 func (controller *AuthorityController) SetDataAuthority(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var auth model.SysAuthority
-	_ = c.ShouldBindJSON(&auth)
+	_ = webCtx.Bind(&auth)
 	AuthorityIdVerifyErr := utils.Verify(auth, utils.CustomizeMap["AuthorityIdVerify"])
 	if AuthorityIdVerifyErr != nil {
 		response.FailWithMessage(AuthorityIdVerifyErr.Error(), webCtx)

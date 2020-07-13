@@ -8,7 +8,6 @@ import (
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-spring/go-spring-web/spring-web"
 )
 
@@ -22,10 +21,8 @@ type WorkFlowController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"注册成功"}"
 // @Router /workflow/createWorkFlow [post]
 func (controller *WorkFlowController) CreateWorkFlow(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var wk model.SysWorkflow
-	_ = c.ShouldBindJSON(&wk)
+	_ = webCtx.Bind(&wk)
 	WKVerify := utils.Rules{
 		"WorkflowNickName":    {utils.NotEmpty()},
 		"WorkflowName":        {utils.NotEmpty()},

@@ -10,7 +10,6 @@ import (
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-spring/go-spring-web/spring-web"
 )
 
@@ -26,10 +25,8 @@ type CustomerController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /customer/customer [post]
 func (controller *CustomerController) CreateExaCustomer(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var cu model.ExaCustomer
-	_ = c.ShouldBindJSON(&cu)
+	_ = webCtx.Bind(&cu)
 	CustomerVerify := utils.Rules{
 		"CustomerName":      {utils.NotEmpty()},
 		"CustomerPhoneData": {utils.NotEmpty()},
@@ -39,7 +36,7 @@ func (controller *CustomerController) CreateExaCustomer(webCtx SpringWeb.WebCont
 		response.FailWithMessage(CustomerVerifyErr.Error(), webCtx)
 		return
 	}
-	claims, _ := c.Get("claims")
+	claims := webCtx.Get("claims")
 	waitUse := claims.(*request.CustomClaims)
 	cu.SysUserID = waitUse.ID
 	cu.SysUserAuthorityID = waitUse.AuthorityId
@@ -60,10 +57,8 @@ func (controller *CustomerController) CreateExaCustomer(webCtx SpringWeb.WebCont
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /customer/customer [delete]
 func (controller *CustomerController) DeleteExaCustomer(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var cu model.ExaCustomer
-	_ = c.ShouldBindJSON(&cu)
+	_ = webCtx.Bind(&cu)
 	CustomerVerify := utils.Rules{
 		"ID": {utils.NotEmpty()},
 	}
@@ -89,10 +84,8 @@ func (controller *CustomerController) DeleteExaCustomer(webCtx SpringWeb.WebCont
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /customer/customer [put]
 func (controller *CustomerController) UpdateExaCustomer(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var cu model.ExaCustomer
-	_ = c.ShouldBindJSON(&cu)
+	_ = webCtx.Bind(&cu)
 	IdCustomerVerify := utils.Rules{
 		"ID": {utils.NotEmpty()},
 	}
@@ -127,10 +120,8 @@ func (controller *CustomerController) UpdateExaCustomer(webCtx SpringWeb.WebCont
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /customer/customer [get]
 func (controller *CustomerController) GetExaCustomer(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var cu model.ExaCustomer
-	_ = c.ShouldBindQuery(&cu)
+	_ = webCtx.Bind(&cu)
 	IdCustomerVerify := utils.Rules{
 		"ID": {utils.NotEmpty()},
 	}
@@ -156,12 +147,10 @@ func (controller *CustomerController) GetExaCustomer(webCtx SpringWeb.WebContext
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /customer/customerList [get]
 func (controller *CustomerController) GetExaCustomerList(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
-	claims, _ := c.Get("claims")
+	claims := webCtx.Get("claims")
 	waitUse := claims.(*request.CustomClaims)
 	var pageInfo request.PageInfo
-	_ = c.ShouldBindQuery(&pageInfo)
+	_ = webCtx.Bind(&pageInfo)
 	PageVerifyErr := utils.Verify(pageInfo, utils.CustomizeMap["PageVerify"])
 	if PageVerifyErr != nil {
 		response.FailWithMessage(PageVerifyErr.Error(), webCtx)

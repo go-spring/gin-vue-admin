@@ -16,7 +16,6 @@ import (
 
 	"github.com/dchest/captcha"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
 	"github.com/go-spring/go-spring-web/spring-web"
 )
@@ -31,10 +30,8 @@ type BaseController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"注册成功"}"
 // @Router /base/register [post]
 func (controller *BaseController) Register(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var R request.RegisterStruct
-	_ = c.ShouldBindJSON(&R)
+	_ = webCtx.Bind(&R)
 	UserVerify := utils.Rules{
 		"Username":    {utils.NotEmpty()},
 		"NickName":    {utils.NotEmpty()},
@@ -62,10 +59,8 @@ func (controller *BaseController) Register(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
 // @Router /base/login [post]
 func (controller *BaseController) Login(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var L request.RegisterAndLoginStruct
-	_ = c.ShouldBindJSON(&L)
+	_ = webCtx.Bind(&L)
 
 	UserVerify := utils.Rules{
 		"CaptchaId": {utils.NotEmpty()},
@@ -167,10 +162,8 @@ type UserController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
 // @Router /user/changePassword [put]
 func (controller *UserController) ChangePassword(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var params request.ChangePasswordStruct
-	_ = c.ShouldBindJSON(&params)
+	_ = webCtx.Bind(&params)
 	UserVerify := utils.Rules{
 		"Username":    {utils.NotEmpty()},
 		"Password":    {utils.NotEmpty()},
@@ -203,14 +196,12 @@ type UserHeaderImg struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"上传成功"}"
 // @Router /user/uploadHeaderImg [post]
 func (controller *UserController) UploadHeaderImg(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
-	claims, _ := c.Get("claims")
+	claims := webCtx.Get("claims")
 	// 获取头像文件
 	// 这里我们通过断言获取 claims内的所有内容
 	waitUse := claims.(*request.CustomClaims)
 	uuid := waitUse.UUID
-	_, header, err := c.Request.FormFile("headerImg")
+	header, err := webCtx.FormFile("headerImg")
 	// 便于找到用户 以后从jwt中取
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("上传文件失败，%v", err), webCtx)
@@ -240,10 +231,8 @@ func (controller *UserController) UploadHeaderImg(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /user/getUserList [post]
 func (controller *UserController) GetUserList(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var pageInfo request.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
+	_ = webCtx.Bind(&pageInfo)
 	PageVerifyErr := utils.Verify(pageInfo, utils.CustomizeMap["PageVerify"])
 	if PageVerifyErr != nil {
 		response.FailWithMessage(PageVerifyErr.Error(), webCtx)
@@ -271,10 +260,8 @@ func (controller *UserController) GetUserList(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
 // @Router /user/setUserAuthority [post]
 func (controller *UserController) SetUserAuthority(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var sua request.SetUserAuth
-	_ = c.ShouldBindJSON(&sua)
+	_ = webCtx.Bind(&sua)
 	UserVerify := utils.Rules{
 		"UUID":        {utils.NotEmpty()},
 		"AuthorityId": {utils.NotEmpty()},
@@ -301,10 +288,8 @@ func (controller *UserController) SetUserAuthority(webCtx SpringWeb.WebContext) 
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
 // @Router /user/deleteUser [delete]
 func (controller *UserController) DeleteUser(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var reqId request.GetById
-	_ = c.ShouldBindJSON(&reqId)
+	_ = webCtx.Bind(&reqId)
 	IdVerifyErr := utils.Verify(reqId, utils.CustomizeMap["IdVerify"])
 	if IdVerifyErr != nil {
 		response.FailWithMessage(IdVerifyErr.Error(), webCtx)

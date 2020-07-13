@@ -25,10 +25,8 @@ type CasbinController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /casbin/UpdateCasbin [post]
 func (controller *CasbinController) UpdateCasbin(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var cmr request.CasbinInReceive
-	_ = c.ShouldBindJSON(&cmr)
+	_ = webCtx.Bind(&cmr)
 	AuthorityIdVerifyErr := utils.Verify(cmr, utils.CustomizeMap["AuthorityIdVerify"])
 	if AuthorityIdVerifyErr != nil {
 		response.FailWithMessage(AuthorityIdVerifyErr.Error(), webCtx)
@@ -51,10 +49,8 @@ func (controller *CasbinController) UpdateCasbin(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /casbin/getPolicyPathByAuthorityId [post]
 func (controller *CasbinController) GetPolicyPathByAuthorityId(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var cmr request.CasbinInReceive
-	_ = c.ShouldBindJSON(&cmr)
+	_ = webCtx.Bind(&cmr)
 	AuthorityIdVerifyErr := utils.Verify(cmr, utils.CustomizeMap["AuthorityIdVerify"])
 	if AuthorityIdVerifyErr != nil {
 		response.FailWithMessage(AuthorityIdVerifyErr.Error(), webCtx)
@@ -73,10 +69,8 @@ func (controller *CasbinController) GetPolicyPathByAuthorityId(webCtx SpringWeb.
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /casbin/CasbinTest [get]
 func (controller *CasbinController) CasbinTest(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	// 测试restful以及占位符代码  随意书写
-	pathParam := c.Param("pathParam")
-	query := c.Query("query")
+	pathParam := webCtx.PathParam("pathParam")
+	query := webCtx.QueryParam("query")
 	response.OkDetailed(gin.H{"pathParam": pathParam, "query": query}, "获取规则成功", webCtx)
 }

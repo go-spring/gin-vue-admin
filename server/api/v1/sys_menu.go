@@ -25,9 +25,7 @@ type MenuController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /menu/getMenu [post]
 func (controller *MenuController) GetMenu(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
-	claims, _ := c.Get("claims")
+	claims := webCtx.Get("claims")
 	waitUse := claims.(*request.CustomClaims)
 	err, menus := service.GetMenuTree(waitUse.AuthorityId)
 	if err != nil {
@@ -46,10 +44,8 @@ func (controller *MenuController) GetMenu(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/getMenuList [post]
 func (controller *MenuController) GetMenuList(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var pageInfo request.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
+	_ = webCtx.Bind(&pageInfo)
 	PageVerifyErr := utils.Verify(pageInfo, utils.CustomizeMap["PageVerify"])
 	if PageVerifyErr != nil {
 		response.FailWithMessage(PageVerifyErr.Error(), webCtx)
@@ -77,10 +73,8 @@ func (controller *MenuController) GetMenuList(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/addBaseMenu [post]
 func (controller *MenuController) AddBaseMenu(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var menu model.SysBaseMenu
-	_ = c.ShouldBindJSON(&menu)
+	_ = webCtx.Bind(&menu)
 	MenuVerify := utils.Rules{
 		"Path":      {utils.NotEmpty()},
 		"ParentId":  {utils.NotEmpty()},
@@ -134,10 +128,8 @@ func (controller *MenuController) GetBaseMenuTree(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/addMenuAuthority [post]
 func (controller *MenuController) AddMenuAuthority(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var addMenuAuthorityInfo request.AddMenuAuthorityInfo
-	_ = c.ShouldBindJSON(&addMenuAuthorityInfo)
+	_ = webCtx.Bind(&addMenuAuthorityInfo)
 	MenuVerify := utils.Rules{
 		"AuthorityId": {"notEmpty"},
 	}
@@ -163,10 +155,8 @@ func (controller *MenuController) AddMenuAuthority(webCtx SpringWeb.WebContext) 
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/GetMenuAuthority [post]
 func (controller *MenuController) GetMenuAuthority(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var authorityIdInfo request.AuthorityIdInfo
-	_ = c.ShouldBindJSON(&authorityIdInfo)
+	_ = webCtx.Bind(&authorityIdInfo)
 	MenuVerify := utils.Rules{
 		"AuthorityId": {"notEmpty"},
 	}
@@ -192,10 +182,8 @@ func (controller *MenuController) GetMenuAuthority(webCtx SpringWeb.WebContext) 
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/deleteBaseMenu [post]
 func (controller *MenuController) DeleteBaseMenu(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var idInfo request.GetById
-	_ = c.ShouldBindJSON(&idInfo)
+	_ = webCtx.Bind(&idInfo)
 	IdVerifyErr := utils.Verify(idInfo, utils.CustomizeMap["IdVerify"])
 	if IdVerifyErr != nil {
 		response.FailWithMessage(IdVerifyErr.Error(), webCtx)
@@ -219,10 +207,8 @@ func (controller *MenuController) DeleteBaseMenu(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/updateBaseMenu [post]
 func (controller *MenuController) UpdateBaseMenu(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var menu model.SysBaseMenu
-	_ = c.ShouldBindJSON(&menu)
+	_ = webCtx.Bind(&menu)
 	MenuVerify := utils.Rules{
 		"Path":      {"notEmpty"},
 		"ParentId":  {utils.NotEmpty()},
@@ -260,10 +246,8 @@ func (controller *MenuController) UpdateBaseMenu(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /menu/getBaseMenuById [post]
 func (controller *MenuController) GetBaseMenuById(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var idInfo request.GetById
-	_ = c.ShouldBindJSON(&idInfo)
+	_ = webCtx.Bind(&idInfo)
 	MenuVerify := utils.Rules{
 		"Id": {"notEmpty"},
 	}

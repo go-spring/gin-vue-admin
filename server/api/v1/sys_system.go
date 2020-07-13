@@ -8,7 +8,6 @@ import (
 	resp "gin-vue-admin/model/response"
 	"gin-vue-admin/service"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-spring/go-spring-web/spring-web"
 )
 
@@ -38,10 +37,8 @@ func (controller *SystemController) GetSystemConfig(webCtx SpringWeb.WebContext)
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /system/setSystemConfig [post]
 func (controller *SystemController) SetSystemConfig(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var sys model.System
-	_ = c.ShouldBindJSON(&sys)
+	_ = webCtx.Bind(&sys)
 	err := service.SetSystemConfig(sys)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("设置失败，%v", err), webCtx)
@@ -59,9 +56,8 @@ func (controller *SystemController) SetSystemConfig(webCtx SpringWeb.WebContext)
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /system/ReloadSystem [post]
 func (controller *SystemController) ReloadSystem(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
 	var sys model.System
-	_ = c.ShouldBindJSON(&sys)
+	_ = webCtx.Bind(&sys)
 	err := service.SetSystemConfig(sys)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("设置失败，%v", err), webCtx)
