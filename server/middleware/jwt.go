@@ -10,10 +10,13 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"time"
+
+	"github.com/go-spring/go-spring-web/spring-gin"
 )
 
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		webCtx := SpringGin.WebContext(c)
 		// 我们这里jwt鉴权取头部信息 x-token 登录时回返回token信息 这里前端需要把token存储到cookie或者本地localSstorage中 不过需要跟后端协商过期时间 可以约定刷新令牌或者重新登录
 		token := c.Request.Header.Get("x-token")
 		modelToken := model.JwtBlacklist{
@@ -22,14 +25,14 @@ func JWTAuth() gin.HandlerFunc {
 		if token == "" {
 			response.Result(response.ERROR, gin.H{
 				"reload": true,
-			}, "未登录或非法访问", c)
+			}, "未登录或非法访问", webCtx)
 			c.Abort()
 			return
 		}
 		if service.IsBlacklist(token, modelToken) {
 			response.Result(response.ERROR, gin.H{
 				"reload": true,
-			}, "您的帐户异地登陆或令牌失效", c)
+			}, "您的帐户异地登陆或令牌失效", webCtx)
 			c.Abort()
 			return
 		}
@@ -40,13 +43,13 @@ func JWTAuth() gin.HandlerFunc {
 			if err == TokenExpired {
 				response.Result(response.ERROR, gin.H{
 					"reload": true,
-				}, "授权已过期", c)
+				}, "授权已过期", webCtx)
 				c.Abort()
 				return
 			}
 			response.Result(response.ERROR, gin.H{
 				"reload": true,
-			}, err.Error(), c)
+			}, err.Error(), webCtx)
 			c.Abort()
 			return
 		}

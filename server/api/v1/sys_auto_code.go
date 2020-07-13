@@ -10,7 +10,6 @@ import (
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-spring/go-spring-web/spring-web"
 )
 
@@ -26,10 +25,8 @@ type AutoCodeController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
 // @Router /autoCode/createTemp [post]
 func (controller *AutoCodeController) CreateTemp(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var a model.AutoCodeStruct
-	_ = c.ShouldBindJSON(&a)
+	_ = webCtx.Bind(&a)
 	AutoCodeVerify := utils.Rules{
 		"Abbreviation": {utils.NotEmpty()},
 		"StructName":   {utils.NotEmpty()},
@@ -38,7 +35,7 @@ func (controller *AutoCodeController) CreateTemp(webCtx SpringWeb.WebContext) {
 	}
 	WKVerifyErr := utils.Verify(a, AutoCodeVerify)
 	if WKVerifyErr != nil {
-		response.FailWithMessage(WKVerifyErr.Error(), c)
+		response.FailWithMessage(WKVerifyErr.Error(), webCtx)
 		return
 	}
 	if a.AutoCreateApiToSql {
@@ -77,21 +74,21 @@ func (controller *AutoCodeController) CreateTemp(webCtx SpringWeb.WebContext) {
 		for _, v := range apiList {
 			errC := service.CreateApi(v)
 			if errC != nil {
-				c.Writer.Header().Add("success", "false")
-				c.Writer.Header().Add("msg", url.QueryEscape(fmt.Sprintf("自动化创建失败，%v，请自行清空垃圾数据", errC)))
+				webCtx.Header("success", "false")
+				webCtx.Header("msg", url.QueryEscape(fmt.Sprintf("自动化创建失败，%v，请自行清空垃圾数据", errC)))
 				return
 			}
 		}
 	}
 	err := service.CreateTemp(a)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("创建失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("创建失败，%v", err), webCtx)
 		os.Remove("./ginvueadmin.zip")
 	} else {
-		c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", "ginvueadmin.zip")) // fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
-		c.Writer.Header().Add("Content-Type", "application/json")
-		c.Writer.Header().Add("success", "true")
-		c.File("./ginvueadmin.zip")
+		webCtx.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", "ginvueadmin.zip")) // fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
+		webCtx.Header("Content-Type", "application/json")
+		webCtx.Header("success", "true")
+		webCtx.File("./ginvueadmin.zip")
 		os.Remove("./ginvueadmin.zip")
 	}
 }

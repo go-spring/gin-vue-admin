@@ -6,6 +6,8 @@ import (
 	"gin-vue-admin/model/request"
 	"gin-vue-admin/service"
 	"github.com/gin-gonic/gin"
+
+	"github.com/go-spring/go-spring-web/spring-gin"
 )
 
 // 拦截器
@@ -24,7 +26,8 @@ func CasbinHandler() gin.HandlerFunc {
 		if global.GVA_CONFIG.System.Env == "develop" || e.Enforce(sub, obj, act) {
 			c.Next()
 		} else {
-			response.Result(response.ERROR, gin.H{}, "权限不足", c)
+			webCtx := SpringGin.WebContext(c)
+			response.Result(response.ERROR, gin.H{}, "权限不足", webCtx)
 			c.Abort()
 			return
 		}

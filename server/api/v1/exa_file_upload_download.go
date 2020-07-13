@@ -11,7 +11,6 @@ import (
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-spring/go-spring-web/spring-web"
 )
 
@@ -27,17 +26,18 @@ type FileUploadController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"上传成功"}"
 // @Router /fileUploadAndDownload/upload [post]
 func (controller *FileUploadController) UploadFile(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
-	noSave := c.DefaultQuery("noSave", "0")
-	_, header, err := c.Request.FormFile("file")
+	noSave := webCtx.QueryParam("noSave")  // c.DefaultQuery("noSave", "0")
+	if len(noSave) == 0 {
+		noSave = "0"
+	}
+	header, err := webCtx.FormFile("file")
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("上传文件失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("上传文件失败，%v", err), webCtx)
 	} else {
 		// 文件上传后拿到文件路径
 		err, filePath, key := utils.Upload(header)
 		if err != nil {
-			response.FailWithMessage(fmt.Sprintf("接收返回值失败，%v", err), c)
+			response.FailWithMessage(fmt.Sprintf("接收返回值失败，%v", err), webCtx)
 		} else {
 			// 修改数据库后得到修改后的user并且返回供前端使用
 			var file model.ExaFileUploadAndDownload
@@ -50,9 +50,9 @@ func (controller *FileUploadController) UploadFile(webCtx SpringWeb.WebContext) 
 				err = service.Upload(file)
 			}
 			if err != nil {
-				response.FailWithMessage(fmt.Sprintf("修改数据库链接失败，%v", err), c)
+				response.FailWithMessage(fmt.Sprintf("修改数据库链接失败，%v", err), webCtx)
 			} else {
-				response.OkDetailed(resp.ExaFileResponse{File: file}, "上传成功", c)
+				response.OkDetailed(resp.ExaFileResponse{File: file}, "上传成功", webCtx)
 			}
 		}
 	}
@@ -66,24 +66,22 @@ func (controller *FileUploadController) UploadFile(webCtx SpringWeb.WebContext) 
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /fileUploadAndDownload/deleteFile [post]
 func (controller *FileUploadController) DeleteFile(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var file model.ExaFileUploadAndDownload
-	_ = c.ShouldBindJSON(&file)
+	_ = webCtx.Bind(&file)
 	err, f := service.FindFile(file.ID)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 	} else {
 		err = utils.DeleteFile(f.Key)
 		if err != nil {
-			response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), c)
+			response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 
 		} else {
 			err = service.DeleteFile(f)
 			if err != nil {
-				response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), c)
+				response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 			} else {
-				response.OkWithMessage("删除成功", c)
+				response.OkWithMessage("删除成功", webCtx)
 			}
 		}
 	}
@@ -98,19 +96,17 @@ func (controller *FileUploadController) DeleteFile(webCtx SpringWeb.WebContext) 
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /fileUploadAndDownload/getFileList [post]
 func (controller *FileUploadController) GetFileList(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var pageInfo request.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
+	_ = webCtx.Bind(&pageInfo)
 	err, list, total := service.GetFileRecordInfoList(pageInfo)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), webCtx)
 	} else {
 		response.OkWithData(resp.PageResult{
 			List:     list,
 			Total:    total,
 			Page:     pageInfo.Page,
 			PageSize: pageInfo.PageSize,
-		}, c)
+		}, webCtx)
 	}
 }

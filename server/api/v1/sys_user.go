@@ -16,7 +16,6 @@ import (
 
 	"github.com/dchest/captcha"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
 	"github.com/go-spring/go-spring-web/spring-web"
 )
@@ -31,10 +30,8 @@ type BaseController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"注册成功"}"
 // @Router /base/register [post]
 func (controller *BaseController) Register(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var R request.RegisterStruct
-	_ = c.ShouldBindJSON(&R)
+	_ = webCtx.Bind(&R)
 	UserVerify := utils.Rules{
 		"Username":    {utils.NotEmpty()},
 		"NickName":    {utils.NotEmpty()},
@@ -43,15 +40,15 @@ func (controller *BaseController) Register(webCtx SpringWeb.WebContext) {
 	}
 	UserVerifyErr := utils.Verify(R, UserVerify)
 	if UserVerifyErr != nil {
-		response.FailWithMessage(UserVerifyErr.Error(), c)
+		response.FailWithMessage(UserVerifyErr.Error(), webCtx)
 		return
 	}
 	user := &model.SysUser{Username: R.Username, NickName: R.NickName, Password: R.Password, HeaderImg: R.HeaderImg, AuthorityId: R.AuthorityId}
 	err, userReturn := service.Register(*user)
 	if err != nil {
-		response.FailWithDetailed(response.ERROR, resp.SysUserResponse{User: userReturn}, fmt.Sprintf("%v", err), c)
+		response.FailWithDetailed(response.ERROR, resp.SysUserResponse{User: userReturn}, fmt.Sprintf("%v", err), webCtx)
 	} else {
-		response.OkDetailed(resp.SysUserResponse{User: userReturn}, "注册成功", c)
+		response.OkDetailed(resp.SysUserResponse{User: userReturn}, "注册成功", webCtx)
 	}
 }
 
@@ -62,10 +59,8 @@ func (controller *BaseController) Register(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
 // @Router /base/login [post]
 func (controller *BaseController) Login(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var L request.RegisterAndLoginStruct
-	_ = c.ShouldBindJSON(&L)
+	_ = webCtx.Bind(&L)
 
 	UserVerify := utils.Rules{
 		"CaptchaId": {utils.NotEmpty()},
@@ -76,24 +71,25 @@ func (controller *BaseController) Login(webCtx SpringWeb.WebContext) {
 
 	UserVerifyErr := utils.Verify(L, UserVerify)
 	if UserVerifyErr != nil {
-		response.FailWithMessage(UserVerifyErr.Error(), c)
+		response.FailWithMessage(UserVerifyErr.Error(), webCtx)
 		return
 	}
 
 	if captcha.VerifyString(L.CaptchaId, L.Captcha) {
 		U := &model.SysUser{Username: L.Username, Password: L.Password}
 		if err, user := service.Login(U); err != nil {
-			response.FailWithMessage(fmt.Sprintf("用户名密码错误或%v", err), c)
+			response.FailWithMessage(fmt.Sprintf("用户名密码错误或%v", err), webCtx)
 		} else {
-			tokenNext(c, *user)
+			tokenNext(webCtx, *user)
 		}
 	} else {
-		response.FailWithMessage("验证码错误", c)
+		response.FailWithMessage("验证码错误", webCtx)
 	}
 }
 
 // 登录以后签发jwt
-func tokenNext(c *gin.Context, user model.SysUser) {
+func tokenNext(webCtx SpringWeb.WebContext, user model.SysUser) {
+
 	j := &middleware.JWT{
 		SigningKey: []byte(global.GVA_CONFIG.JWT.SigningKey), // 唯一签名
 	}
@@ -110,7 +106,7 @@ func tokenNext(c *gin.Context, user model.SysUser) {
 	}
 	token, err := j.CreateToken(clams)
 	if err != nil {
-		response.FailWithMessage("获取token失败", c)
+		response.FailWithMessage("获取token失败", webCtx)
 		return
 	}
 	if !global.GVA_CONFIG.System.UseMultipoint {
@@ -118,7 +114,7 @@ func tokenNext(c *gin.Context, user model.SysUser) {
 			User:      user,
 			Token:     token,
 			ExpiresAt: clams.StandardClaims.ExpiresAt * 1000,
-		}, c)
+		}, webCtx)
 		return
 	}
 	var loginJwt model.JwtBlacklist
@@ -126,32 +122,32 @@ func tokenNext(c *gin.Context, user model.SysUser) {
 	err, jwtStr := service.GetRedisJWT(user.Username)
 	if err == redis.Nil {
 		if err := service.SetRedisJWT(loginJwt, user.Username); err != nil {
-			response.FailWithMessage("设置登录状态失败", c)
+			response.FailWithMessage("设置登录状态失败", webCtx)
 			return
 		}
 		response.OkWithData(resp.LoginResponse{
 			User:      user,
 			Token:     token,
 			ExpiresAt: clams.StandardClaims.ExpiresAt * 1000,
-		}, c)
+		}, webCtx)
 	} else if err != nil {
-		response.FailWithMessage(fmt.Sprintf("%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("%v", err), webCtx)
 	} else {
 		var blackJWT model.JwtBlacklist
 		blackJWT.Jwt = jwtStr
 		if err := service.JsonInBlacklist(blackJWT); err != nil {
-			response.FailWithMessage("jwt作废失败", c)
+			response.FailWithMessage("jwt作废失败", webCtx)
 			return
 		}
 		if err := service.SetRedisJWT(loginJwt, user.Username); err != nil {
-			response.FailWithMessage("设置登录状态失败", c)
+			response.FailWithMessage("设置登录状态失败", webCtx)
 			return
 		}
 		response.OkWithData(resp.LoginResponse{
 			User:      user,
 			Token:     token,
 			ExpiresAt: clams.StandardClaims.ExpiresAt * 1000,
-		}, c)
+		}, webCtx)
 	}
 }
 
@@ -166,10 +162,8 @@ type UserController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
 // @Router /user/changePassword [put]
 func (controller *UserController) ChangePassword(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var params request.ChangePasswordStruct
-	_ = c.ShouldBindJSON(&params)
+	_ = webCtx.Bind(&params)
 	UserVerify := utils.Rules{
 		"Username":    {utils.NotEmpty()},
 		"Password":    {utils.NotEmpty()},
@@ -177,14 +171,14 @@ func (controller *UserController) ChangePassword(webCtx SpringWeb.WebContext) {
 	}
 	UserVerifyErr := utils.Verify(params, UserVerify)
 	if UserVerifyErr != nil {
-		response.FailWithMessage(UserVerifyErr.Error(), c)
+		response.FailWithMessage(UserVerifyErr.Error(), webCtx)
 		return
 	}
 	U := &model.SysUser{Username: params.Username, Password: params.Password}
 	if err, _ := service.ChangePassword(U, params.NewPassword); err != nil {
-		response.FailWithMessage("修改失败，请检查用户名密码", c)
+		response.FailWithMessage("修改失败，请检查用户名密码", webCtx)
 	} else {
-		response.OkWithMessage("修改成功", c)
+		response.OkWithMessage("修改成功", webCtx)
 	}
 }
 
@@ -202,29 +196,27 @@ type UserHeaderImg struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"上传成功"}"
 // @Router /user/uploadHeaderImg [post]
 func (controller *UserController) UploadHeaderImg(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
-	claims, _ := c.Get("claims")
+	claims := webCtx.Get("claims")
 	// 获取头像文件
 	// 这里我们通过断言获取 claims内的所有内容
 	waitUse := claims.(*request.CustomClaims)
 	uuid := waitUse.UUID
-	_, header, err := c.Request.FormFile("headerImg")
+	header, err := webCtx.FormFile("headerImg")
 	// 便于找到用户 以后从jwt中取
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("上传文件失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("上传文件失败，%v", err), webCtx)
 	} else {
 		// 文件上传后拿到文件路径
 		err, filePath, _ := utils.Upload(header)
 		if err != nil {
-			response.FailWithMessage(fmt.Sprintf("接收返回值失败，%v", err), c)
+			response.FailWithMessage(fmt.Sprintf("接收返回值失败，%v", err), webCtx)
 		} else {
 			// 修改数据库后得到修改后的user并且返回供前端使用
 			err, user := service.UploadHeaderImg(uuid, filePath)
 			if err != nil {
-				response.FailWithMessage(fmt.Sprintf("修改数据库链接失败，%v", err), c)
+				response.FailWithMessage(fmt.Sprintf("修改数据库链接失败，%v", err), webCtx)
 			} else {
-				response.OkWithData(resp.SysUserResponse{User: *user}, c)
+				response.OkWithData(resp.SysUserResponse{User: *user}, webCtx)
 			}
 		}
 	}
@@ -239,25 +231,23 @@ func (controller *UserController) UploadHeaderImg(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /user/getUserList [post]
 func (controller *UserController) GetUserList(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var pageInfo request.PageInfo
-	_ = c.ShouldBindJSON(&pageInfo)
+	_ = webCtx.Bind(&pageInfo)
 	PageVerifyErr := utils.Verify(pageInfo, utils.CustomizeMap["PageVerify"])
 	if PageVerifyErr != nil {
-		response.FailWithMessage(PageVerifyErr.Error(), c)
+		response.FailWithMessage(PageVerifyErr.Error(), webCtx)
 		return
 	}
 	err, list, total := service.GetUserInfoList(pageInfo)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), webCtx)
 	} else {
 		response.OkWithData(resp.PageResult{
 			List:     list,
 			Total:    total,
 			Page:     pageInfo.Page,
 			PageSize: pageInfo.PageSize,
-		}, c)
+		}, webCtx)
 	}
 }
 
@@ -270,24 +260,22 @@ func (controller *UserController) GetUserList(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
 // @Router /user/setUserAuthority [post]
 func (controller *UserController) SetUserAuthority(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var sua request.SetUserAuth
-	_ = c.ShouldBindJSON(&sua)
+	_ = webCtx.Bind(&sua)
 	UserVerify := utils.Rules{
 		"UUID":        {utils.NotEmpty()},
 		"AuthorityId": {utils.NotEmpty()},
 	}
 	UserVerifyErr := utils.Verify(sua, UserVerify)
 	if UserVerifyErr != nil {
-		response.FailWithMessage(UserVerifyErr.Error(), c)
+		response.FailWithMessage(UserVerifyErr.Error(), webCtx)
 		return
 	}
 	err := service.SetUserAuthority(sua.UUID, sua.AuthorityId)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("修改失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("修改失败，%v", err), webCtx)
 	} else {
-		response.OkWithMessage("修改成功", c)
+		response.OkWithMessage("修改成功", webCtx)
 	}
 }
 
@@ -300,19 +288,17 @@ func (controller *UserController) SetUserAuthority(webCtx SpringWeb.WebContext) 
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
 // @Router /user/deleteUser [delete]
 func (controller *UserController) DeleteUser(webCtx SpringWeb.WebContext) {
-	c := webCtx.NativeContext().(*gin.Context)
-
 	var reqId request.GetById
-	_ = c.ShouldBindJSON(&reqId)
+	_ = webCtx.Bind(&reqId)
 	IdVerifyErr := utils.Verify(reqId, utils.CustomizeMap["IdVerify"])
 	if IdVerifyErr != nil {
-		response.FailWithMessage(IdVerifyErr.Error(), c)
+		response.FailWithMessage(IdVerifyErr.Error(), webCtx)
 		return
 	}
 	err := service.DeleteUser(reqId.Id)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 	} else {
-		response.OkWithMessage("删除成功", c)
+		response.OkWithMessage("删除成功", webCtx)
 	}
 }
