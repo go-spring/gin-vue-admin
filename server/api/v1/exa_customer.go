@@ -4,14 +4,32 @@ import (
 	"fmt"
 
 	"gin-vue-admin/global/response"
+	"gin-vue-admin/middleware"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
 	resp "gin-vue-admin/model/response"
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
 
+	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring-web/spring-web"
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(CustomerController)).Init(func(c *CustomerController) {
+
+		r := SpringBoot.Route("/customer",
+			SpringGin.Filter(middleware.JWTAuth()),
+			SpringGin.Filter(middleware.CasbinHandler()))
+
+		r.PostMapping("/customer", c.CreateExaCustomer)
+		r.PUT("/customer", c.UpdateExaCustomer)
+		r.DELETE("/customer", c.DeleteExaCustomer)
+		r.GetMapping("/customer", c.GetExaCustomer)
+		r.GetMapping("/customerList", c.GetExaCustomerList)
+	})
+}
 
 type CustomerController struct {
 }
