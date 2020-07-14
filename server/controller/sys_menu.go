@@ -1,8 +1,9 @@
-package v1
+package controller
 
 import (
 	"fmt"
 
+	"gin-vue-admin/middleware"
 	"gin-vue-admin/global/response"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
@@ -11,8 +12,29 @@ import (
 	"gin-vue-admin/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring-web/spring-web"
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(MenuController)).Init(func(c *MenuController) {
+
+		r := SpringBoot.Route("/menu",
+			SpringGin.Filter(middleware.JWTAuth()),
+			SpringGin.Filter(middleware.CasbinHandler()))
+
+		r.PostMapping("/getMenu", c.GetMenu)
+		r.PostMapping("/getMenuList", c.GetMenuList)
+		r.PostMapping("/addBaseMenu", c.AddBaseMenu)
+		r.PostMapping("/getBaseMenuTree", c.GetBaseMenuTree)
+		r.PostMapping("/addMenuAuthority", c.AddMenuAuthority)
+		r.PostMapping("/getMenuAuthority", c.GetMenuAuthority)
+		r.PostMapping("/deleteBaseMenu", c.DeleteBaseMenu)
+		r.PostMapping("/updateBaseMenu", c.UpdateBaseMenu)
+		r.PostMapping("/getBaseMenuById", c.GetBaseMenuById)
+	})
+}
 
 type MenuController struct {
 }

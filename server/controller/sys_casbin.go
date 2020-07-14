@@ -1,8 +1,9 @@
-package v1
+package controller
 
 import (
 	"fmt"
 
+	"gin-vue-admin/middleware"
 	"gin-vue-admin/global/response"
 	"gin-vue-admin/model/request"
 	resp "gin-vue-admin/model/response"
@@ -10,8 +11,23 @@ import (
 	"gin-vue-admin/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring-web/spring-web"
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(CasbinController)).Init(func(c *CasbinController) {
+
+		r := SpringBoot.Route("/casbin",
+			SpringGin.Filter(middleware.JWTAuth()),
+			SpringGin.Filter(middleware.CasbinHandler()))
+
+		r.PostMapping("/updateCasbin", c.UpdateCasbin)
+		r.PostMapping("/getPolicyPathByAuthorityId", c.GetPolicyPathByAuthorityId)
+		r.GetMapping("/casbinTest/:pathParam", c.CasbinTest)
+	})
+}
 
 type CasbinController struct {
 }

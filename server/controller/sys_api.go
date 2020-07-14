@@ -1,8 +1,9 @@
-package v1
+package controller
 
 import (
 	"fmt"
 
+	"gin-vue-admin/middleware"
 	"gin-vue-admin/global/response"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
@@ -10,8 +11,26 @@ import (
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
 
+	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring-web/spring-web"
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(ApiController)).Init(func(c *ApiController) {
+
+		r := SpringBoot.Route("/api",
+			SpringGin.Filter(middleware.JWTAuth()),
+			SpringGin.Filter(middleware.CasbinHandler()))
+
+		r.PostMapping("/createApi", c.CreateApi)
+		r.PostMapping("/deleteApi", c.DeleteApi)
+		r.PostMapping("/getApiList", c.GetApiList)
+		r.PostMapping("/getApiById", c.GetApiById)
+		r.PostMapping("/updateApi", c.UpdateApi)
+		r.PostMapping("/getAllApis", c.GetAllApis)
+	})
+}
 
 type ApiController struct {
 }

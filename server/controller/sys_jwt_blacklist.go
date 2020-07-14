@@ -1,14 +1,29 @@
-package v1
+package controller
 
 import (
 	"fmt"
 
+	"gin-vue-admin/middleware"
 	"gin-vue-admin/global/response"
 	"gin-vue-admin/model"
 	"gin-vue-admin/service"
 
+	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring-web/spring-web"
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(JwTController)).Init(func(c *JwTController) {
+
+		r := SpringBoot.Route("/jwt",
+			SpringGin.Filter(middleware.JWTAuth()),
+			SpringGin.Filter(middleware.CasbinHandler()))
+
+		r.PostMapping("/jsonInBlacklist", c.JsonInBlacklist)
+	})
+}
+
 
 type JwTController struct {
 }
