@@ -1,17 +1,31 @@
-package v1
+package controller
 
 import (
 	"fmt"
 	"net/url"
 	"os"
 
+	"gin-vue-admin/middleware"
 	"gin-vue-admin/global/response"
 	"gin-vue-admin/model"
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
 
+	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring-web/spring-web"
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(AutoCodeController)).Init(func(c *AutoCodeController) {
+
+		r := SpringBoot.Route("/autoCode",
+			SpringGin.Filter(middleware.JWTAuth()),
+			SpringGin.Filter(middleware.CasbinHandler()))
+
+		r.PostMapping("/createTemp", c.CreateTemp)
+	})
+}
 
 type AutoCodeController struct {
 }

@@ -1,11 +1,11 @@
 package core
 
 import (
+	_ "gin-vue-admin/controller"
 	_ "gin-vue-admin/docs"
 	"gin-vue-admin/global"
 	"gin-vue-admin/initialize"
 	"gin-vue-admin/middleware"
-	_ "gin-vue-admin/router"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-spring/go-spring-web/spring-gin"

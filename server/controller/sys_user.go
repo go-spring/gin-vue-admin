@@ -1,4 +1,4 @@
-package v1
+package controller
 
 import (
 	"fmt"
@@ -17,8 +17,35 @@ import (
 	"github.com/dchest/captcha"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-redis/redis"
+	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring-web/spring-web"
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(BaseController)).Init(func(c *BaseController) {
+
+		r := SpringBoot.Route("/base")
+
+		r.PostMapping("/login", c.Login)
+		r.PostMapping("/captcha", c.Captcha)
+		r.PostMapping("/register", c.Register)
+		r.GetMapping("/captcha/:captchaId", c.CaptchaImg)
+	})
+
+	SpringBoot.RegisterBean(new(UserController)).Init(func(c *UserController) {
+
+		r := SpringBoot.Route("/user",
+			SpringGin.Filter(middleware.JWTAuth()),
+			SpringGin.Filter(middleware.CasbinHandler()))
+
+		r.PostMapping("/changePassword", c.ChangePassword)
+		r.PostMapping("/uploadHeaderImg", c.UploadHeaderImg)
+		r.PostMapping("/getUserList", c.GetUserList)
+		r.PostMapping("/setUserAuthority", c.SetUserAuthority)
+		r.DELETE("/deleteUser", c.DeleteUser)
+	})
+}
 
 type BaseController struct {
 }

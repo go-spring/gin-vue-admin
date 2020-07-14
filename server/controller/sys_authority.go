@@ -1,8 +1,9 @@
-package v1
+package controller
 
 import (
 	"fmt"
 
+	"gin-vue-admin/middleware"
 	"gin-vue-admin/global/response"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
@@ -10,8 +11,26 @@ import (
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
 
+	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring-web/spring-web"
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(AuthorityController)).Init(func(c *AuthorityController) {
+
+		r := SpringBoot.Route("/authority",
+			SpringGin.Filter(middleware.JWTAuth()),
+			SpringGin.Filter(middleware.CasbinHandler()))
+
+		r.PostMapping("/createAuthority", c.CreateAuthority)
+		r.PostMapping("/deleteAuthority", c.DeleteAuthority)
+		r.PUT("/updateAuthority", c.UpdateAuthority)
+		r.PostMapping("/copyAuthority", c.CopyAuthority)
+		r.PostMapping("/getAuthorityList", c.GetAuthorityList)
+		r.PostMapping("/setDataAuthority", c.SetDataAuthority)
+	})
+}
 
 type AuthorityController struct {
 }
