@@ -3,8 +3,8 @@ package controller
 import (
 	"fmt"
 
-	"gin-vue-admin/middleware"
 	"gin-vue-admin/global/response"
+	"gin-vue-admin/middleware"
 	"gin-vue-admin/model"
 	resp "gin-vue-admin/model/response"
 	"gin-vue-admin/service"
@@ -25,7 +25,6 @@ func init() {
 		r.PostMapping("/setSystemConfig", c.SetSystemConfig)
 	})
 }
-
 
 type SystemController struct {
 }

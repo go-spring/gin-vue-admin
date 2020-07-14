@@ -3,8 +3,8 @@ package controller
 import (
 	"fmt"
 
-	"gin-vue-admin/middleware"
 	"gin-vue-admin/global/response"
+	"gin-vue-admin/middleware"
 	"gin-vue-admin/model"
 	"gin-vue-admin/service"
 
@@ -23,7 +23,6 @@ func init() {
 		r.PostMapping("/jsonInBlacklist", c.JsonInBlacklist)
 	})
 }
-
 
 type JwTController struct {
 }

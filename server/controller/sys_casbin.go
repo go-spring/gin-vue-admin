@@ -3,8 +3,8 @@ package controller
 import (
 	"fmt"
 
-	"gin-vue-admin/middleware"
 	"gin-vue-admin/global/response"
+	"gin-vue-admin/middleware"
 	"gin-vue-admin/model/request"
 	resp "gin-vue-admin/model/response"
 	"gin-vue-admin/service"
