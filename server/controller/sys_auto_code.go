@@ -29,6 +29,7 @@ func init() {
 
 type AutoCodeController struct {
 	SysApiService *service.SysApiService `autowire:""`
+	SysAutoCodeService *service.SysAutoCodeService `autowire:""`
 }
 
 // @Tags SysApi
@@ -95,7 +96,7 @@ func (controller *AutoCodeController) CreateTemp(webCtx SpringWeb.WebContext) {
 			}
 		}
 	}
-	err := service.CreateTemp(a)
+	err := controller.SysAutoCodeService.CreateTemp(a)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("创建失败，%v", err), webCtx)
 		os.Remove("./ginvueadmin.zip")

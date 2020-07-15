@@ -49,7 +49,7 @@ func (controller *WorkFlowController) CreateWorkFlow(webCtx SpringWeb.WebContext
 		response.FailWithMessage(WKVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.Create(wk)
+	err := controller.SysWorkflowService.Create(wk)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取失败：%v", err), webCtx)
 	} else {

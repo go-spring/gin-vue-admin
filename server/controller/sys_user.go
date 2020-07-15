@@ -49,6 +49,7 @@ func init() {
 
 type BaseController struct {
 	SysUserService *service.SysUserService `autowire:""`
+	JwtBlackListService *service.JwtBlackListService `autowire:""`
 }
 
 // @Tags Base
@@ -108,7 +109,7 @@ func (controller *BaseController) Login(webCtx SpringWeb.WebContext) {
 		if err, user := controller.SysUserService.Login(U); err != nil {
 			response.FailWithMessage(fmt.Sprintf("用户名密码错误或%v", err), webCtx)
 		} else {
-			tokenNext(webCtx, *user)
+			controller.tokenNext(webCtx, *user)
 		}
 	} else {
 		response.FailWithMessage("验证码错误", webCtx)
@@ -116,7 +117,7 @@ func (controller *BaseController) Login(webCtx SpringWeb.WebContext) {
 }
 
 // 登录以后签发jwt
-func tokenNext(webCtx SpringWeb.WebContext, user model.SysUser) {
+func (controller *BaseController) tokenNext(webCtx SpringWeb.WebContext, user model.SysUser) {
 
 	j := &middleware.JWT{
 		SigningKey: []byte(global.GVA_CONFIG.JWT.SigningKey), // 唯一签名
@@ -147,9 +148,9 @@ func tokenNext(webCtx SpringWeb.WebContext, user model.SysUser) {
 	}
 	var loginJwt model.JwtBlacklist
 	loginJwt.Jwt = token
-	err, jwtStr := service.GetRedisJWT(user.Username)
+	err, jwtStr := controller.JwtBlackListService.GetRedisJWT(user.Username)
 	if err == redis.Nil {
-		if err := service.SetRedisJWT(loginJwt, user.Username); err != nil {
+		if err := controller.JwtBlackListService.SetRedisJWT(loginJwt, user.Username); err != nil {
 			response.FailWithMessage("设置登录状态失败", webCtx)
 			return
 		}
@@ -163,11 +164,11 @@ func tokenNext(webCtx SpringWeb.WebContext, user model.SysUser) {
 	} else {
 		var blackJWT model.JwtBlacklist
 		blackJWT.Jwt = jwtStr
-		if err := service.JsonInBlacklist(blackJWT); err != nil {
+		if err := controller.JwtBlackListService.JsonInBlacklist(blackJWT); err != nil {
 			response.FailWithMessage("jwt作废失败", webCtx)
 			return
 		}
-		if err := service.SetRedisJWT(loginJwt, user.Username); err != nil {
+		if err := controller.JwtBlackListService.SetRedisJWT(loginJwt, user.Username); err != nil {
 			response.FailWithMessage("设置登录状态失败", webCtx)
 			return
 		}

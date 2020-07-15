@@ -6,7 +6,6 @@ import (
 	"gin-vue-admin/model/request"
 	"gin-vue-admin/service"
 	"github.com/gin-gonic/gin"
-
 	"github.com/go-spring/go-spring-web/spring-gin"
 )
 
@@ -21,7 +20,11 @@ func CasbinHandler() gin.HandlerFunc {
 		act := c.Request.Method
 		// 获取用户的角色
 		sub := waitUse.AuthorityId
-		e := service.Casbin()
+
+		sysCasbinService := new(service.SysCasbinService)
+		//TODO: 后续阶段改造成  filter
+		//service.Casbin()
+		e := sysCasbinService.Casbin()
 		// 判断策略中是否存在
 		if global.GVA_CONFIG.System.Env == "develop" || e.Enforce(sub, obj, act) {
 			c.Next()
