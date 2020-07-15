@@ -26,6 +26,7 @@ func init() {
 }
 
 type WorkFlowController struct {
+	SysWorkflowService *service.SysWorkflowService `autowire:""`
 }
 
 // @Tags workflow

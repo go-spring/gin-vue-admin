@@ -3,7 +3,15 @@ package service
 import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
+	SpringBoot "github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(ExaBreakpointContinueService))
+}
+
+type ExaBreakpointContinueService struct {
+}
 
 // @title         FindOrCreateFile
 // @description   Check your file if it does not exist, or return current slice of the file
@@ -15,7 +23,7 @@ import (
 // @return    err             error
 // @return    file            ExaFile
 
-func FindOrCreateFile(fileMd5 string, fileName string, chunkTotal int) (err error, file model.ExaFile) {
+func (service *ExaBreakpointContinueService) FindOrCreateFile(fileMd5 string, fileName string, chunkTotal int) (err error, file model.ExaFile) {
 	var cfile model.ExaFile
 	cfile.FileMd5 = fileMd5
 	cfile.FileName = fileName
@@ -40,7 +48,7 @@ func FindOrCreateFile(fileMd5 string, fileName string, chunkTotal int) (err erro
 // @param     fileChunkNumber   int
 // @return                      error
 
-func CreateFileChunk(id uint, fileChunkPath string, fileChunkNumber int) error {
+func (service *ExaBreakpointContinueService) CreateFileChunk(id uint, fileChunkPath string, fileChunkNumber int) error {
 	var chunk model.ExaFileChunk
 	chunk.FileChunkPath = fileChunkPath
 	chunk.ExaFileId = id
@@ -57,7 +65,7 @@ func CreateFileChunk(id uint, fileChunkPath string, fileChunkNumber int) error {
 // @param     filePath        string
 // @return                    error
 
-func FileCreateComplete(fileMd5 string, fileName string, filePath string) error {
+func (service *ExaBreakpointContinueService) FileCreateComplete(fileMd5 string, fileName string, filePath string) error {
 	var file model.ExaFile
 	upDateFile := make(map[string]interface{})
 	upDateFile["FilePath"] = filePath
@@ -74,7 +82,7 @@ func FileCreateComplete(fileMd5 string, fileName string, filePath string) error 
 // @param     FilePath        string
 // @return                    error
 
-func DeleteFileChunk(fileMd5 string, fileName string, filePath string) error {
+func (service *ExaBreakpointContinueService) DeleteFileChunk(fileMd5 string, fileName string, filePath string) error {
 	var chunks []model.ExaFileChunk
 	var file model.ExaFile
 	err := global.GVA_DB.Where("file_md5 = ? AND file_name = ?", fileMd5, fileName).First(&file).Update("IsFinish", true).Update("file_path", filePath).Error

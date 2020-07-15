@@ -28,6 +28,7 @@ func init() {
 }
 
 type AutoCodeController struct {
+	SysApiService *service.SysApiService `autowire:""`
 }
 
 // @Tags SysApi
@@ -86,7 +87,7 @@ func (controller *AutoCodeController) CreateTemp(webCtx SpringWeb.WebContext) {
 			},
 		}
 		for _, v := range apiList {
-			errC := service.CreateApi(v)
+			errC := controller.SysApiService.CreateApi(v)
 			if errC != nil {
 				webCtx.Header("success", "false")
 				webCtx.Header("msg", url.QueryEscape(fmt.Sprintf("自动化创建失败，%v，请自行清空垃圾数据", errC)))

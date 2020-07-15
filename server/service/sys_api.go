@@ -13,6 +13,7 @@ func init() {
 }
 
 type SysApiService struct {
+	SysCasbinService *SysCasbinService `autowire:""`
 }
 
 // @title    CreateApi
@@ -37,9 +38,9 @@ func (service *SysApiService) CreateApi(api model.SysApi) (err error) {
 // @auth                     （2020/04/05  20:22）
 // @return                    error
 
-func DeleteApi(api model.SysApi) (err error) {
+func (service *SysApiService) DeleteApi(api model.SysApi) (err error) {
 	err = global.GVA_DB.Delete(api).Error
-	ClearCasbin(1, api.Path, api.Method)
+	service.SysCasbinService.ClearCasbin(1, api.Path, api.Method)
 	return err
 }
 
@@ -54,7 +55,7 @@ func DeleteApi(api model.SysApi) (err error) {
 // @return    list            interface{}
 // @return    total           int
 
-func GetAPIInfoList(api model.SysApi, info request.PageInfo, order string, desc bool) (err error, list interface{}, total int) {
+func (service *SysApiService) GetAPIInfoList(api model.SysApi, info request.PageInfo, order string, desc bool) (err error, list interface{}, total int) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB
@@ -103,7 +104,7 @@ func GetAPIInfoList(api model.SysApi, info request.PageInfo, order string, desc 
 // @return       err          error
 // @return       apis         []SysApi
 
-func GetAllApis() (err error, apis []model.SysApi) {
+func (service *SysApiService) GetAllApis() (err error, apis []model.SysApi) {
 	err = global.GVA_DB.Find(&apis).Error
 	return
 }
@@ -115,7 +116,7 @@ func GetAllApis() (err error, apis []model.SysApi) {
 // @param     id              float64
 // @return                    error
 
-func GetApiById(id float64) (err error, api model.SysApi) {
+func (service *SysApiService) GetApiById(id float64) (err error, api model.SysApi) {
 	err = global.GVA_DB.Where("id = ?", id).First(&api).Error
 	return
 }
@@ -126,7 +127,7 @@ func GetApiById(id float64) (err error, api model.SysApi) {
 // @param     api             model.SysApi
 // @return                    error
 
-func UpdateApi(api model.SysApi) (err error) {
+func (service *SysApiService) UpdateApi(api model.SysApi) (err error) {
 	var oldA model.SysApi
 
 	err = global.GVA_DB.Where("id = ?", api.ID).First(&oldA).Error
@@ -140,7 +141,7 @@ func UpdateApi(api model.SysApi) (err error) {
 	if err != nil {
 		return err
 	} else {
-		err = UpdateCasbinApi(oldA.Path, api.Path, oldA.Method, api.Method)
+		err = service.SysCasbinService.UpdateCasbinApi(oldA.Path, api.Path, oldA.Method, api.Method)
 		if err != nil {
 			return err
 		} else {

@@ -7,7 +7,6 @@ import (
 
 	"gin-vue-admin/global/response"
 	resp "gin-vue-admin/model/response"
-	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
 
 	"github.com/go-spring/go-spring-web/spring-web"
@@ -42,7 +41,7 @@ func (controller *FileUploadController) BreakpointContinue(webCtx SpringWeb.WebC
 	if flag := utils.CheckMd5(cen, chunkMd5); !flag {
 		return
 	}
-	err, file := service.FindOrCreateFile(fileMd5, fileName, chunkTotal)
+	err, file := controller.ExaBreakpointContinueService.FindOrCreateFile(fileMd5, fileName, chunkTotal)
 	if err != nil {
 		response.FailWithMessage(err.Error(), webCtx)
 		return
@@ -53,7 +52,7 @@ func (controller *FileUploadController) BreakpointContinue(webCtx SpringWeb.WebC
 		return
 	}
 
-	if err = service.CreateFileChunk(file.ID, pathc, chunkNumber); err != nil {
+	if err = controller.ExaBreakpointContinueService.CreateFileChunk(file.ID, pathc, chunkNumber); err != nil {
 		response.FailWithMessage(err.Error(), webCtx)
 		return
 	}
@@ -72,7 +71,7 @@ func (controller *FileUploadController) FindFile(webCtx SpringWeb.WebContext) {
 	fileMd5 := webCtx.QueryParam("fileMd5")
 	fileName := webCtx.QueryParam("fileName")
 	chunkTotal, _ := strconv.Atoi(webCtx.QueryParam("chunkTotal"))
-	err, file := service.FindOrCreateFile(fileMd5, fileName, chunkTotal)
+	err, file := controller.ExaBreakpointContinueService.FindOrCreateFile(fileMd5, fileName, chunkTotal)
 	if err != nil {
 		response.FailWithMessage("查找失败", webCtx)
 	} else {
@@ -112,7 +111,7 @@ func (controller *FileUploadController) RemoveChunk(webCtx SpringWeb.WebContext)
 	fileName := webCtx.QueryParam("fileName")
 	filePath := webCtx.QueryParam("filePath")
 	err := utils.RemoveChunk(fileMd5)
-	err = service.DeleteFileChunk(fileMd5, fileName, filePath)
+	err = controller.ExaBreakpointContinueService.DeleteFileChunk(fileMd5, fileName, filePath)
 	if err != nil {
 		response.FailWithDetailed(response.ERROR, resp.FilePathResponse{FilePath: filePath}, fmt.Sprintf("缓存切片删除失败：%v", err), webCtx)
 	} else {

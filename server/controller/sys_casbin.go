@@ -30,6 +30,7 @@ func init() {
 }
 
 type CasbinController struct {
+	SysCasbinService *service.SysCasbinService `autowire:""`
 }
 
 // @Tags casbin
@@ -48,7 +49,7 @@ func (controller *CasbinController) UpdateCasbin(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(AuthorityIdVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.UpdateCasbin(cmr.AuthorityId, cmr.CasbinInfos)
+	err := controller.SysCasbinService.UpdateCasbin(cmr.AuthorityId, cmr.CasbinInfos)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("添加规则失败，%v", err), webCtx)
 	} else {
@@ -72,7 +73,7 @@ func (controller *CasbinController) GetPolicyPathByAuthorityId(webCtx SpringWeb.
 		response.FailWithMessage(AuthorityIdVerifyErr.Error(), webCtx)
 		return
 	}
-	paths := service.GetPolicyPathByAuthorityId(cmr.AuthorityId)
+	paths := controller.SysCasbinService.GetPolicyPathByAuthorityId(cmr.AuthorityId)
 	response.OkWithData(resp.PolicyPathResponse{Paths: paths}, webCtx)
 }
 

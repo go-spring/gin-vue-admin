@@ -33,6 +33,7 @@ func init() {
 }
 
 type AuthorityController struct {
+	SysAuthorityService *service.SysAuthorityService `autowire:""`
 }
 
 // @Tags authority
@@ -56,7 +57,7 @@ func (controller *AuthorityController) CreateAuthority(webCtx SpringWeb.WebConte
 		response.FailWithMessage(AuthorityVerifyErr.Error(), webCtx)
 		return
 	}
-	err, authBack := service.CreateAuthority(auth)
+	err, authBack := controller.SysAuthorityService.CreateAuthority(auth)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("创建失败，%v", err), webCtx)
 	} else {
@@ -93,7 +94,7 @@ func (controller *AuthorityController) CopyAuthority(webCtx SpringWeb.WebContext
 		response.FailWithMessage(AuthorityVerifyErr.Error(), webCtx)
 		return
 	}
-	err, authBack := service.CopyAuthority(copyInfo)
+	err, authBack := controller.SysAuthorityService.CopyAuthority(copyInfo)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("拷贝失败，%v", err), webCtx)
 	} else {
@@ -118,7 +119,7 @@ func (controller *AuthorityController) DeleteAuthority(webCtx SpringWeb.WebConte
 		return
 	}
 	// 删除角色之前需要判断是否有用户正在使用此角色
-	err := service.DeleteAuthority(&a)
+	err := controller.SysAuthorityService.DeleteAuthority(&a)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 	} else {
@@ -147,7 +148,7 @@ func (controller *AuthorityController) UpdateAuthority(webCtx SpringWeb.WebConte
 		response.FailWithMessage(AuthorityVerifyErr.Error(), webCtx)
 		return
 	}
-	err, authority := service.UpdateAuthority(auth)
+	err, authority := controller.SysAuthorityService.UpdateAuthority(auth)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("更新失败，%v", err), webCtx)
 	} else {
@@ -171,7 +172,7 @@ func (controller *AuthorityController) GetAuthorityList(webCtx SpringWeb.WebCont
 		response.FailWithMessage(PageVerifyErr.Error(), webCtx)
 		return
 	}
-	err, list, total := service.GetAuthorityInfoList(pageInfo)
+	err, list, total := controller.SysAuthorityService.GetAuthorityInfoList(pageInfo)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), webCtx)
 	} else {
@@ -200,7 +201,7 @@ func (controller *AuthorityController) SetDataAuthority(webCtx SpringWeb.WebCont
 		response.FailWithMessage(AuthorityIdVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.SetDataAuthority(auth)
+	err := controller.SysAuthorityService.SetDataAuthority(auth)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("设置关联失败，%v", err), webCtx)
 	} else {

@@ -25,6 +25,7 @@ func init() {
 }
 
 type JwTController struct {
+	JwtBlackListService *service.JwtBlackListService `autowire:""`
 }
 
 // @Tags jwt
@@ -39,7 +40,7 @@ func (controller *JwTController) JsonInBlacklist(webCtx SpringWeb.WebContext) {
 	modelJwt := model.JwtBlacklist{
 		Jwt: token,
 	}
-	err := service.JsonInBlacklist(modelJwt)
+	err := controller.JwtBlackListService.JsonInBlacklist(modelJwt)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("jwt作废失败，%v", err), webCtx)
 	} else {
