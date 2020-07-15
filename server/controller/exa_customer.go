@@ -32,6 +32,7 @@ func init() {
 }
 
 type CustomerController struct {
+	ExaCustomerService *service.ExaCustomerService `autowire:""`
 }
 
 // @Tags SysApi
@@ -58,7 +59,7 @@ func (controller *CustomerController) CreateExaCustomer(webCtx SpringWeb.WebCont
 	waitUse := claims.(*request.CustomClaims)
 	cu.SysUserID = waitUse.ID
 	cu.SysUserAuthorityID = waitUse.AuthorityId
-	err := service.CreateExaCustomer(cu)
+	err := controller.ExaCustomerService.CreateExaCustomer(cu)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("删除失败：%v", err), webCtx)
 	} else {
@@ -85,7 +86,7 @@ func (controller *CustomerController) DeleteExaCustomer(webCtx SpringWeb.WebCont
 		response.FailWithMessage(CustomerVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.DeleteExaCustomer(cu)
+	err := controller.ExaCustomerService.DeleteExaCustomer(cu)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("删除失败：%v", err), webCtx)
 	} else {
@@ -121,7 +122,7 @@ func (controller *CustomerController) UpdateExaCustomer(webCtx SpringWeb.WebCont
 		response.FailWithMessage(CustomerVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.UpdateExaCustomer(&cu)
+	err := controller.ExaCustomerService.UpdateExaCustomer(&cu)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("更新失败：%v", err), webCtx)
 	} else {
@@ -148,7 +149,7 @@ func (controller *CustomerController) GetExaCustomer(webCtx SpringWeb.WebContext
 		response.FailWithMessage(IdCustomerVerifyErr.Error(), webCtx)
 		return
 	}
-	err, customer := service.GetExaCustomer(cu.ID)
+	err, customer := controller.ExaCustomerService.GetExaCustomer(cu.ID)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取失败：%v", err), webCtx)
 	} else {
@@ -174,7 +175,7 @@ func (controller *CustomerController) GetExaCustomerList(webCtx SpringWeb.WebCon
 		response.FailWithMessage(PageVerifyErr.Error(), webCtx)
 		return
 	}
-	err, customerList, total := service.GetCustomerInfoList(waitUse.AuthorityId, pageInfo)
+	err, customerList, total := controller.ExaCustomerService.GetCustomerInfoList(waitUse.AuthorityId, pageInfo)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取失败：%v", err), webCtx)
 	} else {

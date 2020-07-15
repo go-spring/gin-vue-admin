@@ -2,14 +2,24 @@ package service
 
 import (
 	"errors"
+	"strings"
+
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
+
 	"github.com/casbin/casbin"
 	"github.com/casbin/casbin/util"
-	gormadapter "github.com/casbin/gorm-adapter"
-	"strings"
+	"github.com/casbin/gorm-adapter"
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(SysCasbinService))
+}
+
+type SysCasbinService struct {
+}
 
 // @title    UpdateCasbin
 // @description   update casbin authority, 更新casbin权限
@@ -18,8 +28,8 @@ import (
 // @param     casbinInfos      []CasbinInfo
 // @return                     error
 
-func UpdateCasbin(authorityId string, casbinInfos []request.CasbinInfo) error {
-	ClearCasbin(0, authorityId)
+func (service *SysCasbinService) UpdateCasbin(authorityId string, casbinInfos []request.CasbinInfo) error {
+	service.ClearCasbin(0, authorityId)
 	for _, v := range casbinInfos {
 		cm := model.CasbinModel{
 			ID:          0,
@@ -28,7 +38,7 @@ func UpdateCasbin(authorityId string, casbinInfos []request.CasbinInfo) error {
 			Path:        v.Path,
 			Method:      v.Method,
 		}
-		addflag := AddCasbin(cm)
+		addflag := service.AddCasbin(cm)
 		if addflag == false {
 			return errors.New("存在相同api,添加失败,请联系管理员")
 		}
@@ -42,8 +52,8 @@ func UpdateCasbin(authorityId string, casbinInfos []request.CasbinInfo) error {
 // @param     cm              model.CasbinModel
 // @return                    bool
 
-func AddCasbin(cm model.CasbinModel) bool {
-	e := Casbin()
+func (service *SysCasbinService) AddCasbin(cm model.CasbinModel) bool {
+	e := service.Casbin()
 	return e.AddPolicy(cm.AuthorityId, cm.Path, cm.Method)
 }
 
@@ -56,7 +66,7 @@ func AddCasbin(cm model.CasbinModel) bool {
 // @param     newMethod        string
 // @return                     error
 
-func UpdateCasbinApi(oldPath string, newPath string, oldMethod string, newMethod string) error {
+func (service *SysCasbinService) UpdateCasbinApi(oldPath string, newPath string, oldMethod string, newMethod string) error {
 	var cs []model.CasbinModel
 	err := global.GVA_DB.Table("casbin_rule").Where("v1 = ? AND v2 = ?", oldPath, oldMethod).Find(&cs).Updates(map[string]string{
 		"v1": newPath,
@@ -71,8 +81,8 @@ func UpdateCasbinApi(oldPath string, newPath string, oldMethod string, newMethod
 // @param     authorityId     string
 // @return                    []string
 
-func GetPolicyPathByAuthorityId(authorityId string) (pathMaps []request.CasbinInfo) {
-	e := Casbin()
+func (service *SysCasbinService) GetPolicyPathByAuthorityId(authorityId string) (pathMaps []request.CasbinInfo) {
+	e := service.Casbin()
 	list := e.GetFilteredPolicy(0, authorityId)
 	for _, v := range list {
 		pathMaps = append(pathMaps, request.CasbinInfo{
@@ -90,8 +100,8 @@ func GetPolicyPathByAuthorityId(authorityId string) (pathMaps []request.CasbinIn
 // @param     p               string
 // @return                    bool
 
-func ClearCasbin(v int, p ...string) bool {
-	e := Casbin()
+func (service *SysCasbinService) ClearCasbin(v int, p ...string) bool {
+	e := service.Casbin()
 	return e.RemoveFilteredPolicy(v, p...)
 
 }
@@ -100,10 +110,10 @@ func ClearCasbin(v int, p ...string) bool {
 // @description   store to DB, 持久化到数据库  引入自定义规则
 // @auth                     （2020/04/05  20:22）
 
-func Casbin() *casbin.Enforcer {
+func (service *SysCasbinService) Casbin() *casbin.Enforcer {
 	a := gormadapter.NewAdapterByDB(global.GVA_DB)
 	e := casbin.NewEnforcer(global.GVA_CONFIG.Casbin.ModelPath, a)
-	e.AddFunction("ParamsMatch", ParamsMatchFunc)
+	e.AddFunction("ParamsMatch", service.ParamsMatchFunc)
 	_ = e.LoadPolicy()
 	return e
 }
@@ -115,7 +125,7 @@ func Casbin() *casbin.Enforcer {
 // @param     key2            string
 // @return                    bool
 
-func ParamsMatch(fullNameKey1 string, key2 string) bool {
+func (service *SysCasbinService) ParamsMatch(fullNameKey1 string, key2 string) bool {
 	key1 := strings.Split(fullNameKey1, "?")[0]
 	// 剥离路径后再使用casbin的keyMatch2
 	return util.KeyMatch2(key1, key2)
@@ -128,9 +138,9 @@ func ParamsMatch(fullNameKey1 string, key2 string) bool {
 // @return                    interface{}
 // @return                    error
 
-func ParamsMatchFunc(args ...interface{}) (interface{}, error) {
+func (service *SysCasbinService) ParamsMatchFunc(args ...interface{}) (interface{}, error) {
 	name1 := args[0].(string)
 	name2 := args[1].(string)
 
-	return ParamsMatch(name1, name2), nil
+	return service.ParamsMatch(name1, name2), nil
 }

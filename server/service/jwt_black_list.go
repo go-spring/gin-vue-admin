@@ -3,7 +3,16 @@ package service
 import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
+
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(JwtBlackListService))
+}
+
+type JwtBlackListService struct {
+}
 
 // @title    JsonInBlacklist
 // @description   create jwt blacklist
@@ -11,7 +20,7 @@ import (
 // @auth                     （2020/04/05  20:22）
 // @return    err             error
 
-func JsonInBlacklist(jwtList model.JwtBlacklist) (err error) {
+func (service *JwtBlackListService) JsonInBlacklist(jwtList model.JwtBlacklist) (err error) {
 	err = global.GVA_DB.Create(&jwtList).Error
 	return
 }
@@ -23,7 +32,7 @@ func JsonInBlacklist(jwtList model.JwtBlacklist) (err error) {
 // @param     jwtList         model.JwtBlacklist
 // @return    err             error
 
-func IsBlacklist(jwt string, jwtList model.JwtBlacklist) bool {
+func (service *JwtBlackListService) IsBlacklist(jwt string, jwtList model.JwtBlacklist) bool {
 	isNotFound := global.GVA_DB.Where("jwt = ?", jwt).First(&jwtList).RecordNotFound()
 	return !isNotFound
 }
@@ -35,7 +44,7 @@ func IsBlacklist(jwt string, jwtList model.JwtBlacklist) bool {
 // @return    err             error
 // @return    redisJWT        string
 
-func GetRedisJWT(userName string) (err error, redisJWT string) {
+func (service *JwtBlackListService) GetRedisJWT(userName string) (err error, redisJWT string) {
 	redisJWT, err = global.GVA_REDIS.Get(userName).Result()
 	return err, redisJWT
 }
@@ -47,7 +56,7 @@ func GetRedisJWT(userName string) (err error, redisJWT string) {
 // @param     userName        string
 // @return    err             error
 
-func SetRedisJWT(jwtList model.JwtBlacklist, userName string) (err error) {
+func (service *JwtBlackListService) SetRedisJWT(jwtList model.JwtBlacklist, userName string) (err error) {
 	err = global.GVA_REDIS.Set(userName, jwtList.Jwt, 1000*1000*1000*60*60*24*7).Err()
 	return err
 }

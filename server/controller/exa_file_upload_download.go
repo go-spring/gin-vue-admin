@@ -31,6 +31,8 @@ func init() {
 }
 
 type FileUploadController struct {
+	ExaFileUploadDownloadService *service.ExaFileUploadDownloadService `autowire:""`
+	ExaBreakpointContinueService *service.ExaBreakpointContinueService `autowire:""`
 }
 
 // @Tags ExaFileUploadAndDownload
@@ -63,7 +65,7 @@ func (controller *FileUploadController) UploadFile(webCtx SpringWeb.WebContext) 
 			file.Tag = s[len(s)-1]
 			file.Key = key
 			if noSave == "0" {
-				err = service.Upload(file)
+				err = controller.ExaFileUploadDownloadService.Upload(file)
 			}
 			if err != nil {
 				response.FailWithMessage(fmt.Sprintf("修改数据库链接失败，%v", err), webCtx)
@@ -84,7 +86,7 @@ func (controller *FileUploadController) UploadFile(webCtx SpringWeb.WebContext) 
 func (controller *FileUploadController) DeleteFile(webCtx SpringWeb.WebContext) {
 	var file model.ExaFileUploadAndDownload
 	_ = webCtx.Bind(&file)
-	err, f := service.FindFile(file.ID)
+	err, f := controller.ExaFileUploadDownloadService.FindFile(file.ID)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 	} else {
@@ -93,7 +95,7 @@ func (controller *FileUploadController) DeleteFile(webCtx SpringWeb.WebContext) 
 			response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 
 		} else {
-			err = service.DeleteFile(f)
+			err = controller.ExaFileUploadDownloadService.DeleteFile(f)
 			if err != nil {
 				response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 			} else {
@@ -114,7 +116,7 @@ func (controller *FileUploadController) DeleteFile(webCtx SpringWeb.WebContext) 
 func (controller *FileUploadController) GetFileList(webCtx SpringWeb.WebContext) {
 	var pageInfo request.PageInfo
 	_ = webCtx.Bind(&pageInfo)
-	err, list, total := service.GetFileRecordInfoList(pageInfo)
+	err, list, total := controller.ExaFileUploadDownloadService.GetFileRecordInfoList(pageInfo)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), webCtx)
 	} else {

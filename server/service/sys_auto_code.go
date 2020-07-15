@@ -1,12 +1,14 @@
 package service
 
 import (
-	"gin-vue-admin/model"
-	"gin-vue-admin/utils"
 	"io/ioutil"
 	"os"
 	"strings"
 	"text/template"
+
+	"gin-vue-admin/model"
+	"gin-vue-admin/utils"
+	"github.com/go-spring/go-spring/spring-boot"
 )
 
 type tplData struct {
@@ -15,16 +17,23 @@ type tplData struct {
 	autoCodePath string
 }
 
+func init() {
+	SpringBoot.RegisterBean(new(SysAutoCodeService))
+}
+
+type SysAutoCodeService struct {
+}
+
 // @title    CreateTemp
 // @description   函数的详细描述
 // @auth                     （2020/04/05  20:22）
 // @param     autoCode        model.AutoCodeStruct
 // @return    err             error
 
-func CreateTemp(autoCode model.AutoCodeStruct) (err error) {
+func (service *SysAutoCodeService) CreateTemp(autoCode model.AutoCodeStruct) (err error) {
 	basePath := "resource/template"
 	// 获取 basePath 文件夹下所有tpl文件
-	tplFileList, err := GetAllTplFile(basePath, nil)
+	tplFileList, err := service.GetAllTplFile(basePath, nil)
 	if err != nil {
 		return err
 	}
@@ -99,11 +108,11 @@ func CreateTemp(autoCode model.AutoCodeStruct) (err error) {
 }
 
 // GetAllTplFile 用来获取 pathName 文件夹下所有 tpl 文件
-func GetAllTplFile(pathName string, fileList []string) ([]string, error) {
+func (service *SysAutoCodeService) GetAllTplFile(pathName string, fileList []string) ([]string, error) {
 	files, err := ioutil.ReadDir(pathName)
 	for _, fi := range files {
 		if fi.IsDir() {
-			fileList, err = GetAllTplFile(pathName+"/"+fi.Name(), fileList)
+			fileList, err = service.GetAllTplFile(pathName+"/"+fi.Name(), fileList)
 			if err != nil {
 				return nil, err
 			}

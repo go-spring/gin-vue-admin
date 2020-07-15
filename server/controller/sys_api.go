@@ -85,7 +85,7 @@ func (controller *ApiController) DeleteApi(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(ApiVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.DeleteApi(a)
+	err := controller.SysApiService.DeleteApi(a)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 	} else {
@@ -112,7 +112,7 @@ func (controller *ApiController) GetApiList(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(PageVerifyErr.Error(), webCtx)
 		return
 	}
-	err, list, total := service.GetAPIInfoList(sp.SysApi, sp.PageInfo, sp.OrderKey, sp.Desc)
+	err, list, total := controller.SysApiService.GetAPIInfoList(sp.SysApi, sp.PageInfo, sp.OrderKey, sp.Desc)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), webCtx)
 	} else {
@@ -141,7 +141,7 @@ func (controller *ApiController) GetApiById(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(IdVerifyErr.Error(), webCtx)
 		return
 	}
-	err, api := service.GetApiById(idInfo.Id)
+	err, api := controller.SysApiService.GetApiById(idInfo.Id)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), webCtx)
 	} else {
@@ -171,7 +171,7 @@ func (controller *ApiController) UpdateApi(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(ApiVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.UpdateApi(api)
+	err := controller.SysApiService.UpdateApi(api)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("修改数据失败，%v", err), webCtx)
 	} else {
@@ -187,7 +187,7 @@ func (controller *ApiController) UpdateApi(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/getAllApis [post]
 func (controller *ApiController) GetAllApis(webCtx SpringWeb.WebContext) {
-	err, apis := service.GetAllApis()
+	err, apis := controller.SysApiService.GetAllApis()
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), webCtx)
 	} else {

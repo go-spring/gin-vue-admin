@@ -4,7 +4,16 @@ import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
+
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(ExaFileUploadDownloadService))
+}
+
+type ExaFileUploadDownloadService struct {
+}
 
 // @title    Upload
 // @description   创建文件上传记录
@@ -12,7 +21,7 @@ import (
 // @auth                     （2020/04/05  20:22）
 // @return                    error
 
-func Upload(file model.ExaFileUploadAndDownload) error {
+func (service *ExaFileUploadDownloadService) Upload(file model.ExaFileUploadAndDownload) error {
 	err := global.GVA_DB.Create(&file).Error
 	return err
 }
@@ -23,7 +32,7 @@ func Upload(file model.ExaFileUploadAndDownload) error {
 // @param     id              uint
 // @return                    error
 
-func FindFile(id uint) (error, model.ExaFileUploadAndDownload) {
+func (service *ExaFileUploadDownloadService) FindFile(id uint) (error, model.ExaFileUploadAndDownload) {
 	var file model.ExaFileUploadAndDownload
 	err := global.GVA_DB.Where("id = ?", id).First(&file).Error
 	return err, file
@@ -35,7 +44,7 @@ func FindFile(id uint) (error, model.ExaFileUploadAndDownload) {
 // @param     file            model.ExaFileUploadAndDownload
 // @return                    error
 
-func DeleteFile(file model.ExaFileUploadAndDownload) error {
+func (service *ExaFileUploadDownloadService) DeleteFile(file model.ExaFileUploadAndDownload) error {
 	err := global.GVA_DB.Where("id = ?", file.ID).Unscoped().Delete(file).Error
 	return err
 }
@@ -48,7 +57,7 @@ func DeleteFile(file model.ExaFileUploadAndDownload) error {
 // @return    list            error
 // @return    total           error
 
-func GetFileRecordInfoList(info request.PageInfo) (err error, list interface{}, total int) {
+func (service *ExaFileUploadDownloadService) GetFileRecordInfoList(info request.PageInfo) (err error, list interface{}, total int) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB

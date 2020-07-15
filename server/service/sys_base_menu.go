@@ -12,7 +12,7 @@ import (
 // @param     id              float64
 // @return    err             error
 
-func DeleteBaseMenu(id float64) (err error) {
+func (service *SysMenuService) DeleteBaseMenu(id float64) (err error) {
 	err = global.GVA_DB.Where("parent_id = ?", id).First(&model.SysBaseMenu{}).Error
 	if err != nil {
 		var menu model.SysBaseMenu
@@ -34,7 +34,7 @@ func DeleteBaseMenu(id float64) (err error) {
 // @param     menu            model.SysBaseMenu
 // @return    err             errorgetMenu
 
-func UpdateBaseMenu(menu model.SysBaseMenu) (err error) {
+func (service *SysMenuService) UpdateBaseMenu(menu model.SysBaseMenu) (err error) {
 	var oldMenu model.SysBaseMenu
 	upDateMap := make(map[string]interface{})
 	upDateMap["keep_alive"] = menu.KeepAlive
@@ -66,7 +66,7 @@ func UpdateBaseMenu(menu model.SysBaseMenu) (err error) {
 // @param     id              float64
 // @return    err             error
 
-func GetBaseMenuById(id float64) (err error, menu model.SysBaseMenu) {
+func (service *SysMenuService) GetBaseMenuById(id float64) (err error, menu model.SysBaseMenu) {
 	err = global.GVA_DB.Where("id = ?", id).First(&menu).Error
 	return
 }

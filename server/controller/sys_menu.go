@@ -37,6 +37,7 @@ func init() {
 }
 
 type MenuController struct {
+	SysMenuService *service.SysMenuService `autowire:""`
 }
 
 // @Tags authorityAndMenu
@@ -49,7 +50,7 @@ type MenuController struct {
 func (controller *MenuController) GetMenu(webCtx SpringWeb.WebContext) {
 	claims := webCtx.Get("claims")
 	waitUse := claims.(*request.CustomClaims)
-	err, menus := service.GetMenuTree(waitUse.AuthorityId)
+	err, menus := controller.SysMenuService.GetMenuTree(waitUse.AuthorityId)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取失败，%v", err), webCtx)
 	} else {
@@ -73,7 +74,7 @@ func (controller *MenuController) GetMenuList(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(PageVerifyErr.Error(), webCtx)
 		return
 	}
-	err, menuList, total := service.GetInfoList()
+	err, menuList, total := controller.SysMenuService.GetInfoList()
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), webCtx)
 	} else {
@@ -117,7 +118,7 @@ func (controller *MenuController) AddBaseMenu(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(MetaVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.AddBaseMenu(menu)
+	err := controller.SysMenuService.AddBaseMenu(menu)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("添加失败，%v", err), webCtx)
 	} else {
@@ -133,7 +134,7 @@ func (controller *MenuController) AddBaseMenu(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /menu/getBaseMenuTree [post]
 func (controller *MenuController) GetBaseMenuTree(webCtx SpringWeb.WebContext) {
-	err, menus := service.GetBaseMenuTree()
+	err, menus := controller.SysMenuService.GetBaseMenuTree()
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取失败，%v", err), webCtx)
 	} else {
@@ -160,7 +161,7 @@ func (controller *MenuController) AddMenuAuthority(webCtx SpringWeb.WebContext) 
 		response.FailWithMessage(MenuVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.AddMenuAuthority(addMenuAuthorityInfo.Menus, addMenuAuthorityInfo.AuthorityId)
+	err := controller.SysMenuService.AddMenuAuthority(addMenuAuthorityInfo.Menus, addMenuAuthorityInfo.AuthorityId)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("添加失败，%v", err), webCtx)
 	} else {
@@ -187,7 +188,7 @@ func (controller *MenuController) GetMenuAuthority(webCtx SpringWeb.WebContext) 
 		response.FailWithMessage(MenuVerifyErr.Error(), webCtx)
 		return
 	}
-	err, menus := service.GetMenuAuthority(authorityIdInfo.AuthorityId)
+	err, menus := controller.SysMenuService.GetMenuAuthority(authorityIdInfo.AuthorityId)
 	if err != nil {
 		response.FailWithDetailed(response.ERROR, resp.SysMenusResponse{Menus: menus}, fmt.Sprintf("添加失败，%v", err), webCtx)
 	} else {
@@ -211,7 +212,7 @@ func (controller *MenuController) DeleteBaseMenu(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(IdVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.DeleteBaseMenu(idInfo.Id)
+	err := controller.SysMenuService.DeleteBaseMenu(idInfo.Id)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("删除失败：%v", err), webCtx)
 	} else {
@@ -251,7 +252,7 @@ func (controller *MenuController) UpdateBaseMenu(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(MetaVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.UpdateBaseMenu(menu)
+	err := controller.SysMenuService.UpdateBaseMenu(menu)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("修改失败：%v", err), webCtx)
 	} else {
@@ -278,7 +279,7 @@ func (controller *MenuController) GetBaseMenuById(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(MenuVerifyErr.Error(), webCtx)
 		return
 	}
-	err, menu := service.GetBaseMenuById(idInfo.Id)
+	err, menu := controller.SysMenuService.GetBaseMenuById(idInfo.Id)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("查询失败：%v", err), webCtx)
 	} else {

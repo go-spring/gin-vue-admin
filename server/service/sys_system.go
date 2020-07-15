@@ -5,7 +5,16 @@ import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	"gin-vue-admin/utils"
+
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(SysSystemService))
+}
+
+type SysSystemService struct {
+}
 
 // @title    GetSystemConfig
 // @description   读取配置文件
@@ -13,7 +22,7 @@ import (
 // @return    err             error
 // @return    conf            Server
 
-func GetSystemConfig() (err error, conf config.Server) {
+func (service *SysSystemService) GetSystemConfig() (err error, conf config.Server) {
 	return nil, global.GVA_CONFIG
 }
 
@@ -23,7 +32,7 @@ func GetSystemConfig() (err error, conf config.Server) {
 // @param     system         model.System
 // @return    err            error
 
-func SetSystemConfig(system model.System) (err error) {
+func (service *SysSystemService) SetSystemConfig(system model.System) (err error) {
 	cs := utils.StructToMap(system.Config)
 	for k, v := range cs {
 		global.GVA_VP.Set(k, v)

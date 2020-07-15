@@ -48,6 +48,8 @@ func init() {
 }
 
 type BaseController struct {
+	SysUserService *service.SysUserService `autowire:""`
+	JwtBlackListService *service.JwtBlackListService `autowire:""`
 }
 
 // @Tags Base
@@ -71,7 +73,7 @@ func (controller *BaseController) Register(webCtx SpringWeb.WebContext) {
 		return
 	}
 	user := &model.SysUser{Username: R.Username, NickName: R.NickName, Password: R.Password, HeaderImg: R.HeaderImg, AuthorityId: R.AuthorityId}
-	err, userReturn := service.Register(*user)
+	err, userReturn := controller.SysUserService.Register(*user)
 	if err != nil {
 		response.FailWithDetailed(response.ERROR, resp.SysUserResponse{User: userReturn}, fmt.Sprintf("%v", err), webCtx)
 	} else {
@@ -104,10 +106,10 @@ func (controller *BaseController) Login(webCtx SpringWeb.WebContext) {
 
 	if captcha.VerifyString(L.CaptchaId, L.Captcha) {
 		U := &model.SysUser{Username: L.Username, Password: L.Password}
-		if err, user := service.Login(U); err != nil {
+		if err, user := controller.SysUserService.Login(U); err != nil {
 			response.FailWithMessage(fmt.Sprintf("用户名密码错误或%v", err), webCtx)
 		} else {
-			tokenNext(webCtx, *user)
+			controller.tokenNext(webCtx, *user)
 		}
 	} else {
 		response.FailWithMessage("验证码错误", webCtx)
@@ -115,7 +117,7 @@ func (controller *BaseController) Login(webCtx SpringWeb.WebContext) {
 }
 
 // 登录以后签发jwt
-func tokenNext(webCtx SpringWeb.WebContext, user model.SysUser) {
+func (controller *BaseController) tokenNext(webCtx SpringWeb.WebContext, user model.SysUser) {
 
 	j := &middleware.JWT{
 		SigningKey: []byte(global.GVA_CONFIG.JWT.SigningKey), // 唯一签名
@@ -146,9 +148,9 @@ func tokenNext(webCtx SpringWeb.WebContext, user model.SysUser) {
 	}
 	var loginJwt model.JwtBlacklist
 	loginJwt.Jwt = token
-	err, jwtStr := service.GetRedisJWT(user.Username)
+	err, jwtStr := controller.JwtBlackListService.GetRedisJWT(user.Username)
 	if err == redis.Nil {
-		if err := service.SetRedisJWT(loginJwt, user.Username); err != nil {
+		if err := controller.JwtBlackListService.SetRedisJWT(loginJwt, user.Username); err != nil {
 			response.FailWithMessage("设置登录状态失败", webCtx)
 			return
 		}
@@ -162,11 +164,11 @@ func tokenNext(webCtx SpringWeb.WebContext, user model.SysUser) {
 	} else {
 		var blackJWT model.JwtBlacklist
 		blackJWT.Jwt = jwtStr
-		if err := service.JsonInBlacklist(blackJWT); err != nil {
+		if err := controller.JwtBlackListService.JsonInBlacklist(blackJWT); err != nil {
 			response.FailWithMessage("jwt作废失败", webCtx)
 			return
 		}
-		if err := service.SetRedisJWT(loginJwt, user.Username); err != nil {
+		if err := controller.JwtBlackListService.SetRedisJWT(loginJwt, user.Username); err != nil {
 			response.FailWithMessage("设置登录状态失败", webCtx)
 			return
 		}
@@ -179,6 +181,7 @@ func tokenNext(webCtx SpringWeb.WebContext, user model.SysUser) {
 }
 
 type UserController struct {
+	SysUserService *service.SysUserService `autowire:""`
 }
 
 // @Tags SysUser
@@ -202,7 +205,7 @@ func (controller *UserController) ChangePassword(webCtx SpringWeb.WebContext) {
 		return
 	}
 	U := &model.SysUser{Username: params.Username, Password: params.Password}
-	if err, _ := service.ChangePassword(U, params.NewPassword); err != nil {
+	if err, _ := controller.SysUserService.ChangePassword(U, params.NewPassword); err != nil {
 		response.FailWithMessage("修改失败，请检查用户名密码", webCtx)
 	} else {
 		response.OkWithMessage("修改成功", webCtx)
@@ -239,7 +242,7 @@ func (controller *UserController) UploadHeaderImg(webCtx SpringWeb.WebContext) {
 			response.FailWithMessage(fmt.Sprintf("接收返回值失败，%v", err), webCtx)
 		} else {
 			// 修改数据库后得到修改后的user并且返回供前端使用
-			err, user := service.UploadHeaderImg(uuid, filePath)
+			err, user := controller.SysUserService.UploadHeaderImg(uuid, filePath)
 			if err != nil {
 				response.FailWithMessage(fmt.Sprintf("修改数据库链接失败，%v", err), webCtx)
 			} else {
@@ -265,7 +268,7 @@ func (controller *UserController) GetUserList(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(PageVerifyErr.Error(), webCtx)
 		return
 	}
-	err, list, total := service.GetUserInfoList(pageInfo)
+	err, list, total := controller.SysUserService.GetUserInfoList(pageInfo)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), webCtx)
 	} else {
@@ -298,7 +301,7 @@ func (controller *UserController) SetUserAuthority(webCtx SpringWeb.WebContext) 
 		response.FailWithMessage(UserVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.SetUserAuthority(sua.UUID, sua.AuthorityId)
+	err := controller.SysUserService.SetUserAuthority(sua.UUID, sua.AuthorityId)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("修改失败，%v", err), webCtx)
 	} else {
@@ -322,7 +325,7 @@ func (controller *UserController) DeleteUser(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(IdVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.DeleteUser(reqId.Id)
+	err := controller.SysUserService.DeleteUser(reqId.Id)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 	} else {

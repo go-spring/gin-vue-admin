@@ -27,6 +27,7 @@ func init() {
 }
 
 type SystemController struct {
+	SysSystemService *service.SysSystemService `autowire:""`
 }
 
 // @Tags system
@@ -36,7 +37,7 @@ type SystemController struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"返回成功"}"
 // @Router /system/getSystemConfig [post]
 func (controller *SystemController) GetSystemConfig(webCtx SpringWeb.WebContext) {
-	err, config := service.GetSystemConfig()
+	err, config := controller.SysSystemService.GetSystemConfig()
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("获取失败，%v", err), webCtx)
 	} else {
@@ -54,7 +55,7 @@ func (controller *SystemController) GetSystemConfig(webCtx SpringWeb.WebContext)
 func (controller *SystemController) SetSystemConfig(webCtx SpringWeb.WebContext) {
 	var sys model.System
 	_ = webCtx.Bind(&sys)
-	err := service.SetSystemConfig(sys)
+	err := controller.SysSystemService.SetSystemConfig(sys)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("设置失败，%v", err), webCtx)
 	} else {
@@ -73,7 +74,7 @@ func (controller *SystemController) SetSystemConfig(webCtx SpringWeb.WebContext)
 func (controller *SystemController) ReloadSystem(webCtx SpringWeb.WebContext) {
 	var sys model.System
 	_ = webCtx.Bind(&sys)
-	err := service.SetSystemConfig(sys)
+	err := controller.SysSystemService.SetSystemConfig(sys)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("设置失败，%v", err), webCtx)
 	} else {

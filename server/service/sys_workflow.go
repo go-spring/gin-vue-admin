@@ -3,7 +3,16 @@ package service
 import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
+
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(SysWorkflowService))
+}
+
+type SysWorkflowService struct {
+}
 
 // @title    Create
 // @description   create a workflow, 创建工作流
@@ -11,7 +20,7 @@ import (
 // @param     wk              model.SysWorkflow
 // @return                    error
 
-func Create(wk model.SysWorkflow) error {
+func (service *SysWorkflowService) Create(wk model.SysWorkflow) error {
 	err := global.GVA_DB.Create(&wk).Error
 	return err
 }

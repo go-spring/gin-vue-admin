@@ -2,15 +2,16 @@ package middleware
 
 import (
 	"errors"
+	"time"
+
 	"gin-vue-admin/global"
 	"gin-vue-admin/global/response"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
 	"gin-vue-admin/service"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"time"
-
 	"github.com/go-spring/go-spring-web/spring-gin"
 )
 
@@ -29,7 +30,11 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		if service.IsBlacklist(token, modelToken) {
+
+		jwtBlackListService := new(service.JwtBlackListService)
+		//TODO: 后续阶段改造成  filter
+		//if service.IsBlacklist(token, modelToken)
+		if jwtBlackListService.IsBlacklist(token, modelToken) {
 			response.Result(response.ERROR, gin.H{
 				"reload": true,
 			}, "您的帐户异地登陆或令牌失效", webCtx)

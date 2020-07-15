@@ -4,7 +4,17 @@ import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
+
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(ExaCustomerService))
+}
+
+type ExaCustomerService struct {
+	SysAuthorityService *SysAuthorityService `autowire:""`
+}
 
 // @title    CreateExaCustomer
 // @description   create a customer, 创建用户
@@ -12,7 +22,7 @@ import (
 // @auth                     （2020/04/05  20:22）
 // @return    err             error
 
-func CreateExaCustomer(e model.ExaCustomer) (err error) {
+func (service *ExaCustomerService) CreateExaCustomer(e model.ExaCustomer) (err error) {
 	err = global.GVA_DB.Create(&e).Error
 	return err
 }
@@ -23,7 +33,7 @@ func CreateExaCustomer(e model.ExaCustomer) (err error) {
 // @param     e               model.ExaCustomer
 // @return                    error
 
-func DeleteExaCustomer(e model.ExaCustomer) (err error) {
+func (service *ExaCustomerService) DeleteExaCustomer(e model.ExaCustomer) (err error) {
 	err = global.GVA_DB.Delete(e).Error
 	return err
 }
@@ -34,7 +44,7 @@ func DeleteExaCustomer(e model.ExaCustomer) (err error) {
 // @auth                     （2020/04/05  20:22）
 // @return                    error
 
-func UpdateExaCustomer(e *model.ExaCustomer) (err error) {
+func (service *ExaCustomerService) UpdateExaCustomer(e *model.ExaCustomer) (err error) {
 	err = global.GVA_DB.Save(e).Error
 	return err
 }
@@ -46,7 +56,7 @@ func UpdateExaCustomer(e *model.ExaCustomer) (err error) {
 // @return                    error
 // @return    customer        ExaCustomer
 
-func GetExaCustomer(id uint) (err error, customer model.ExaCustomer) {
+func (service *ExaCustomerService) GetExaCustomer(id uint) (err error, customer model.ExaCustomer) {
 	err = global.GVA_DB.Where("id = ?", id).First(&customer).Error
 	return
 }
@@ -58,13 +68,13 @@ func GetExaCustomer(id uint) (err error, customer model.ExaCustomer) {
 // @param     info            PageInfo
 // @return                    error
 
-func GetCustomerInfoList(sysUserAuthorityID string, info request.PageInfo) (err error, list interface{}, total int) {
+func (service *ExaCustomerService) GetCustomerInfoList(sysUserAuthorityID string, info request.PageInfo) (err error, list interface{}, total int) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB
 	var a model.SysAuthority
 	a.AuthorityId = sysUserAuthorityID
-	err, auth := GetAuthorityInfo(a)
+	err, auth := service.SysAuthorityService.GetAuthorityInfo(a)
 	var dataId []string
 	for _, v := range auth.DataAuthorityId {
 		dataId = append(dataId, v.AuthorityId)
