@@ -33,6 +33,7 @@ func init() {
 }
 
 type ApiController struct {
+	SysApiService *service.SysApiService `autowire:""`
 }
 
 // @Tags SysApi
@@ -57,7 +58,7 @@ func (controller *ApiController) CreateApi(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(ApiVerifyErr.Error(), webCtx)
 		return
 	}
-	err := service.CreateApi(api)
+	err := controller.SysApiService.CreateApi(api)
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("创建失败，%v", err), webCtx)
 	} else {

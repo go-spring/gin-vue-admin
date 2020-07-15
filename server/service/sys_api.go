@@ -5,7 +5,15 @@ import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
+	"github.com/go-spring/go-spring/spring-boot"
 )
+
+func init() {
+	SpringBoot.RegisterBean(new(SysApiService))
+}
+
+type SysApiService struct {
+}
 
 // @title    CreateApi
 // @description   create base apis, 新增基础api
@@ -13,7 +21,7 @@ import (
 // @param     api             model.SysApi
 // @return                    error
 
-func CreateApi(api model.SysApi) (err error) {
+func (service *SysApiService) CreateApi(api model.SysApi) (err error) {
 	findOne := global.GVA_DB.Where("path = ? AND method = ?", api.Path, api.Method).Find(&model.SysApi{}).Error
 	if findOne == nil {
 		return errors.New("存在相同api")
