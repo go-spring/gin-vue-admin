@@ -6,7 +6,7 @@ import (
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
 	"gin-vue-admin/utils"
-	SpringBoot "github.com/go-spring/go-spring/spring-boot"
+	"github.com/go-spring/go-spring/spring-boot"
 	uuid "github.com/satori/go.uuid"
 )
 

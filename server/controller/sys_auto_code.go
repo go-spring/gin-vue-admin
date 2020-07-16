@@ -28,7 +28,7 @@ func init() {
 }
 
 type AutoCodeController struct {
-	SysApiService *service.SysApiService `autowire:""`
+	SysApiService      *service.SysApiService      `autowire:""`
 	SysAutoCodeService *service.SysAutoCodeService `autowire:""`
 }
 

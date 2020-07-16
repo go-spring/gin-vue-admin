@@ -3,7 +3,7 @@ package service
 import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
-	SpringBoot "github.com/go-spring/go-spring/spring-boot"
+	"github.com/go-spring/go-spring/spring-boot"
 )
 
 func init() {

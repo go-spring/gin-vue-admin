@@ -15,7 +15,7 @@ require (
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
 	github.com/go-redis/redis v6.15.7+incompatible
 	github.com/go-spring/go-spring v1.0.4
-	github.com/go-spring/go-spring-web v1.0.5-0.20200628140552-c269f717f387
+	github.com/go-spring/go-spring-web v1.0.5-0.20200716025259-9a870a1a0452
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869 // indirect
