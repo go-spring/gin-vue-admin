@@ -18,19 +18,20 @@ type CorsFilter struct {
 }
 
 func (filter *CorsFilter) Invoke(webCtx SpringWeb.WebContext, chain SpringWeb.FilterChain) {
-	ctx := webCtx.NativeContext().(*gin.Context)
-	method := webCtx.Request().Method
-	webCtx.Header("Access-Control-Allow-Origin", "*")
-	webCtx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token,Authorization,Token,x-token")
-	webCtx.Header("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS")
-	webCtx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	webCtx.Header("Access-Control-Allow-Credentials", "true")
+	c := webCtx.NativeContext().(*gin.Context)
 
+	method := c.Request.Method
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token,Authorization,Token,x-token")
+	c.Header("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS")
+	c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+	c.Header("Access-Control-Allow-Credentials", "true")
+
+	// 放行所有OPTIONS方法
 	if method == "OPTIONS" {
-		webCtx.NoContent(http.StatusNoContent)
-		ctx.Abort()
-		return
+		c.AbortWithStatus(http.StatusNoContent)
 	}
 
-	chain.Next(webCtx)
+	// 处理请求
+	c.Next()
 }

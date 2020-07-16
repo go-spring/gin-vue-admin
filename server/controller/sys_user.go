@@ -8,7 +8,6 @@ import (
 	"gin-vue-admin/filter"
 	"gin-vue-admin/global"
 	"gin-vue-admin/global/response"
-	"gin-vue-admin/middleware"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
 	resp "gin-vue-admin/model/response"
@@ -119,7 +118,7 @@ func (controller *BaseController) Login(webCtx SpringWeb.WebContext) {
 // 登录以后签发jwt
 func (controller *BaseController) tokenNext(webCtx SpringWeb.WebContext, user model.SysUser) {
 
-	j := &middleware.JWT{
+	j := &filter.JWT{
 		SigningKey: []byte(global.GVA_CONFIG.JWT.SigningKey), // 唯一签名
 	}
 	clams := request.CustomClaims{

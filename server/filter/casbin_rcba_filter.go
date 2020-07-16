@@ -22,23 +22,25 @@ type CasbinRcbaFilter struct {
 }
 
 func (filter *CasbinRcbaFilter) Invoke(webCtx SpringWeb.WebContext, chain SpringWeb.FilterChain) {
-	ctx := webCtx.NativeContext().(*gin.Context)
-	claims := webCtx.Get("claims")
+	c := webCtx.NativeContext().(*gin.Context)
+
+	claims, _ := c.Get("claims")
 	waitUse := claims.(*request.CustomClaims)
 
 	// 获取请求的URI
-	obj := webCtx.Request().RequestURI
+	obj := c.Request.URL.RequestURI()
 	// 获取请求方法
-	act := webCtx.Request().Method
+	act := c.Request.Method
 	// 获取用户的角色
 	sub := waitUse.AuthorityId
-	e := filter.SysCasbinService.Casbin()
 
+	e := filter.SysCasbinService.Casbin()
+	// 判断策略中是否存在
 	if global.GVA_CONFIG.System.Env == "develop" || e.Enforce(sub, obj, act) {
-		chain.Next(webCtx)
+		c.Next()
 	} else {
-		response.Result(response.ERROR, map[string]interface{}{}, "权限不足", webCtx)
-		ctx.Abort()
+		response.Result(response.ERROR, gin.H{}, "权限不足", webCtx)
+		c.Abort()
 		return
 	}
 }
