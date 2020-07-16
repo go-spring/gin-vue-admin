@@ -33,6 +33,10 @@ docker start -i ginvue # 第二次启动
     6.3 大功告成！（已完成）
 
 7. 第六阶段改造步骤：
-    7.1 将 service 目录下的全局函数改成结构体方法，示例见 service/sys_api.go；
-    7.2 将 controller 目录下用到的 Service 改为注入的方式，示例见 controller/sys_api.go；
-    7.3 大功告成！
+    7.1 将 service 目录下的全局函数改成结构体方法，示例见 service/sys_api.go；（已完成）
+    7.2 将 controller 目录下用到的 Service 改为注入的方式，示例见 controller/sys_api.go；（已完成）
+    7.3 大功告成！（已完成）
+
+8. 第七阶段改造步骤：
+    8.1 将 middleware 目录下的中间件改为 SpringWeb.Filter 对象；
+    8.2 大功告成！
