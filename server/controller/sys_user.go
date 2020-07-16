@@ -5,6 +5,7 @@ import (
 	"mime/multipart"
 	"time"
 
+	"gin-vue-admin/filter"
 	"gin-vue-admin/global"
 	"gin-vue-admin/global/response"
 	"gin-vue-admin/middleware"
@@ -17,7 +18,6 @@ import (
 	"github.com/dchest/captcha"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-redis/redis"
-	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring-web/spring-web"
 	"github.com/go-spring/go-spring/spring-boot"
 )
@@ -36,8 +36,8 @@ func init() {
 	SpringBoot.RegisterBean(new(UserController)).Init(func(c *UserController) {
 
 		r := SpringBoot.Route("/user",
-			SpringGin.Filter(middleware.JWTAuth()),
-			SpringGin.Filter(middleware.CasbinHandler()))
+			SpringBoot.FilterBean((*filter.JwtFilter)(nil)),
+			SpringBoot.FilterBean((*filter.CasbinRcbaFilter)(nil)))
 
 		r.PostMapping("/changePassword", c.ChangePassword)
 		r.PostMapping("/uploadHeaderImg", c.UploadHeaderImg)
@@ -48,7 +48,7 @@ func init() {
 }
 
 type BaseController struct {
-	SysUserService *service.SysUserService `autowire:""`
+	SysUserService      *service.SysUserService      `autowire:""`
 	JwtBlackListService *service.JwtBlackListService `autowire:""`
 }
 
