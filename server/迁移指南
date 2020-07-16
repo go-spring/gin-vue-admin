@@ -38,5 +38,10 @@ docker start -i ginvue # 第二次启动
     7.3 大功告成！（已完成）
 
 8. 第七阶段改造步骤：
-    8.1 将 middleware 目录下的中间件改为 SpringWeb.Filter 对象；
-    8.2 大功告成！
+    8.1 将 middleware 目录下的中间件改为 SpringWeb.Filter 对象；（已完成）
+    8.2 大功告成！（已完成）
+
+9. 第八阶段改造步骤：
+    9.1 将 MySQL 全局变量 GVA_DB 改成由 go-spring 框架创建，可以先通过 SpringBoot.Config() 把框架生
+        成的 *gorm.DB 赋值给 GVA_DB，然后一步步改造引用 GVA_DB 的地方。
+    9.2 大功告成！
