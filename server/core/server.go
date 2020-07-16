@@ -3,10 +3,9 @@ package core
 import (
 	_ "gin-vue-admin/controller"
 	_ "gin-vue-admin/docs"
+	"gin-vue-admin/filter"
 	"gin-vue-admin/global"
 	"gin-vue-admin/initialize"
-	"gin-vue-admin/middleware"
-
 	"github.com/gin-gonic/gin"
 	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring-web/spring-web"
@@ -29,7 +28,7 @@ func RunWindowsServer() {
 	SpringBoot.Config(func(c SpringWeb.WebContainer, port int) {
 		c.SetRecoveryFilter(SpringGin.Filter(gin.Recovery()))
 		c.SetLoggerFilter(SpringGin.Filter(gin.Logger()))
-		c.AddFilter(SpringGin.Filter(middleware.Cors()))
+		c.AddFilter(SpringBoot.FilterBean((*filter.CorsFilter)(nil)))
 		c.SetEnableSwagger(false)
 	}, "1:${web.server.port}")
 

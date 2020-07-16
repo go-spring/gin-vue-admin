@@ -3,13 +3,12 @@ package controller
 import (
 	"fmt"
 
+	"gin-vue-admin/filter"
 	"gin-vue-admin/global/response"
-	"gin-vue-admin/middleware"
 	"gin-vue-admin/model"
 	resp "gin-vue-admin/model/response"
 	"gin-vue-admin/service"
 
-	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring-web/spring-web"
 	"github.com/go-spring/go-spring/spring-boot"
 )
@@ -18,8 +17,8 @@ func init() {
 	SpringBoot.RegisterBean(new(SystemController)).Init(func(c *SystemController) {
 
 		r := SpringBoot.Route("/system",
-			SpringGin.Filter(middleware.JWTAuth()),
-			SpringGin.Filter(middleware.CasbinHandler()))
+			SpringBoot.FilterBean((*filter.JwtFilter)(nil)),
+			SpringBoot.FilterBean((*filter.CasbinRcbaFilter)(nil)))
 
 		r.PostMapping("/getSystemConfig", c.GetSystemConfig)
 		r.PostMapping("/setSystemConfig", c.SetSystemConfig)
