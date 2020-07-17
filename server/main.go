@@ -23,9 +23,6 @@ func main() {
 	default:
 		initialize.Mysql()
 	}
-	initialize.DBTables()
-	// 程序结束前关闭数据库链接
-	defer global.GVA_DB.Close()
 
 	core.RunWindowsServer()
 }
