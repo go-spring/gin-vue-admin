@@ -43,5 +43,10 @@ docker start -i ginvue # 第二次启动
 
 9. 第八阶段改造步骤：
     9.1 将 MySQL 全局变量 GVA_DB 改成由 go-spring 框架创建，可以先通过 SpringBoot.Config() 把框架生
-        成的 *gorm.DB 赋值给 GVA_DB，然后一步步改造引用 GVA_DB 的地方。
-    9.2 大功告成！
+        成的 *gorm.DB 赋值给 GVA_DB，然后一步步改造引用 GVA_DB 的地方。（已完成）
+    9.2 大功告成！（已完成）
+
+10. 第九阶段改造步骤：
+    10.1 将 Redis 全局变量 GVA_REDIS 改成由 go-spring 框架创建，可以先通过 SpringBoot.Config() 把框架
+         生成的 *redis.Client 赋值给 GVA_REDIS，然后一步步改造引用 GVA_REDIS 的地方。
+    10.2 大功告成！
