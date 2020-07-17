@@ -2,21 +2,35 @@ package initialize
 
 import (
 	"gin-vue-admin/global"
-
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-
-	_ "github.com/go-spring/go-spring/starter-mysql-gorm"
+	"gin-vue-admin/model"
 	"github.com/go-spring/go-spring/spring-boot"
+	_ "github.com/go-spring/go-spring/starter-mysql-gorm"
+	"github.com/jinzhu/gorm"
 )
 
 // 初始化数据库并产生数据库全局变量
 func Mysql() {
 	SpringBoot.Config(func(db *gorm.DB, maxIdleConns, maxOpenConns int, logMode bool) {
-		global.GVA_DB = db
-		global.GVA_DB.DB().SetMaxIdleConns(maxIdleConns)
-		global.GVA_DB.DB().SetMaxOpenConns(maxOpenConns)
-		global.GVA_DB.LogMode(logMode)
-		DBTables()
-	}, "1:${db.max-idle-conns}", "2:${db.max-open-conns}", "3:${db.log-mode}")
+		db.DB().SetMaxIdleConns(maxIdleConns)
+		db.DB().SetMaxOpenConns(maxOpenConns)
+		db.LogMode(logMode)
+		DBTables(db)
+	}, "", "${db.max-idle-conns}", "${db.max-open-conns}", "${db.log-mode}")
+}
+
+// 注册数据库表专用
+func DBTables(db *gorm.DB) {
+	db.AutoMigrate(model.SysUser{},
+		model.SysAuthority{},
+		model.SysApi{},
+		model.SysBaseMenu{},
+		model.JwtBlacklist{},
+		model.SysWorkflow{},
+		model.SysWorkflowStepInfo{},
+		model.ExaFileUploadAndDownload{},
+		model.ExaFile{},
+		model.ExaFileChunk{},
+		model.ExaCustomer{},
+	)
+	global.GVA_LOG.Debug("register table success")
 }
