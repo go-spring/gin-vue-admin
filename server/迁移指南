@@ -52,5 +52,5 @@ docker start -i ginvue # 第二次启动
     10.2 大功告成！
 
 11. 第十阶段改造步骤：
-    11.1 将所有引用配置的地方改成 go-spring 的风格。
+    11.1 将所有引用配置的地方改成 go-spring 的风格，修改示例参见 utils.GinCaptchaService 对象。
     11.2 大功告成！
