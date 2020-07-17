@@ -6,6 +6,7 @@ import (
 	"gin-vue-admin/filter"
 	"gin-vue-admin/global"
 	"gin-vue-admin/initialize"
+	_ "gin-vue-admin/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-spring/go-spring-web/spring-gin"
 	"github.com/go-spring/go-spring-web/spring-web"

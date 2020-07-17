@@ -49,6 +49,7 @@ func init() {
 type BaseController struct {
 	SysUserService      *service.SysUserService      `autowire:""`
 	JwtBlackListService *service.JwtBlackListService `autowire:""`
+	GinCaptchaService   *utils.GinCaptchaService     `autowire:""`
 }
 
 // @Tags Base

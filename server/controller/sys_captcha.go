@@ -4,8 +4,6 @@ import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/global/response"
 	resp "gin-vue-admin/model/response"
-	"gin-vue-admin/utils"
-
 	"github.com/dchest/captcha"
 	"github.com/go-spring/go-spring-web/spring-web"
 )
@@ -33,5 +31,5 @@ func (controller *BaseController) Captcha(webCtx SpringWeb.WebContext) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /base/captcha/:captchaId [get]
 func (controller *BaseController) CaptchaImg(webCtx SpringWeb.WebContext) {
-	utils.GinCaptchaServeHTTP(webCtx.ResponseWriter(), webCtx.Request())
+	controller.GinCaptchaService.GinCaptchaServeHTTP(webCtx.ResponseWriter(), webCtx.Request())
 }
