@@ -1,11 +1,11 @@
 package service
 
 import (
-	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
 
 	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/jinzhu/gorm"
 )
 
 func init() {
@@ -14,6 +14,7 @@ func init() {
 
 type ExaCustomerService struct {
 	SysAuthorityService *SysAuthorityService `autowire:""`
+	Db                  *gorm.DB             `autowire:""`
 }
 
 // @title    CreateExaCustomer
@@ -23,7 +24,7 @@ type ExaCustomerService struct {
 // @return    err             error
 
 func (service *ExaCustomerService) CreateExaCustomer(e model.ExaCustomer) (err error) {
-	err = global.GVA_DB.Create(&e).Error
+	err = service.Db.Create(&e).Error
 	return err
 }
 
@@ -34,7 +35,7 @@ func (service *ExaCustomerService) CreateExaCustomer(e model.ExaCustomer) (err e
 // @return                    error
 
 func (service *ExaCustomerService) DeleteExaCustomer(e model.ExaCustomer) (err error) {
-	err = global.GVA_DB.Delete(e).Error
+	err = service.Db.Delete(e).Error
 	return err
 }
 
@@ -45,7 +46,7 @@ func (service *ExaCustomerService) DeleteExaCustomer(e model.ExaCustomer) (err e
 // @return                    error
 
 func (service *ExaCustomerService) UpdateExaCustomer(e *model.ExaCustomer) (err error) {
-	err = global.GVA_DB.Save(e).Error
+	err = service.Db.Save(e).Error
 	return err
 }
 
@@ -57,7 +58,7 @@ func (service *ExaCustomerService) UpdateExaCustomer(e *model.ExaCustomer) (err 
 // @return    customer        ExaCustomer
 
 func (service *ExaCustomerService) GetExaCustomer(id uint) (err error, customer model.ExaCustomer) {
-	err = global.GVA_DB.Where("id = ?", id).First(&customer).Error
+	err = service.Db.Where("id = ?", id).First(&customer).Error
 	return
 }
 
@@ -71,7 +72,7 @@ func (service *ExaCustomerService) GetExaCustomer(id uint) (err error, customer 
 func (service *ExaCustomerService) GetCustomerInfoList(sysUserAuthorityID string, info request.PageInfo) (err error, list interface{}, total int) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
-	db := global.GVA_DB
+	db := service.Db
 	var a model.SysAuthority
 	a.AuthorityId = sysUserAuthorityID
 	err, auth := service.SysAuthorityService.GetAuthorityInfo(a)

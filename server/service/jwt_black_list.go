@@ -5,6 +5,7 @@ import (
 	"gin-vue-admin/model"
 
 	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/jinzhu/gorm"
 )
 
 func init() {
@@ -12,6 +13,7 @@ func init() {
 }
 
 type JwtBlackListService struct {
+	Db *gorm.DB `autowire:""`
 }
 
 // @title    JsonInBlacklist
@@ -21,7 +23,7 @@ type JwtBlackListService struct {
 // @return    err             error
 
 func (service *JwtBlackListService) JsonInBlacklist(jwtList model.JwtBlacklist) (err error) {
-	err = global.GVA_DB.Create(&jwtList).Error
+	err = service.Db.Create(&jwtList).Error
 	return
 }
 
@@ -33,7 +35,7 @@ func (service *JwtBlackListService) JsonInBlacklist(jwtList model.JwtBlacklist) 
 // @return    err             error
 
 func (service *JwtBlackListService) IsBlacklist(jwt string, jwtList model.JwtBlacklist) bool {
-	isNotFound := global.GVA_DB.Where("jwt = ?", jwt).First(&jwtList).RecordNotFound()
+	isNotFound := service.Db.Where("jwt = ?", jwt).First(&jwtList).RecordNotFound()
 	return !isNotFound
 }
 

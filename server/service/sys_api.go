@@ -2,10 +2,12 @@ package service
 
 import (
 	"errors"
-	"gin-vue-admin/global"
+
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
+
 	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/jinzhu/gorm"
 )
 
 func init() {
@@ -14,6 +16,7 @@ func init() {
 
 type SysApiService struct {
 	SysCasbinService *SysCasbinService `autowire:""`
+	Db               *gorm.DB          `autowire:""`
 }
 
 // @title    CreateApi
@@ -23,11 +26,11 @@ type SysApiService struct {
 // @return                    error
 
 func (service *SysApiService) CreateApi(api model.SysApi) (err error) {
-	findOne := global.GVA_DB.Where("path = ? AND method = ?", api.Path, api.Method).Find(&model.SysApi{}).Error
+	findOne := service.Db.Where("path = ? AND method = ?", api.Path, api.Method).Find(&model.SysApi{}).Error
 	if findOne == nil {
 		return errors.New("存在相同api")
 	} else {
-		err = global.GVA_DB.Create(&api).Error
+		err = service.Db.Create(&api).Error
 	}
 	return err
 }
@@ -39,7 +42,7 @@ func (service *SysApiService) CreateApi(api model.SysApi) (err error) {
 // @return                    error
 
 func (service *SysApiService) DeleteApi(api model.SysApi) (err error) {
-	err = global.GVA_DB.Delete(api).Error
+	err = service.Db.Delete(api).Error
 	service.SysCasbinService.ClearCasbin(1, api.Path, api.Method)
 	return err
 }
@@ -58,7 +61,7 @@ func (service *SysApiService) DeleteApi(api model.SysApi) (err error) {
 func (service *SysApiService) GetAPIInfoList(api model.SysApi, info request.PageInfo, order string, desc bool) (err error, list interface{}, total int) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
-	db := global.GVA_DB
+	db := service.Db
 	var apiList []model.SysApi
 
 	if api.Path != "" {
@@ -105,7 +108,7 @@ func (service *SysApiService) GetAPIInfoList(api model.SysApi, info request.Page
 // @return       apis         []SysApi
 
 func (service *SysApiService) GetAllApis() (err error, apis []model.SysApi) {
-	err = global.GVA_DB.Find(&apis).Error
+	err = service.Db.Find(&apis).Error
 	return
 }
 
@@ -117,7 +120,7 @@ func (service *SysApiService) GetAllApis() (err error, apis []model.SysApi) {
 // @return                    error
 
 func (service *SysApiService) GetApiById(id float64) (err error, api model.SysApi) {
-	err = global.GVA_DB.Where("id = ?", id).First(&api).Error
+	err = service.Db.Where("id = ?", id).First(&api).Error
 	return
 }
 
@@ -130,10 +133,10 @@ func (service *SysApiService) GetApiById(id float64) (err error, api model.SysAp
 func (service *SysApiService) UpdateApi(api model.SysApi) (err error) {
 	var oldA model.SysApi
 
-	err = global.GVA_DB.Where("id = ?", api.ID).First(&oldA).Error
+	err = service.Db.Where("id = ?", api.ID).First(&oldA).Error
 
 	if oldA.Path != api.Path || oldA.Method != api.Method {
-		flag := global.GVA_DB.Where("path = ? AND method = ?", api.Path, api.Method).Find(&model.SysApi{}).RecordNotFound()
+		flag := service.Db.Where("path = ? AND method = ?", api.Path, api.Method).Find(&model.SysApi{}).RecordNotFound()
 		if !flag {
 			return errors.New("存在相同api路径")
 		}
@@ -145,7 +148,7 @@ func (service *SysApiService) UpdateApi(api model.SysApi) (err error) {
 		if err != nil {
 			return err
 		} else {
-			err = global.GVA_DB.Save(&api).Error
+			err = service.Db.Save(&api).Error
 		}
 	}
 	return err
