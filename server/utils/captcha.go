@@ -3,7 +3,6 @@ package utils
 import (
 	"bytes"
 	"fmt"
-	"gin-vue-admin/global"
 	"github.com/dchest/captcha"
 	"github.com/go-spring/go-spring/spring-boot"
 	"net/http"
@@ -16,7 +15,14 @@ func init() {
 	SpringBoot.RegisterBean(new(GinCaptchaService))
 }
 
+type CaptchaConfig struct {
+	KeyLong   int `value:"${captcha.key-long}"`
+	ImgWidth  int `value:"${captcha.img-width}"`
+	ImgHeight int `value:"${captcha.img-height}"`
+}
+
 type GinCaptchaService struct {
+	CaptchaConfig CaptchaConfig
 }
 
 // 这里需要自行实现captcha 的gin模式
@@ -34,7 +40,7 @@ func (service *GinCaptchaService) GinCaptchaServeHTTP(w http.ResponseWriter, r *
 	}
 	lang := strings.ToLower(r.FormValue("lang"))
 	download := path.Base(dir) == "download"
-	if service.Serve(w, r, id, ext, lang, download, global.GVA_CONFIG.Captcha.ImgWidth, global.GVA_CONFIG.Captcha.ImgHeight) == captcha.ErrNotFound {
+	if service.Serve(w, r, id, ext, lang, download, service.CaptchaConfig.ImgWidth, service.CaptchaConfig.ImgHeight) == captcha.ErrNotFound {
 		http.NotFound(w, r)
 	}
 }
