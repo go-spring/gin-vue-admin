@@ -4,10 +4,10 @@ import (
 	"errors"
 	"strconv"
 
-	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 
 	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/jinzhu/gorm"
 )
 
 func init() {
@@ -16,6 +16,7 @@ func init() {
 
 type SysMenuService struct {
 	SysAuthorityService *SysAuthorityService `autowire:""`
+	Db                  *gorm.DB             `autowire:""`
 }
 
 // @title   getMenuTreeMap
@@ -28,7 +29,7 @@ func (service *SysMenuService) getMenuTreeMap(authorityId string) (err error, tr
 	var allMenus []model.SysMenu
 	treeMap = make(map[string][]model.SysMenu)
 	sql := "SELECT authority_menu.keep_alive,authority_menu.default_menu,authority_menu.created_at,authority_menu.updated_at,authority_menu.deleted_at,authority_menu.menu_level,authority_menu.parent_id,authority_menu.path,authority_menu.`name`,authority_menu.hidden,authority_menu.component,authority_menu.title,authority_menu.icon,authority_menu.sort,authority_menu.menu_id,authority_menu.authority_id FROM authority_menu WHERE authority_menu.authority_id = ? ORDER BY authority_menu.sort ASC"
-	err = global.GVA_DB.Raw(sql, authorityId).Scan(&allMenus).Error
+	err = service.Db.Raw(sql, authorityId).Scan(&allMenus).Error
 	for _, v := range allMenus {
 		treeMap[v.ParentId] = append(treeMap[v.ParentId], v)
 	}
@@ -106,9 +107,9 @@ func (service *SysMenuService) getBaseChildrenList(menu *model.SysBaseMenu, tree
 // 增加基础路由
 
 func (service *SysMenuService) AddBaseMenu(menu model.SysBaseMenu) (err error) {
-	findOne := global.GVA_DB.Where("name = ?", menu.Name).Find(&model.SysBaseMenu{}).Error
+	findOne := service.Db.Where("name = ?", menu.Name).Find(&model.SysBaseMenu{}).Error
 	if findOne != nil {
-		err = global.GVA_DB.Create(&menu).Error
+		err = service.Db.Create(&menu).Error
 	} else {
 		err = errors.New("存在重复name，请修改name")
 	}
@@ -124,7 +125,7 @@ func (service *SysMenuService) AddBaseMenu(menu model.SysBaseMenu) (err error) {
 func (service *SysMenuService) getBaseMenuTreeMap() (err error, treeMap map[string][]model.SysBaseMenu) {
 	var allMenus []model.SysBaseMenu
 	treeMap = make(map[string][]model.SysBaseMenu)
-	err = global.GVA_DB.Order("sort", true).Find(&allMenus).Error
+	err = service.Db.Order("sort", true).Find(&allMenus).Error
 	for _, v := range allMenus {
 		treeMap[v.ParentId] = append(treeMap[v.ParentId], v)
 	}
@@ -170,6 +171,6 @@ func (service *SysMenuService) AddMenuAuthority(menus []model.SysBaseMenu, autho
 
 func (service *SysMenuService) GetMenuAuthority(authorityId string) (err error, menus []model.SysMenu) {
 	sql := "SELECT authority_menu.keep_alive,authority_menu.default_menu,authority_menu.created_at,authority_menu.updated_at,authority_menu.deleted_at,authority_menu.menu_level,authority_menu.parent_id,authority_menu.path,authority_menu.`name`,authority_menu.hidden,authority_menu.component,authority_menu.title,authority_menu.icon,authority_menu.sort,authority_menu.menu_id,authority_menu.authority_id FROM authority_menu WHERE authority_menu.authority_id = ? ORDER BY authority_menu.sort ASC"
-	err = global.GVA_DB.Raw(sql, authorityId).Scan(&menus).Error
+	err = service.Db.Raw(sql, authorityId).Scan(&menus).Error
 	return err, menus
 }

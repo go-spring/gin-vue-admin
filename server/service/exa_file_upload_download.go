@@ -1,11 +1,11 @@
 package service
 
 import (
-	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
 
 	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/jinzhu/gorm"
 )
 
 func init() {
@@ -13,6 +13,7 @@ func init() {
 }
 
 type ExaFileUploadDownloadService struct {
+	Db *gorm.DB `autowire:""`
 }
 
 // @title    Upload
@@ -22,7 +23,7 @@ type ExaFileUploadDownloadService struct {
 // @return                    error
 
 func (service *ExaFileUploadDownloadService) Upload(file model.ExaFileUploadAndDownload) error {
-	err := global.GVA_DB.Create(&file).Error
+	err := service.Db.Create(&file).Error
 	return err
 }
 
@@ -34,7 +35,7 @@ func (service *ExaFileUploadDownloadService) Upload(file model.ExaFileUploadAndD
 
 func (service *ExaFileUploadDownloadService) FindFile(id uint) (error, model.ExaFileUploadAndDownload) {
 	var file model.ExaFileUploadAndDownload
-	err := global.GVA_DB.Where("id = ?", id).First(&file).Error
+	err := service.Db.Where("id = ?", id).First(&file).Error
 	return err, file
 }
 
@@ -45,7 +46,7 @@ func (service *ExaFileUploadDownloadService) FindFile(id uint) (error, model.Exa
 // @return                    error
 
 func (service *ExaFileUploadDownloadService) DeleteFile(file model.ExaFileUploadAndDownload) error {
-	err := global.GVA_DB.Where("id = ?", file.ID).Unscoped().Delete(file).Error
+	err := service.Db.Where("id = ?", file.ID).Unscoped().Delete(file).Error
 	return err
 }
 
@@ -60,7 +61,7 @@ func (service *ExaFileUploadDownloadService) DeleteFile(file model.ExaFileUpload
 func (service *ExaFileUploadDownloadService) GetFileRecordInfoList(info request.PageInfo) (err error, list interface{}, total int) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
-	db := global.GVA_DB
+	db := service.Db
 	var fileLists []model.ExaFileUploadAndDownload
 	err = db.Find(&fileLists).Count(&total).Error
 	err = db.Limit(limit).Offset(offset).Order("updated_at desc").Find(&fileLists).Error

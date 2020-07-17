@@ -1,10 +1,10 @@
 package service
 
 import (
-	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 
 	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/jinzhu/gorm"
 )
 
 func init() {
@@ -12,6 +12,7 @@ func init() {
 }
 
 type SysWorkflowService struct {
+	Db *gorm.DB `autowire:""`
 }
 
 // @title    Create
@@ -21,6 +22,6 @@ type SysWorkflowService struct {
 // @return                    error
 
 func (service *SysWorkflowService) Create(wk model.SysWorkflow) error {
-	err := global.GVA_DB.Create(&wk).Error
+	err := service.Db.Create(&wk).Error
 	return err
 }

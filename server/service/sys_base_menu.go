@@ -13,10 +13,10 @@ import (
 // @return    err             error
 
 func (service *SysMenuService) DeleteBaseMenu(id float64) (err error) {
-	err = global.GVA_DB.Where("parent_id = ?", id).First(&model.SysBaseMenu{}).Error
+	err = service.Db.Where("parent_id = ?", id).First(&model.SysBaseMenu{}).Error
 	if err != nil {
 		var menu model.SysBaseMenu
-		db := global.GVA_DB.Preload("SysAuthoritys").Where("id = ?", id).First(&menu).Delete(&menu)
+		db := service.Db.Preload("SysAuthoritys").Where("id = ?", id).First(&menu).Delete(&menu)
 		if len(menu.SysAuthoritys) > 0 {
 			err = db.Association("SysAuthoritys").Delete(menu.SysAuthoritys).Error
 		} else {
@@ -47,9 +47,9 @@ func (service *SysMenuService) UpdateBaseMenu(menu model.SysBaseMenu) (err error
 	upDateMap["title"] = menu.Title
 	upDateMap["icon"] = menu.Icon
 	upDateMap["sort"] = menu.Sort
-	db := global.GVA_DB.Where("id = ?", menu.ID).Find(&oldMenu)
+	db := service.Db.Where("id = ?", menu.ID).Find(&oldMenu)
 	if oldMenu.Name != menu.Name {
-		notSame := global.GVA_DB.Where("id <> ? AND name = ?", menu.ID, menu.Name).First(&model.SysBaseMenu{}).RecordNotFound()
+		notSame := service.Db.Where("id <> ? AND name = ?", menu.ID, menu.Name).First(&model.SysBaseMenu{}).RecordNotFound()
 		if !notSame {
 			global.GVA_LOG.Debug("存在相同name修改失败")
 			return errors.New("存在相同name修改失败")
@@ -67,6 +67,6 @@ func (service *SysMenuService) UpdateBaseMenu(menu model.SysBaseMenu) (err error
 // @return    err             error
 
 func (service *SysMenuService) GetBaseMenuById(id float64) (err error, menu model.SysBaseMenu) {
-	err = global.GVA_DB.Where("id = ?", id).First(&menu).Error
+	err = service.Db.Where("id = ?", id).First(&menu).Error
 	return
 }

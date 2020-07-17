@@ -1,9 +1,10 @@
 package service
 
 import (
-	"gin-vue-admin/global"
 	"gin-vue-admin/model"
+
 	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/jinzhu/gorm"
 )
 
 func init() {
@@ -11,6 +12,7 @@ func init() {
 }
 
 type ExaBreakpointContinueService struct {
+	Db *gorm.DB `autowire:""`
 }
 
 // @title         FindOrCreateFile
@@ -28,14 +30,14 @@ func (service *ExaBreakpointContinueService) FindOrCreateFile(fileMd5 string, fi
 	cfile.FileMd5 = fileMd5
 	cfile.FileName = fileName
 	cfile.ChunkTotal = chunkTotal
-	notHaveSameMd5Finish := global.GVA_DB.Where("file_md5 = ? AND is_finish = ?", fileMd5, true).First(&file).RecordNotFound()
+	notHaveSameMd5Finish := service.Db.Where("file_md5 = ? AND is_finish = ?", fileMd5, true).First(&file).RecordNotFound()
 	if notHaveSameMd5Finish {
-		err = global.GVA_DB.Where("file_md5 = ? AND file_name = ?", fileMd5, fileName).Preload("ExaFileChunk").FirstOrCreate(&file, cfile).Error
+		err = service.Db.Where("file_md5 = ? AND file_name = ?", fileMd5, fileName).Preload("ExaFileChunk").FirstOrCreate(&file, cfile).Error
 		return err, file
 	} else {
 		cfile.IsFinish = true
 		cfile.FilePath = file.FilePath
-		err = global.GVA_DB.Create(&cfile).Error
+		err = service.Db.Create(&cfile).Error
 		return err, cfile
 	}
 }
@@ -53,7 +55,7 @@ func (service *ExaBreakpointContinueService) CreateFileChunk(id uint, fileChunkP
 	chunk.FileChunkPath = fileChunkPath
 	chunk.ExaFileId = id
 	chunk.FileChunkNumber = fileChunkNumber
-	err := global.GVA_DB.Create(&chunk).Error
+	err := service.Db.Create(&chunk).Error
 	return err
 }
 
@@ -70,7 +72,7 @@ func (service *ExaBreakpointContinueService) FileCreateComplete(fileMd5 string, 
 	upDateFile := make(map[string]interface{})
 	upDateFile["FilePath"] = filePath
 	upDateFile["IsFinish"] = true
-	err := global.GVA_DB.Where("file_md5 = ? AND file_name = ?", fileMd5, fileName).First(&file).Updates(upDateFile).Error
+	err := service.Db.Where("file_md5 = ? AND file_name = ?", fileMd5, fileName).First(&file).Updates(upDateFile).Error
 	return err
 }
 
@@ -85,7 +87,7 @@ func (service *ExaBreakpointContinueService) FileCreateComplete(fileMd5 string, 
 func (service *ExaBreakpointContinueService) DeleteFileChunk(fileMd5 string, fileName string, filePath string) error {
 	var chunks []model.ExaFileChunk
 	var file model.ExaFile
-	err := global.GVA_DB.Where("file_md5 = ? AND file_name = ?", fileMd5, fileName).First(&file).Update("IsFinish", true).Update("file_path", filePath).Error
-	err = global.GVA_DB.Where("exa_file_id = ?", file.ID).Delete(&chunks).Unscoped().Error
+	err := service.Db.Where("file_md5 = ? AND file_name = ?", fileMd5, fileName).First(&file).Update("IsFinish", true).Update("file_path", filePath).Error
+	err = service.Db.Where("exa_file_id = ?", file.ID).Delete(&chunks).Unscoped().Error
 	return err
 }
