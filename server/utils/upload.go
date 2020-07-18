@@ -4,18 +4,34 @@ import (
 	"context"
 	"fmt"
 	"gin-vue-admin/global"
+	SpringBoot "github.com/go-spring/go-spring/spring-boot"
 	"github.com/qiniu/api.v7/auth/qbox"
 	"github.com/qiniu/api.v7/storage"
 	"mime/multipart"
 	"time"
 )
 
+func init() {
+	SpringBoot.RegisterBean(new(UploadService))
+}
+
+type OssConfig struct {
+	AccessKey string `value:"${oss.access-key}"`
+	SecretKey string `value:"${oss.secret-key}"`
+	Bucket    string `value:"${oss.bucket}"`
+	ImgPath   string `value:"${oss.img-path}"`
+}
+
+type UploadService struct {
+	OssConfig OssConfig
+}
+
 // 接收两个参数 一个文件流 一个 bucket 你的七牛云标准空间的名字
-func Upload(file *multipart.FileHeader) (err error, path string, key string) {
+func (service *UploadService) Upload(file *multipart.FileHeader) (err error, path string, key string) {
 	putPolicy := storage.PutPolicy{
-		Scope: global.GVA_CONFIG.Qiniu.Bucket,
+		Scope: service.OssConfig.Bucket,
 	}
-	mac := qbox.NewMac(global.GVA_CONFIG.Qiniu.AccessKey, global.GVA_CONFIG.Qiniu.SecretKey)
+	mac := qbox.NewMac(service.OssConfig.AccessKey, service.OssConfig.SecretKey)
 	upToken := putPolicy.UploadToken(mac)
 	cfg := storage.Config{}
 	// 空间对应的机房
@@ -46,9 +62,9 @@ func Upload(file *multipart.FileHeader) (err error, path string, key string) {
 	return err, global.GVA_CONFIG.Qiniu.ImgPath + "/" + ret.Key, ret.Key
 }
 
-func DeleteFile(key string) error {
+func (service *UploadService) DeleteFile(key string) error {
 
-	mac := qbox.NewMac(global.GVA_CONFIG.Qiniu.AccessKey, global.GVA_CONFIG.Qiniu.SecretKey)
+	mac := qbox.NewMac(service.OssConfig.AccessKey, service.OssConfig.SecretKey)
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: false,
@@ -57,7 +73,7 @@ func DeleteFile(key string) error {
 	// 如果没有特殊需求，默认不需要指定
 	// cfg.Zone=&storage.ZoneHuabei
 	bucketManager := storage.NewBucketManager(mac, &cfg)
-	err := bucketManager.Delete(global.GVA_CONFIG.Qiniu.Bucket, key)
+	err := bucketManager.Delete(service.OssConfig.Bucket, key)
 	if err != nil {
 		fmt.Println(err)
 		return err

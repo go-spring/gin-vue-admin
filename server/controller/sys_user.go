@@ -182,6 +182,7 @@ func (controller *BaseController) tokenNext(webCtx SpringWeb.WebContext, user mo
 
 type UserController struct {
 	SysUserService *service.SysUserService `autowire:""`
+	UploadService  *utils.UploadService    `autowire:""`
 }
 
 // @Tags SysUser
@@ -237,7 +238,7 @@ func (controller *UserController) UploadHeaderImg(webCtx SpringWeb.WebContext) {
 		response.FailWithMessage(fmt.Sprintf("上传文件失败，%v", err), webCtx)
 	} else {
 		// 文件上传后拿到文件路径
-		err, filePath, _ := utils.Upload(header)
+		err, filePath, _ := controller.UploadService.Upload(header)
 		if err != nil {
 			response.FailWithMessage(fmt.Sprintf("接收返回值失败，%v", err), webCtx)
 		} else {

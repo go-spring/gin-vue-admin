@@ -33,6 +33,7 @@ func init() {
 type FileUploadController struct {
 	ExaFileUploadDownloadService *service.ExaFileUploadDownloadService `autowire:""`
 	ExaBreakpointContinueService *service.ExaBreakpointContinueService `autowire:""`
+	UploadService                *utils.UploadService                  `autowire:""`
 }
 
 // @Tags ExaFileUploadAndDownload
@@ -53,7 +54,7 @@ func (controller *FileUploadController) UploadFile(webCtx SpringWeb.WebContext) 
 		response.FailWithMessage(fmt.Sprintf("上传文件失败，%v", err), webCtx)
 	} else {
 		// 文件上传后拿到文件路径
-		err, filePath, key := utils.Upload(header)
+		err, filePath, key := controller.UploadService.Upload(header)
 		if err != nil {
 			response.FailWithMessage(fmt.Sprintf("接收返回值失败，%v", err), webCtx)
 		} else {
@@ -90,7 +91,7 @@ func (controller *FileUploadController) DeleteFile(webCtx SpringWeb.WebContext) 
 	if err != nil {
 		response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 	} else {
-		err = utils.DeleteFile(f.Key)
+		err = controller.UploadService.DeleteFile(f.Key)
 		if err != nil {
 			response.FailWithMessage(fmt.Sprintf("删除失败，%v", err), webCtx)
 
