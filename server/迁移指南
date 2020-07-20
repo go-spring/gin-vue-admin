@@ -48,8 +48,8 @@ docker start -i ginvue # 第二次启动
 
 10. 第九阶段改造步骤：
     10.1 将 Redis 全局变量 GVA_REDIS 改成由 go-spring 框架创建，可以先通过 SpringBoot.Config() 把框架
-         生成的 *redis.Client 赋值给 GVA_REDIS，然后一步步改造引用 GVA_REDIS 的地方。
-    10.2 大功告成！
+         生成的 *redis.Client 赋值给 GVA_REDIS，然后一步步改造引用 GVA_REDIS 的地方。（已完成）
+    10.2 大功告成！（已完成）
 
 11. 第十阶段改造步骤：
     11.1 将所有引用配置的地方改成 go-spring 的风格，修改示例参见 utils.GinCaptchaService 对象。

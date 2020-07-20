@@ -4,11 +4,12 @@ import (
 	"context"
 	"fmt"
 	"gin-vue-admin/global"
-	SpringBoot "github.com/go-spring/go-spring/spring-boot"
-	"github.com/qiniu/api.v7/auth/qbox"
-	"github.com/qiniu/api.v7/storage"
 	"mime/multipart"
 	"time"
+
+	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/qiniu/api.v7/auth/qbox"
+	"github.com/qiniu/api.v7/storage"
 )
 
 func init() {

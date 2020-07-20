@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"gin-vue-admin/model"
 
 	"github.com/go-redis/redis"
@@ -14,7 +15,7 @@ func init() {
 
 type JwtBlackListService struct {
 	Db    *gorm.DB      `autowire:""`
-	Redis redis.Cmdable `autowire:""`
+	Redis redis.Cmdable `autowire:"?"`
 }
 
 // @title    JsonInBlacklist
@@ -48,6 +49,9 @@ func (service *JwtBlackListService) IsBlacklist(jwt string, jwtList model.JwtBla
 // @return    redisJWT        string
 
 func (service *JwtBlackListService) GetRedisJWT(userName string) (err error, redisJWT string) {
+	if service.Redis == nil {
+		return errors.New("redis is nil"), ""
+	}
 	redisJWT, err = service.Redis.Get(userName).Result()
 	return err, redisJWT
 }
@@ -60,6 +64,9 @@ func (service *JwtBlackListService) GetRedisJWT(userName string) (err error, red
 // @return    err             error
 
 func (service *JwtBlackListService) SetRedisJWT(jwtList model.JwtBlacklist, userName string) (err error) {
+	if service.Redis == nil {
+		return errors.New("redis is nil")
+	}
 	err = service.Redis.Set(userName, jwtList.Jwt, 1000*1000*1000*60*60*24*7).Err()
 	return err
 }

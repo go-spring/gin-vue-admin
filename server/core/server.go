@@ -11,12 +11,18 @@ import (
 	"github.com/go-spring/go-spring-web/spring-web"
 	"github.com/go-spring/go-spring/spring-boot"
 	_ "github.com/go-spring/go-spring/starter-gin"
-	_ "github.com/go-spring/go-spring/starter-go-redis"
+	// _ "github.com/go-spring/go-spring/starter-go-redis"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 func RunWindowsServer() {
+
+	// TODO 如何对引入的包施加外部限制，考虑开放内部 API
+	//if global.GVA_CONFIG.System.UseMultipoint {
+	//	// 初始化redis服务
+	//	initialize.Redis()
+	//}
 
 	// 添加 swagger 接口
 	SpringBoot.GET("/swagger/*any", SpringGin.Gin(ginSwagger.WrapHandler(swaggerFiles.Handler)))
