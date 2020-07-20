@@ -1,9 +1,9 @@
 package service
 
 import (
-	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 
+	"github.com/go-redis/redis"
 	"github.com/go-spring/go-spring/spring-boot"
 	"github.com/jinzhu/gorm"
 )
@@ -13,7 +13,8 @@ func init() {
 }
 
 type JwtBlackListService struct {
-	Db *gorm.DB `autowire:""`
+	Db    *gorm.DB      `autowire:""`
+	Redis redis.Cmdable `autowire:""`
 }
 
 // @title    JsonInBlacklist
@@ -47,7 +48,7 @@ func (service *JwtBlackListService) IsBlacklist(jwt string, jwtList model.JwtBla
 // @return    redisJWT        string
 
 func (service *JwtBlackListService) GetRedisJWT(userName string) (err error, redisJWT string) {
-	redisJWT, err = global.GVA_REDIS.Get(userName).Result()
+	redisJWT, err = service.Redis.Get(userName).Result()
 	return err, redisJWT
 }
 
@@ -59,6 +60,6 @@ func (service *JwtBlackListService) GetRedisJWT(userName string) (err error, red
 // @return    err             error
 
 func (service *JwtBlackListService) SetRedisJWT(jwtList model.JwtBlacklist, userName string) (err error) {
-	err = global.GVA_REDIS.Set(userName, jwtList.Jwt, 1000*1000*1000*60*60*24*7).Err()
+	err = service.Redis.Set(userName, jwtList.Jwt, 1000*1000*1000*60*60*24*7).Err()
 	return err
 }
