@@ -24,7 +24,8 @@ import (
 func init() {
 	SpringBoot.RegisterBean(new(BaseController)).Init(func(c *BaseController) {
 
-		r := SpringBoot.Route("/base")
+		r := SpringBoot.Route("/base",
+			SpringBoot.FilterBean((*filter.TraceFilter)(nil)))
 
 		r.PostMapping("/login", c.Login)
 		r.PostMapping("/captcha", c.Captcha)
@@ -35,6 +36,7 @@ func init() {
 	SpringBoot.RegisterBean(new(UserController)).Init(func(c *UserController) {
 
 		r := SpringBoot.Route("/user",
+			SpringBoot.FilterBean((*filter.TraceFilter)(nil)),
 			SpringBoot.FilterBean((*filter.JwtFilter)(nil)),
 			SpringBoot.FilterBean((*filter.CasbinRcbaFilter)(nil)))
 

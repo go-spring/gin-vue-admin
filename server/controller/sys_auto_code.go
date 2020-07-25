@@ -19,6 +19,7 @@ func init() {
 	SpringBoot.RegisterBean(new(AutoCodeController)).Init(func(c *AutoCodeController) {
 
 		r := SpringBoot.Route("/autoCode",
+			SpringBoot.FilterBean((*filter.TraceFilter)(nil)),
 			SpringBoot.FilterBean((*filter.JwtFilter)(nil)),
 			SpringBoot.FilterBean((*filter.CasbinRcbaFilter)(nil)))
 
