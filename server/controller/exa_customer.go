@@ -19,6 +19,7 @@ func init() {
 	SpringBoot.RegisterBean(new(CustomerController)).Init(func(c *CustomerController) {
 
 		r := SpringBoot.Route("/customer",
+			SpringBoot.FilterBean((*filter.TraceFilter)(nil)),
 			SpringBoot.FilterBean((*filter.JwtFilter)(nil)),
 			SpringBoot.FilterBean((*filter.CasbinRcbaFilter)(nil)))
 

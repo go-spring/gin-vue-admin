@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"gin-vue-admin/filter"
 	"strings"
 
 	"gin-vue-admin/global/response"
@@ -18,7 +19,8 @@ import (
 func init() {
 	SpringBoot.RegisterBean(new(FileUploadController)).Init(func(c *FileUploadController) {
 
-		r := SpringBoot.Route("/fileUploadAndDownload")
+		r := SpringBoot.Route("/fileUploadAndDownload",
+			SpringBoot.FilterBean((*filter.TraceFilter)(nil)))
 
 		r.PostMapping("/upload", c.UploadFile)
 		r.PostMapping("/getFileList", c.GetFileList)

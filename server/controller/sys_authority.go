@@ -19,6 +19,7 @@ func init() {
 	SpringBoot.RegisterBean(new(AuthorityController)).Init(func(c *AuthorityController) {
 
 		r := SpringBoot.Route("/authority",
+			SpringBoot.FilterBean((*filter.TraceFilter)(nil)),
 			SpringBoot.FilterBean((*filter.JwtFilter)(nil)),
 			SpringBoot.FilterBean((*filter.CasbinRcbaFilter)(nil)))
 

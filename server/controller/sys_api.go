@@ -19,6 +19,7 @@ func init() {
 	SpringBoot.RegisterBean(new(ApiController)).Init(func(c *ApiController) {
 
 		r := SpringBoot.Route("/api",
+			SpringBoot.FilterBean((*filter.TraceFilter)(nil)),
 			SpringBoot.FilterBean((*filter.JwtFilter)(nil)),
 			SpringBoot.FilterBean((*filter.CasbinRcbaFilter)(nil)))
 

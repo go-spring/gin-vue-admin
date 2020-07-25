@@ -16,6 +16,7 @@ func init() {
 	SpringBoot.RegisterBean(new(JwTController)).Init(func(c *JwTController) {
 
 		r := SpringBoot.Route("/jwt",
+			SpringBoot.FilterBean((*filter.TraceFilter)(nil)),
 			SpringBoot.FilterBean((*filter.JwtFilter)(nil)),
 			SpringBoot.FilterBean((*filter.CasbinRcbaFilter)(nil)))
 

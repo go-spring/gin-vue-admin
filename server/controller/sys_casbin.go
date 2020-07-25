@@ -19,6 +19,7 @@ func init() {
 	SpringBoot.RegisterBean(new(CasbinController)).Init(func(c *CasbinController) {
 
 		r := SpringBoot.Route("/casbin",
+			SpringBoot.FilterBean((*filter.TraceFilter)(nil)),
 			SpringBoot.FilterBean((*filter.JwtFilter)(nil)),
 			SpringBoot.FilterBean((*filter.CasbinRcbaFilter)(nil)))
 

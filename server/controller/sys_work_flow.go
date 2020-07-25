@@ -17,6 +17,7 @@ func init() {
 	SpringBoot.RegisterBean(new(WorkFlowController)).Init(func(c *WorkFlowController) {
 
 		r := SpringBoot.Route("/workflow",
+			SpringBoot.FilterBean((*filter.TraceFilter)(nil)),
 			SpringBoot.FilterBean((*filter.JwtFilter)(nil)),
 			SpringBoot.FilterBean((*filter.CasbinRcbaFilter)(nil)))
 

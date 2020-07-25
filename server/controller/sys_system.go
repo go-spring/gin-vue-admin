@@ -17,6 +17,7 @@ func init() {
 	SpringBoot.RegisterBean(new(SystemController)).Init(func(c *SystemController) {
 
 		r := SpringBoot.Route("/system",
+			SpringBoot.FilterBean((*filter.TraceFilter)(nil)),
 			SpringBoot.FilterBean((*filter.JwtFilter)(nil)),
 			SpringBoot.FilterBean((*filter.CasbinRcbaFilter)(nil)))
 

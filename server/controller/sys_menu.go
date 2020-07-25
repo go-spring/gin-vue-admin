@@ -20,6 +20,7 @@ func init() {
 	SpringBoot.RegisterBean(new(MenuController)).Init(func(c *MenuController) {
 
 		r := SpringBoot.Route("/menu",
+			SpringBoot.FilterBean((*filter.TraceFilter)(nil)),
 			SpringBoot.FilterBean((*filter.JwtFilter)(nil)),
 			SpringBoot.FilterBean((*filter.CasbinRcbaFilter)(nil)))
 
