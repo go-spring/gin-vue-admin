@@ -10,9 +10,9 @@ import (
 	"github.com/SkyAPM/go2sky/propagation"
 	"github.com/SkyAPM/go2sky/reporter"
 	"github.com/gin-gonic/gin"
-	SpringLogger "github.com/go-spring/go-spring-parent/spring-logger"
-	SpringWeb "github.com/go-spring/go-spring-web/spring-web"
-	SpringBoot "github.com/go-spring/go-spring/spring-boot"
+	"github.com/go-spring/spring-boot"
+	"github.com/go-spring/spring-logger"
+	"github.com/go-spring/spring-web"
 )
 
 func init() {
@@ -60,7 +60,7 @@ func (filter *TraceFilter) Invoke(webCtx SpringWeb.WebContext, chain SpringWeb.F
 
 	// trace begin, create entry span
 	request := webCtx.Request()
-	span, _, err := filter.tracer.CreateEntrySpan(webCtx.Context(), fmt.Sprintf("/%s%s", request.Method, request.URL.Path), func() (string, error) {
+	span, _, err := filter.tracer.CreateEntrySpan(webCtx.Context(), fmt.Sprintf("/%s%s", request.Method, request.URL.Path), func(headerKey string) (string, error) {
 		return webCtx.GetHeader(propagation.Header), nil
 	})
 	if err != nil {

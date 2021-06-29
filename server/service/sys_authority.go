@@ -8,7 +8,7 @@ import (
 	"gin-vue-admin/model/request"
 	"gin-vue-admin/model/response"
 
-	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/go-spring/spring-boot"
 	"github.com/jinzhu/gorm"
 )
 

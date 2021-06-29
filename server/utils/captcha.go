@@ -3,12 +3,13 @@ package utils
 import (
 	"bytes"
 	"fmt"
-	"github.com/dchest/captcha"
-	"github.com/go-spring/go-spring/spring-boot"
 	"net/http"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/dchest/captcha"
+	"github.com/go-spring/spring-boot"
 )
 
 func init() {

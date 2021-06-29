@@ -3,8 +3,9 @@ package initialize
 import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
-	"github.com/go-spring/go-spring/spring-boot"
-	_ "github.com/go-spring/go-spring/starter-mysql-gorm"
+
+	"github.com/go-spring/spring-boot"
+	_ "github.com/go-spring/starter-gorm/mysql"
 	"github.com/jinzhu/gorm"
 )
 

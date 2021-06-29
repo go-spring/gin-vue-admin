@@ -3,7 +3,7 @@ package response
 import (
 	"net/http"
 
-	"github.com/go-spring/go-spring-web/spring-web"
+	"github.com/go-spring/spring-web"
 )
 
 type Response struct {

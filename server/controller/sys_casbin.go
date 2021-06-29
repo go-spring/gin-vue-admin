@@ -11,8 +11,8 @@ import (
 	"gin-vue-admin/utils"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-spring/go-spring-web/spring-web"
-	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/go-spring/spring-boot"
+	"github.com/go-spring/spring-web"
 )
 
 func init() {
