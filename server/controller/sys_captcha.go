@@ -3,9 +3,8 @@ package controller
 import (
 	"gin-vue-admin/global/response"
 	resp "gin-vue-admin/model/response"
-	"github.com/dchest/captcha"
-	"github.com/go-spring/spring-boot"
 
+	"github.com/dchest/captcha"
 	"github.com/go-spring/spring-web"
 )
 
@@ -17,7 +16,7 @@ import (
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /base/captcha [post]
 func (controller *BaseController) Captcha(webCtx SpringWeb.WebContext) {
-	captchaId := captcha.NewLen(int(SpringBoot.GetIntProperty("captcha.key-long")))
+	captchaId := captcha.NewLen(controller.CaptchaConfig.KeyLong)
 	response.OkDetailed(resp.SysCaptchaResponse{
 		CaptchaId: captchaId,
 		PicPath:   "/base/captcha/" + captchaId + ".png",

@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"gin-vue-admin/config"
+
 	"github.com/dchest/captcha"
 	"github.com/go-spring/spring-boot"
 )
@@ -23,7 +25,7 @@ type CaptchaConfig struct {
 }
 
 type GinCaptchaService struct {
-	CaptchaConfig CaptchaConfig
+	CaptchaConfig config.CaptchaConfig
 }
 
 // 这里需要自行实现captcha 的gin模式

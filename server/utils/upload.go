@@ -6,6 +6,8 @@ import (
 	"mime/multipart"
 	"time"
 
+	"gin-vue-admin/config"
+
 	"github.com/go-spring/spring-boot"
 	"github.com/go-spring/spring-logger"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
@@ -16,15 +18,8 @@ func init() {
 	SpringBoot.RegisterBean(new(UploadService))
 }
 
-type OssConfig struct {
-	AccessKey string `value:"${oss.access-key}"`
-	SecretKey string `value:"${oss.secret-key}"`
-	Bucket    string `value:"${oss.bucket}"`
-	ImgPath   string `value:"${oss.img-path}"`
-}
-
 type UploadService struct {
-	OssConfig OssConfig
+	OssConfig config.OssConfig
 }
 
 // 接收两个参数 一个文件流 一个 bucket 你的七牛云标准空间的名字
