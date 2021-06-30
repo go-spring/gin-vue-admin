@@ -1,7 +1,6 @@
 package filter
 
 import (
-	"gin-vue-admin/global"
 	"gin-vue-admin/global/response"
 	"gin-vue-admin/model/request"
 	"gin-vue-admin/service"
@@ -36,7 +35,8 @@ func (filter *CasbinRcbaFilter) Invoke(webCtx SpringWeb.WebContext, chain Spring
 
 	e := filter.SysCasbinService.Casbin()
 	// 判断策略中是否存在
-	if global.GVA_CONFIG.System.Env == "develop" || e.Enforce(sub, obj, act) {
+	// TODO: SpringBoot.GetProfile()
+	if SpringBoot.GetStringProperty("system.env") == "develop" || e.Enforce(sub, obj, act) {
 		c.Next()
 	} else {
 		response.Result(response.ERROR, gin.H{}, "权限不足", webCtx)

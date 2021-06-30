@@ -2,7 +2,7 @@ package main
 
 import (
 	_ "gin-vue-admin/controller"
-	_ "gin-vue-admin/core"
+	//_ "gin-vue-admin/core"
 	_ "gin-vue-admin/docs"
 	"gin-vue-admin/filter"
 	_ "gin-vue-admin/utils"

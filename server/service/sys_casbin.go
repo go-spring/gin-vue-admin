@@ -5,7 +5,6 @@ import (
 	"github.com/jinzhu/gorm"
 	"strings"
 
-	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
 
@@ -114,7 +113,7 @@ func (service *SysCasbinService) ClearCasbin(v int, p ...string) bool {
 
 func (service *SysCasbinService) Casbin() *casbin.Enforcer {
 	a := gormadapter.NewAdapterByDB(service.Db)
-	e := casbin.NewEnforcer(global.GVA_CONFIG.Casbin.ModelPath, a)
+	e := casbin.NewEnforcer(SpringBoot.GetStringProperty("casbin.model-path"), a)
 	e.AddFunction("ParamsMatch", service.ParamsMatchFunc)
 	_ = e.LoadPolicy()
 	return e

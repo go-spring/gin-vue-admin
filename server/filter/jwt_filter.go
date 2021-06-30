@@ -2,7 +2,6 @@ package filter
 
 import (
 	"errors"
-	"gin-vue-admin/global"
 	"gin-vue-admin/global/response"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
@@ -83,7 +82,7 @@ var (
 
 func NewJWT() *JWT {
 	return &JWT{
-		[]byte(global.GVA_CONFIG.JWT.SigningKey),
+		[]byte(SpringBoot.GetStringProperty("jwt.signing-key")),
 	}
 }
 

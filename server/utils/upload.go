@@ -3,11 +3,11 @@ package utils
 import (
 	"context"
 	"fmt"
-	"gin-vue-admin/global"
 	"mime/multipart"
 	"time"
 
 	"github.com/go-spring/spring-boot"
+	"github.com/go-spring/spring-logger"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/storage"
 )
@@ -57,10 +57,10 @@ func (service *UploadService) Upload(file *multipart.FileHeader) (err error, pat
 	fileKey := fmt.Sprintf("%d%s", time.Now().Unix(), file.Filename) // 文件名格式 自己可以改 建议保证唯一性
 	err = formUploader.Put(context.Background(), &ret, upToken, fileKey, f, dataLen, &putExtra)
 	if err != nil {
-		global.GVA_LOG.Error("upload file fail:", err)
+		SpringLogger.Error("upload file fail:", err)
 		return err, "", ""
 	}
-	return err, global.GVA_CONFIG.Qiniu.ImgPath + "/" + ret.Key, ret.Key
+	return err, service.OssConfig.ImgPath + "/" + ret.Key, ret.Key
 }
 
 func (service *UploadService) DeleteFile(key string) error {
