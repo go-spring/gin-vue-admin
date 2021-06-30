@@ -5,9 +5,8 @@ import (
 
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
-	"gin-vue-admin/utils"
-
-	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/go-spring/spring-boot"
+	"github.com/go-spring/spring-utils"
 	"github.com/jinzhu/gorm"
 	"github.com/satori/go.uuid"
 )
@@ -36,7 +35,7 @@ func (service *SysUserService) Register(u model.SysUser) (err error, userInter m
 		return errors.New("用户名已注册"), userInter
 	} else {
 		// 否则 附加uuid 密码md5简单加密 注册
-		u.Password = utils.MD5V([]byte(u.Password))
+		u.Password = SpringUtils.MD5(u.Password)
 		u.UUID = uuid.NewV4()
 		err = service.Db.Create(&u).Error
 	}
@@ -52,7 +51,7 @@ func (service *SysUserService) Register(u model.SysUser) (err error, userInter m
 
 func (service *SysUserService) Login(u *model.SysUser) (err error, userInter *model.SysUser) {
 	var user model.SysUser
-	u.Password = utils.MD5V([]byte(u.Password))
+	u.Password = SpringUtils.MD5(u.Password)
 	err = service.Db.Where("username = ? AND password = ?", u.Username, u.Password).Preload("Authority").First(&user).Error
 	return err, &user
 }
@@ -68,8 +67,8 @@ func (service *SysUserService) Login(u *model.SysUser) (err error, userInter *mo
 func (service *SysUserService) ChangePassword(u *model.SysUser, newPassword string) (err error, userInter *model.SysUser) {
 	var user model.SysUser
 	// TODO:后期修改jwt+password模式
-	u.Password = utils.MD5V([]byte(u.Password))
-	err = service.Db.Where("username = ? AND password = ?", u.Username, u.Password).First(&user).Update("password", utils.MD5V([]byte(newPassword))).Error
+	u.Password = SpringUtils.MD5(u.Password)
+	err = service.Db.Where("username = ? AND password = ?", u.Username, u.Password).First(&user).Update("password", SpringUtils.MD5(newPassword)).Error
 	return err, u
 }
 

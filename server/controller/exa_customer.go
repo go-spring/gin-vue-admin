@@ -11,8 +11,8 @@ import (
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
 
-	"github.com/go-spring/go-spring-web/spring-web"
-	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/go-spring/spring-boot"
+	"github.com/go-spring/spring-web"
 )
 
 func init() {
@@ -24,8 +24,8 @@ func init() {
 			SpringBoot.FilterBean((*filter.CasbinRcbaFilter)(nil)))
 
 		r.PostMapping("/customer", c.CreateExaCustomer)
-		r.PUT("/customer", c.UpdateExaCustomer)
-		r.DELETE("/customer", c.DeleteExaCustomer)
+		r.PutMapping("/customer", c.UpdateExaCustomer)
+		r.DeleteMapping("/customer", c.DeleteExaCustomer)
 		r.GetMapping("/customer", c.GetExaCustomer)
 		r.GetMapping("/customerList", c.GetExaCustomerList)
 	})

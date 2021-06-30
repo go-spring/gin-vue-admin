@@ -17,8 +17,8 @@ import (
 	"github.com/dchest/captcha"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-redis/redis"
-	"github.com/go-spring/go-spring-web/spring-web"
-	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/go-spring/spring-boot"
+	"github.com/go-spring/spring-web"
 )
 
 func init() {
@@ -44,7 +44,7 @@ func init() {
 		r.PostMapping("/uploadHeaderImg", c.UploadHeaderImg)
 		r.PostMapping("/getUserList", c.GetUserList)
 		r.PostMapping("/setUserAuthority", c.SetUserAuthority)
-		r.DELETE("/deleteUser", c.DeleteUser)
+		r.DeleteMapping("/deleteUser", c.DeleteUser)
 	})
 }
 

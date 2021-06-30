@@ -12,7 +12,7 @@ import (
 	"github.com/casbin/casbin"
 	"github.com/casbin/casbin/util"
 	"github.com/casbin/gorm-adapter"
-	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/go-spring/spring-boot"
 )
 
 func init() {

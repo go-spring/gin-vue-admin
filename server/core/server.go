@@ -7,13 +7,12 @@ import (
 	_ "gin-vue-admin/utils"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-spring/go-spring-web/spring-gin"
-	"github.com/go-spring/go-spring-web/spring-web"
-	"github.com/go-spring/go-spring/spring-boot"
-	_ "github.com/go-spring/go-spring/starter-gin"
-	// _ "github.com/go-spring/go-spring/starter-go-redis"
+	"github.com/go-spring/spring-boot"
+	"github.com/go-spring/spring-gin"
+	"github.com/go-spring/spring-web"
+	_ "github.com/go-spring/starter-gin"
+	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 func RunWindowsServer() {
@@ -25,7 +24,7 @@ func RunWindowsServer() {
 	//}
 
 	// 添加 swagger 接口
-	SpringBoot.GET("/swagger/*any", SpringGin.Gin(ginSwagger.WrapHandler(swaggerFiles.Handler)))
+	SpringBoot.HandleGet("/swagger/*any", SpringGin.Gin(ginSwagger.WrapHandler(swaggerFiles.Handler)))
 
 	// 1. 引入 go-spring web 组件，关闭 swagger 及默认 filter
 	SpringBoot.Config(func(c SpringWeb.WebContainer, port int) {

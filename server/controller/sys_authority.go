@@ -11,8 +11,8 @@ import (
 	"gin-vue-admin/service"
 	"gin-vue-admin/utils"
 
-	"github.com/go-spring/go-spring-web/spring-web"
-	"github.com/go-spring/go-spring/spring-boot"
+	"github.com/go-spring/spring-boot"
+	"github.com/go-spring/spring-web"
 )
 
 func init() {
@@ -25,7 +25,7 @@ func init() {
 
 		r.PostMapping("/createAuthority", c.CreateAuthority)
 		r.PostMapping("/deleteAuthority", c.DeleteAuthority)
-		r.PUT("/updateAuthority", c.UpdateAuthority)
+		r.PutMapping("/updateAuthority", c.UpdateAuthority)
 		r.PostMapping("/copyAuthority", c.CopyAuthority)
 		r.PostMapping("/getAuthorityList", c.GetAuthorityList)
 		r.PostMapping("/setDataAuthority", c.SetDataAuthority)

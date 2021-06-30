@@ -4,6 +4,8 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
+
+	"github.com/go-spring/spring-utils"
 )
 
 // 前端传来文件片与当前片为什么文件的第几片
@@ -26,7 +28,7 @@ func BreakPointContinue(content []byte, fileName string, contentNumber int, cont
 }
 
 func CheckMd5(content []byte, chunkMd5 string) (CanUpload bool) {
-	fileMd5 := MD5V(content)
+	fileMd5 := SpringUtils.MD5(string(content))
 	if fileMd5 == chunkMd5 {
 		return true // "可以继续上传"
 	} else {
