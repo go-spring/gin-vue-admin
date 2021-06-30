@@ -13,11 +13,10 @@ require (
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/gin-gonic/gin v1.7.2
 	github.com/go-redis/redis v6.15.9+incompatible
-	github.com/go-spring/go-spring-parent v1.0.4 // indirect
-	github.com/go-spring/go-spring-web v1.0.4 // indirect
 	github.com/go-spring/spring-boot v1.0.5
 	github.com/go-spring/spring-gin v1.0.5
 	github.com/go-spring/spring-logger v1.0.5
+	github.com/go-spring/spring-utils v1.0.5
 	github.com/go-spring/spring-web v1.0.5
 	github.com/go-spring/starter-gin v1.0.5
 	github.com/go-spring/starter-gorm v1.0.5
@@ -33,8 +32,10 @@ require (
 	github.com/qiniu/go-sdk/v7 v7.9.7
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/viper v1.8.1
-	github.com/swaggo/gin-swagger v1.3.0 // indirect
+	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
+	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.7.0
 	github.com/tebeka/strftime v0.1.5 // indirect
+	github.com/ugorji/go v1.1.13 // indirect
 	github.com/unrolled/secure v1.0.9
 )

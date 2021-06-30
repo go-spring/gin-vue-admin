@@ -11,6 +11,8 @@ import (
 	"github.com/go-spring/spring-gin"
 	"github.com/go-spring/spring-web"
 	_ "github.com/go-spring/starter-gin"
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 )
 
 func RunWindowsServer() {
@@ -22,7 +24,7 @@ func RunWindowsServer() {
 	//}
 
 	// 添加 swagger 接口
-	// SpringBoot.GetMapping("/swagger/*any", SpringGin.Gin(ginSwagger.WrapHandler()))
+	SpringBoot.HandleGet("/swagger/*any", SpringGin.Gin(ginSwagger.WrapHandler(swaggerFiles.Handler)))
 
 	// 1. 引入 go-spring web 组件，关闭 swagger 及默认 filter
 	SpringBoot.Config(func(c SpringWeb.WebContainer, port int) {
