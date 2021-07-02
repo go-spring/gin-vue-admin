@@ -2,10 +2,9 @@ package service
 
 import (
 	"errors"
-	"github.com/jinzhu/gorm"
 	"strings"
 
-	"gin-vue-admin/global"
+	"gin-vue-admin/config"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
 
@@ -13,6 +12,7 @@ import (
 	"github.com/casbin/casbin/util"
 	"github.com/casbin/gorm-adapter"
 	"github.com/go-spring/spring-boot"
+	"github.com/jinzhu/gorm"
 )
 
 func init() {
@@ -20,7 +20,8 @@ func init() {
 }
 
 type SysCasbinService struct {
-	Db *gorm.DB `autowire:""`
+	Db           *gorm.DB `autowire:""`
+	CasbinConfig config.CasbinConfig
 }
 
 // @title    UpdateCasbin
@@ -114,7 +115,7 @@ func (service *SysCasbinService) ClearCasbin(v int, p ...string) bool {
 
 func (service *SysCasbinService) Casbin() *casbin.Enforcer {
 	a := gormadapter.NewAdapterByDB(service.Db)
-	e := casbin.NewEnforcer(global.GVA_CONFIG.Casbin.ModelPath, a)
+	e := casbin.NewEnforcer(service.CasbinConfig.ModelPath, a)
 	e.AddFunction("ParamsMatch", service.ParamsMatchFunc)
 	_ = e.LoadPolicy()
 	return e

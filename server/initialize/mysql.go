@@ -1,8 +1,8 @@
 package initialize
 
 import (
-	"gin-vue-admin/global"
 	"gin-vue-admin/model"
+	SpringLogger "github.com/go-spring/spring-logger"
 
 	"github.com/go-spring/spring-boot"
 	_ "github.com/go-spring/starter-gorm/mysql"
@@ -33,5 +33,5 @@ func DBTables(db *gorm.DB) {
 		model.ExaFileChunk{},
 		model.ExaCustomer{},
 	)
-	global.GVA_LOG.Debug("register table success")
+	SpringLogger.Debug("register table success")
 }

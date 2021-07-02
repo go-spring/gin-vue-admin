@@ -2,8 +2,9 @@ package service
 
 import (
 	"errors"
-	"gin-vue-admin/global"
 	"gin-vue-admin/model"
+
+	"github.com/go-spring/spring-logger"
 )
 
 // @title    DeleteBaseMenu
@@ -51,12 +52,12 @@ func (service *SysMenuService) UpdateBaseMenu(menu model.SysBaseMenu) (err error
 	if oldMenu.Name != menu.Name {
 		notSame := service.Db.Where("id <> ? AND name = ?", menu.ID, menu.Name).First(&model.SysBaseMenu{}).RecordNotFound()
 		if !notSame {
-			global.GVA_LOG.Debug("存在相同name修改失败")
+			SpringLogger.Debug("存在相同name修改失败")
 			return errors.New("存在相同name修改失败")
 		}
 	}
 	err = db.Updates(upDateMap).Error
-	global.GVA_LOG.Debug("菜单修改时候，关联菜单err:%v", err)
+	SpringLogger.Debug("菜单修改时候，关联菜单err:%v", err)
 	return err
 }
 

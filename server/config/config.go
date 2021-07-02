@@ -1,5 +1,31 @@
 package config
 
+type SystemConfig struct {
+	UseMultipoint bool   `value:"${system.use-multipoint}"`
+	Env           string `value:"${system.env}"`
+}
+
+type JwtConfig struct {
+	SigningKey string `value:"${jwt.signing-key}"`
+}
+
+type CasbinConfig struct {
+	ModelPath string `value:"${casbin.model-path}"`
+}
+
+type OssConfig struct {
+	AccessKey string `value:"${oss.access-key}"`
+	SecretKey string `value:"${oss.secret-key}"`
+	Bucket    string `value:"${oss.bucket}"`
+	ImgPath   string `value:"${oss.img-path}"`
+}
+
+type CaptchaConfig struct {
+	KeyLong   int `value:"${captcha.key-long}"`
+	ImgWidth  int `value:"${captcha.img-width}"`
+	ImgHeight int `value:"${captcha.img-height}"`
+}
+
 type Server struct {
 	Mysql   Mysql   `mapstructure:"mysql" json:"mysql" yaml:"mysql"`
 	Sqlite  Sqlite  `mapstructure:"sqlite" json:"sqlite" yaml:"sqlite"`
@@ -43,6 +69,7 @@ type Redis struct {
 	Password string `mapstructure:"password" json:"password" yaml:"password"`
 	DB       int    `mapstructure:"db" json:"db" yaml:"db"`
 }
+
 type Qiniu struct {
 	AccessKey string `mapstructure:"access-key" json:"accessKey" yaml:"access-key"`
 	SecretKey string `mapstructure:"secret-key" json:"secretKey" yaml:"secret-key"`

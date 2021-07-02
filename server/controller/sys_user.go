@@ -5,8 +5,8 @@ import (
 	"mime/multipart"
 	"time"
 
+	"gin-vue-admin/config"
 	"gin-vue-admin/filter"
-	"gin-vue-admin/global"
 	"gin-vue-admin/global/response"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
@@ -52,6 +52,9 @@ type BaseController struct {
 	SysUserService      *service.SysUserService      `autowire:""`
 	JwtBlackListService *service.JwtBlackListService `autowire:""`
 	GinCaptchaService   *utils.GinCaptchaService     `autowire:""`
+	CaptchaConfig       config.CaptchaConfig
+	SystemConfig        config.SystemConfig
+	JwtConfig           config.JwtConfig
 }
 
 // @Tags Base
@@ -122,7 +125,7 @@ func (controller *BaseController) Login(webCtx SpringWeb.WebContext) {
 func (controller *BaseController) tokenNext(webCtx SpringWeb.WebContext, user model.SysUser) {
 
 	j := &filter.JWT{
-		SigningKey: []byte(global.GVA_CONFIG.JWT.SigningKey), // 唯一签名
+		SigningKey: []byte(controller.JwtConfig.SigningKey), // 唯一签名
 	}
 	clams := request.CustomClaims{
 		UUID:        user.UUID,
@@ -140,7 +143,7 @@ func (controller *BaseController) tokenNext(webCtx SpringWeb.WebContext, user mo
 		response.FailWithMessage("获取token失败", webCtx)
 		return
 	}
-	if !global.GVA_CONFIG.System.UseMultipoint {
+	if !controller.SystemConfig.UseMultipoint {
 		response.OkWithData(resp.LoginResponse{
 			User:      user,
 			Token:     token,
